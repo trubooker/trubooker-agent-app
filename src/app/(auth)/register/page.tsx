@@ -54,7 +54,6 @@ export default function RegisterComponent() {
       .string()
       .min(6, { message: "Password must be 6 chracters or more" })
       .max(15, { message: "Password too long" }),
-    // confirmPassword: z.string().min(0),
     iagree: z.boolean(),
   });
   // .refine((data) => data.password === data.confirmPassword, {
@@ -88,33 +87,34 @@ export default function RegisterComponent() {
   const onSubmit = async (values: z.infer<typeof RegisterFormSchema>) => {
     const data = {};
 
-    await registerUser(data)
-      .unwrap()
-      .then(
-        () => (
-          toast.success(
-            "Account created successfully! Check Your email for the verification link",
-            {
-              position: "top-center",
-              autoClose: 2000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              transition: Bounce,
-            }
-          ),
-          router.push("/auth/login")
-        )
-      )
-      .catch((error: any) => {
-        toast.error(error.data.msg, {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: true,
-        });
-      });
+    // await registerUser(data)
+    //   .unwrap()
+    //   .then(
+    //     () => (
+    //       toast.success(
+    //         "Account created successfully! Check Your email for the verification link",
+    //         {
+    //           position: "top-center",
+    //           autoClose: 2000,
+    //           hideProgressBar: false,
+    //           closeOnClick: true,
+    //           pauseOnHover: true,
+    //           draggable: true,
+    //           progress: undefined,
+    //           transition: Bounce,
+    //         }
+    //       ),
+    //       router.push("/auth/login")
+    //     )
+    //   )
+    //   .catch((error: any) => {
+    //     toast.error(error.data.msg, {
+    //       position: "top-center",
+    //       autoClose: 2000,
+    //       hideProgressBar: true,
+    //     });
+    //   });
+    alert(values);
     form.setValue("firstName", "");
     form.setValue("lastName", "");
     form.setValue("email", "");
@@ -123,6 +123,9 @@ export default function RegisterComponent() {
     form.setValue("state", "");
     form.setValue("telephone", "");
     form.setValue("password", "");
+    setTimeout(() => {
+      router.push(`/otp?phone=${values.telephone}`);
+    }, 1000);
   };
   return (
     <div className="h-full flex flex-col justify-center">
