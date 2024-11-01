@@ -1,65 +1,56 @@
-"use client"
+"use client";
 
-import { MoreHorizontal, type LucideIcon } from "lucide-react"
+import { MoreHorizontal, type LucideIcon } from "lucide-react";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { usePathname, useRouter } from "next/navigation";
+import { Button } from "../ui/button";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { useState } from "react";
+import Link from "next/link";
+import { links } from "@/constants";
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
-}) {
-  const { isMobile } = useSidebar()
-
+export function NavMain() {
+  const { push } = useRouter();
+  const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const pathname = usePathname();
   return (
-    <SidebarGroup>
+    <SidebarGroup className="w-full">
       <SidebarMenu>
-        {items.map((item) => (
-          <DropdownMenu key={item.title}>
-            <SidebarMenuItem>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
-                  {item.title} <MoreHorizontal className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              {item.items?.length ? (
-                <DropdownMenuContent
-                  side={isMobile ? "bottom" : "right"}
-                  align={isMobile ? "end" : "start"}
-                  className="min-w-56 rounded-lg"
-                >
-                  {item.items.map((item) => (
-                    <DropdownMenuItem asChild key={item.title}>
-                      <a href={item.url}>{item.title}</a>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              ) : null}
-            </SidebarMenuItem>
-          </DropdownMenu>
-        ))}
+        <nav className=" space-y-4">
+          {links.map((feature) => (
+            <div key={feature.id}>
+              <div
+                onClick={() => push(feature.link)}
+                className={`flex text-base items-center rounded-lg space-x-2 hover:bg-blue-50 w-full lg:w-auto py-2 pl-4 cursor-pointer transition-all text-left text-[--secondary] ${
+                  pathname === feature.link
+                    ? `bg-blue-50  border-[--secondary] border-l-8`
+                    : `bg-white`
+                }`}
+              >
+                <li className="text-sm items-center text-left flex gap-x-3">
+                  <dt className="inline text-blue-400">
+                    <feature.icon aria-hidden="true" className="h-6 w-6" />
+                  </dt>
+                  <p className="text-black">{feature.title}</p>
+                </li>
+              </div>
+            </div>
+          ))}
+        </nav>
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

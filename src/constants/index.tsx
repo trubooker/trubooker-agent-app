@@ -1,3 +1,8 @@
+import { RxDashboard } from "react-icons/rx";
+import { CiHeart } from "react-icons/ci";
+import { PiStudent } from "react-icons/pi";
+import { IoIosHelpCircleOutline } from "react-icons/io";
+import { CgLogOut } from "react-icons/cg";
 export interface Country {
   name: string;
   telCode: string;
@@ -8,6 +13,35 @@ export interface State {
   name: string;
   telCode: string;
 }
+
+export interface LinkItem {
+  id: number;
+  title: string;
+  link: string;
+  icon: any;
+  sublinks?: any[];
+}
+
+export const links: LinkItem[] = [
+  {
+    id: 1,
+    title: "Dashboard",
+    icon: RxDashboard,
+    link: "/dashboard",
+  },
+  {
+    id: 2,
+    title: "Help & Support",
+    icon: IoIosHelpCircleOutline,
+    link: "/help",
+  },
+  {
+    id: 3,
+    title: "Logout",
+    icon: CgLogOut,
+    link: "/logout",
+  },
+];
 
 export const states: State[] = [
   { name: "Abia", telCode: "+234" },
@@ -47,7 +81,6 @@ export const states: State[] = [
   { name: "Yobe", telCode: "+234" },
   { name: "Zamfara", telCode: "+234" },
 ];
-
 
 export const countries: Country[] = [
   {

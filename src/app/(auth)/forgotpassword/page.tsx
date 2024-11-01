@@ -123,7 +123,7 @@ export default function ForgotPassword() {
                           id="phone"
                           type="number"
                           placeholder="Enter Phone Number"
-                          className="h-14 w-full border border-gray-600 pl-6"
+                          className="h-14 w-full"
                           {...field}
                         />
                       </FormControl>

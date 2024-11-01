@@ -1,18 +1,11 @@
 import { AppSidebar } from "@/components/styledComponents/app-sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { IoPersonOutline } from "react-icons/io5";
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -20,22 +13,24 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+          <header className="flex h-28 justify-between shrink-0 items-center gap-2 border-b px-4">
+            <div className="flex w-full items-center space-x-4">
+              <Avatar className="w-20 h-20">
+                <AvatarImage
+                  src={
+                    "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load"
+                  }
+                />
+                <AvatarFallback>
+                  <IoPersonOutline />
+                </AvatarFallback>
+              </Avatar>
+              <div className="grid grid-rows-1 text-xs lg:text-base gap-2 lg:gap-1">
+                <p className="text-gray-400 font-medium text-base">Hello</p>
+                <p className="font-bold text-xl text-black">John Smith</p>
+              </div>
+            </div>
+            <SidebarTrigger className="rounded-full m-2 border border-white shadow-md lg:hidden"></SidebarTrigger>
           </header>
           <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
         </SidebarInset>

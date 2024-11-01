@@ -13,6 +13,8 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import Image from "next/image";
+import Logo from "@/public/trubookerAgent.svg";
 
 // This is sample data.
 const data = {
@@ -147,29 +149,21 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar {...props}>
+    <Sidebar {...props} className="">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <GalleryVerticalEnd className="size-4" />
-                </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Documentation</span>
-                  <span className="">v1.0.0</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
+            <div className="relative w-52 lg:w-auto h-20">
+              <Image className="sm:mx-0 mt-1 rounded" src={Logo} fill alt="" />
+            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
+      <SidebarContent className="mt-16 w-full lg:w-auto">
+        <NavMain />
       </SidebarContent>
-      <SidebarFooter>
-        <div className="p-1">
+      <SidebarFooter className="w-full">
+        <div className="p-1 bottom-0 absolute w-full left-0">
           <SidebarOptInForm />
         </div>
       </SidebarFooter>
