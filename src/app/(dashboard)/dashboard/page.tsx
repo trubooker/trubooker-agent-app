@@ -10,7 +10,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col h-fit w-full">
-      <div className="flex flex-col xl:flex-row w-full gap-4">
+      <div className="flex flex-col xl:flex-row w-full gap-8">
         <>
           <div className="w-full xl:w-[80%] flex flex-col">
             <div className="grid grid-rows-1 lg:grid-cols-2 gap-4 w-full">

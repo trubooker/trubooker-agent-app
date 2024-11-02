@@ -502,3 +502,61 @@ export const Notification = [
     date: "59 minutes ago",
   },
 ];
+
+export const Referall = [
+  {
+    // id: 1,
+    name: "Jane Smith",
+    status: "5",
+  },
+  {
+    // id: 2,
+    name: "Adebayo Grace",
+    status: "9",
+  },
+  {
+    // id: 3,
+    name: "John Doe",
+    status: "Pending",
+  },
+  {
+    // id: 3,
+    name: "John Doe",
+    status: "Pending",
+  },
+  {
+    // id: 3,
+    name: "John Doe",
+    status: "Pending",
+  },
+  {
+    // id: 3,
+    name: "John Doe",
+    status: "Pending",
+  },
+  {
+    // id: 3,
+    name: "John Doe",
+    status: "Pending",
+  },
+  {
+    // id: 3,
+    name: "John Doe",
+    status: "Pending",
+  },
+  {
+    // id: 3,
+    name: "John Doe",
+    status: "Pending",
+  },
+  {
+    // id: 3,
+    name: "John Doe",
+    status: "Pending",
+  },
+  {
+    // id: 3,
+    name: "John Doe",
+    status: "Pending",
+  },
+];

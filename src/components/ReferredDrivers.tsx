@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { FaRegCopy } from "react-icons/fa";
 import { truncateText } from "@/lib/utils";
 import { Button } from "./ui/button";
+import { IoIosArrowForward } from "react-icons/io";
+import Link from "next/link";
+import { Separator } from "./ui/separator";
 
 const ReferredDrivers = () => {
   const [copied, setCopied] = useState(false);
@@ -17,9 +20,14 @@ const ReferredDrivers = () => {
   };
   return (
     <div className="mb-5">
-      <p className="mb-2 text-lg font-bold text-black text-left ps-2">
+      <Link
+        href={"/dashboard/referral"}
+        className="mb-2 text-lg font-bold flex justify-between items-center text-black text-left ps-2"
+      >
         Referred Drivers
-      </p>
+        <IoIosArrowForward className="h-6 w-6 text-gray-800" />
+      </Link>
+      <Separator />
       <ul className="list-disc list-inside my-5 ms-5">
         <li className="my-2">Share your link</li>
         <li className="my-2">Drivers sign up using your link.</li>

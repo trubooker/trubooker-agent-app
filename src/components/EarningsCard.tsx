@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 const EarningsCard = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -11,6 +12,7 @@ const EarningsCard = () => {
     setIsVisible(!isVisible);
   };
 
+  const router = useRouter();
   return (
     <div className="w-full bg-indigo-600 flex flex-col text-white p-10 rounded-lg h-64 shadow-md hover:-full">
       <div className="flex justify-between items-center mb-2">
@@ -28,7 +30,10 @@ const EarningsCard = () => {
           {isVisible ? "NGN 1,640.09" : "* * * *"}
         </span>
       </div>
-      <Button className="mt-auto w-full bottom-0 top-0 bg-white hover:bg-blue-50 text-black py-2 rounded-full font-medium">
+      <Button
+        onClick={() => router.push("dashboard/withdraw")}
+        className="mt-auto w-full bottom-0 top-0 bg-white hover:bg-blue-50 text-black py-2 rounded-full font-medium"
+      >
         Apply for withdrawal
       </Button>
     </div>

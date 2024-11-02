@@ -18,7 +18,7 @@ const Notifications = () => {
         </CardHeader>
         <CardContent>
           {Notification.map((actions: any) => (
-            <>
+            <div key={actions.id}>
               <Separator />
               <div className="my-4">
                 <div className="flex w-full items-start space-x-4">
@@ -31,7 +31,7 @@ const Notifications = () => {
                   </div>
                 </div>
               </div>
-            </>
+            </div>
           ))}
         </CardContent>
       </Card>

@@ -282,7 +282,7 @@ const SidebarTrigger = React.forwardRef<
       }}
       {...props}
     >
-      <button className=" p-2 rounded-full hover:text-black items-center bg-white">
+      <button className=" p-2 border rounded-full hover:text-black items-center bg-white">
         <Menu className="h-10 w-10 cursor-pointer" />
       </button>
       <span className="sr-only">Toggle Sidebar</span>
