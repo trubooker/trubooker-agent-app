@@ -94,7 +94,7 @@ export default function Login() {
   };
   return (
     <div className="h-screen flex flex-col justify-center">
-      <div className="lg:mx-auto w-full px-5 pt-10 pb-24 lg:w-8/12">
+      <div className="lg:mx-auto pt-10 pb-24 px-5 w-full lg:w-4/12">
         <h2 className=" w-full text-center font-bold text-3xl my-10">
           Let&apos;s sign you in!
         </h2>

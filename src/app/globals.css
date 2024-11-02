@@ -87,3 +87,13 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+html ::-webkit-scrollbar {
+  display: none;
+}
+html ::-webkit-scrollbar-track {
+  background-color: #d3d9e5;
+}
+html ::-webkit-scrollbar-thumb {
+  background-color: #02579e;
+}

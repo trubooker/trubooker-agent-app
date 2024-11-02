@@ -178,92 +178,93 @@ export default function RegisterComponent() {
                   />
                 </div>
               </div>
-              <div className="grid gap-2">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="Enter email"
-                          {...field}
-                        />
-                      </FormControl>
-                      {emailError && <FormMessage>{emailError}</FormMessage>}
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="">
-                <FormLabel>Phone number</FormLabel>
-                <div className="flex items-center border h-12 mt-2 border-input rounded-lg">
+              <div className="grid grid-rows-1 lg:grid-cols-2 gap-4">
+                <div className="grid gap-2">
                   <FormField
                     control={form.control}
-                    name="telCode"
+                    name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger className="border-none shadow-none ">
-                              <SelectValue
-                                placeholder="+234"
-                                className="placeholder:text-gray-100 "
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="">
-                            {countries?.map((country, i) => (
-                              <SelectItem
-                                className=""
-                                key={i}
-                                value={country?.telCode}
-                              >
-                                <div className="flex space-x-2 ">
-                                  <Image
-                                    alt={country.telCode}
-                                    src={country?.flag}
-                                    width="20"
-                                    height="10"
-                                  />
-                                  <p>{country?.telCode}</p>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="telephone"
-                    render={({ field }) => (
-                      <FormItem>
+                        <FormLabel>Email</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="234*******"
+                            id="email"
+                            type="email"
+                            placeholder="Enter email"
                             {...field}
-                            className="border-none outline-none w-full shadow-none h-6 text-base py-4 placeholder:text-sm"
                           />
                         </FormControl>
-                        {telephoneError && (
-                          <FormMessage>{telephoneError}</FormMessage>
-                        )}
+                        {emailError && <FormMessage>{emailError}</FormMessage>}
                       </FormItem>
                     )}
                   />
                 </div>
-              </div>
 
+                <div className="">
+                  <FormLabel>Phone number</FormLabel>
+                  <div className="flex items-center border h-12 mt-2 border-input rounded-lg">
+                    <FormField
+                      control={form.control}
+                      name="telCode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="border-none shadow-none ">
+                                <SelectValue
+                                  placeholder="+234"
+                                  className="placeholder:text-gray-100 "
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="">
+                              {countries?.map((country, i) => (
+                                <SelectItem
+                                  className=""
+                                  key={i}
+                                  value={country?.telCode}
+                                >
+                                  <div className="flex space-x-2 ">
+                                    <Image
+                                      alt={country.telCode}
+                                      src={country?.flag}
+                                      width="20"
+                                      height="10"
+                                    />
+                                    <p>{country?.telCode}</p>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="telephone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="234*******"
+                              {...field}
+                              className="border-none outline-none w-full shadow-none h-6 text-base py-4 placeholder:text-sm"
+                            />
+                          </FormControl>
+                          {telephoneError && (
+                            <FormMessage>{telephoneError}</FormMessage>
+                          )}
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              </div>
               <div className="grid gap-2">
                 <FormField
                   control={form.control}
