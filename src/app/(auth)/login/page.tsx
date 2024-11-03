@@ -87,7 +87,8 @@ export default function Login() {
     //       hideProgressBar: true,
     //     });
     //   });
-    alert(values);
+    // alert(values);
+    setTimeout(() => router.push("/dashboard"), 2000);
 
     form.setValue("email", "");
     form.setValue("password", "");
@@ -116,7 +117,8 @@ export default function Login() {
                           {...field}
                         />
                       </FormControl>
-                      {emailError && <FormMessage>{emailError}</FormMessage>}
+                      {/* {emailError && <FormMessage>{emailError}</FormMessage>} */}
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -146,9 +148,10 @@ export default function Login() {
                           </button>
                         </div>
                       </FormControl>
-                      {passwordError && (
+                      {/* {passwordError && (
                         <FormMessage>{passwordError}</FormMessage>
-                      )}
+                        )} */}
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
