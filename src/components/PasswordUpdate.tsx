@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { FaRubleSign } from "react-icons/fa6";
+import Link from "next/link";
 
 const PasswordUpdate = () => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -82,33 +83,41 @@ const PasswordUpdate = () => {
       <h2 className="text-lg font-bold text-gray-800 mb-4">Security</h2>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Current password
-        </label>
+        <div className="flex justify-between items-center mb-3 mt-5">
+          <label className="block text-sm font-medium text-gray-700 ">
+            Current password *
+          </label>
+          <Link
+            href="/forgotpassword"
+            className="text-sm text-indigo-600 hidden  hover:underline lg:inline-block"
+          >
+            Forgot current password?
+          </Link>
+        </div>
         <input
           type="password"
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+          className="w-full border border-gray-300 rounded-md ps-3 py-3 text-gray-900"
           placeholder="Enter current password"
         />
-        <a
-          href="#"
-          className="text-xs text-indigo-600 hover:underline mt-1 inline-block"
+        <Link
+          href="/forgotpassword"
+          className="text-sm text-indigo-600 w-full text-end mt-1 lg:hidden hover:underline inline-block"
         >
           Forgot current password?
-        </a>
+        </Link>
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          New password
+        <label className="block text-sm font-medium text-gray-700 mb-3 mt-3">
+          New password *
         </label>
         <input
           type="password"
           value={newPassword}
           onChange={handleNewPasswordChange}
-          className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+          className="w-full border border-gray-300 rounded-md ps-3 py-3 text-gray-900"
           placeholder="Enter new password"
         />
         <div className="flex items-center space-x-2 mt-2">
@@ -143,14 +152,14 @@ const PasswordUpdate = () => {
       </div>
 
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Confirm new password
+        <label className="block text-sm font-medium text-gray-700 mb-3 mt-7 lg:mt-5">
+          Confirm new password *
         </label>
         <input
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded-md p-2 text-gray-900"
+          className="w-full border border-gray-300 rounded-md ps-3 py-3 text-gray-900"
           placeholder="Re-enter new password"
         />
       </div>
@@ -166,10 +175,10 @@ const PasswordUpdate = () => {
         {loading ? (
           <>
             <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-            Saving...
+            Updating...
           </>
         ) : (
-          "Save Changes"
+          "Update Password"
         )}
       </Button>
     </form>

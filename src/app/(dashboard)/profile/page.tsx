@@ -143,8 +143,8 @@ const Profile = () => {
     <div>
       <Goback name={"Profile"} />
       <div className="flex flex-col pt-4 justify-center w-full lg:w-8/12 gap-y-10">
-        <div className="text-center lg:text-left w-full">
-          <Avatar className="w-56 h-56 mx-auto lg:mx-0">
+        <div className="text-center w-full">
+          <Avatar className="w-56 h-56 mx-auto">
             {userData?.data?.attributes?.profile_picture || previewSrc ? (
               <AvatarImage
                 src={
