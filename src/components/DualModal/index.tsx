@@ -23,7 +23,6 @@ import { useGetBeneficiaryQuery } from "@/redux/services/Slices/Withdrawal/withd
 import { Separator } from "../ui/separator";
 import Spinner from "../Spinner";
 
-
 export function DrawerDialogDemo({
   onSelectBeneficiary,
 }: {
@@ -32,14 +31,14 @@ export function DrawerDialogDemo({
   const [open, setOpen] = React.useState(false);
   const isDesktop = useIsMobile();
   const { data, isLoading } = useGetBeneficiaryQuery(null);
-
-  const beneficiary = [
-    { id: 1, bank_holder_name: "Uchenna" },
-    { id: 2, bank_holder_name: "Chisom" },
-    { id: 3, bank_holder_name: "Adaeze" },
-    { id: 4, bank_holder_name: "Ifeanyi" },
-    { id: 5, bank_holder_name: "Ngozi" },
-  ];
+  const beneficiary = data?.data;
+  // const beneficiary = [
+  //   { id: 1, bank_holder_name: "Uchenna" },
+  //   { id: 2, bank_holder_name: "Chisom" },
+  //   { id: 3, bank_holder_name: "Adaeze" },
+  //   { id: 4, bank_holder_name: "Ifeanyi" },
+  //   { id: 5, bank_holder_name: "Ngozi" },
+  // ];
 
   const handleSelectBeneficiary = (id: number) => {
     onSelectBeneficiary(id); // Pass the selected ID to the parent component.
@@ -52,7 +51,7 @@ export function DrawerDialogDemo({
 
     return (
       <ul>
-        {beneficiary.map((item) => (
+        {beneficiary.map((item: any) => (
           <li key={item.id}>
             <Separator />
             <div
@@ -83,7 +82,7 @@ export function DrawerDialogDemo({
           <DialogHeader>
             <DialogTitle>Beneficiaries</DialogTitle>
           </DialogHeader>
-          <div className="px-4">{renderBeneficiaries()}</div>
+          <div className="px-4 mt-5">{renderBeneficiaries()}</div>
         </DialogContent>
       </Dialog>
     );
@@ -103,7 +102,7 @@ export function DrawerDialogDemo({
         <DrawerHeader className="text-left">
           <DrawerTitle>Beneficiaries</DrawerTitle>
         </DrawerHeader>
-        <div className="px-4">{renderBeneficiaries()}</div>
+        <div className="px-2 mt-5">{renderBeneficiaries()}</div>
         <DrawerFooter>
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>

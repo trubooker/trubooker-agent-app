@@ -56,12 +56,16 @@ const Contact = () => {
       await support({ ...values })
         .unwrap()
         .then((res) => {
-          toast.success(`${res?.data?.message}`);
+          toast.success(`Sent Successfully!! ✅`);
+          form.setValue("email", "");
+          form.setValue("firstName", "");
+          form.setValue("lastName", "");
+          form.setValue("message", "");
+          form.setValue("phoneNumber", "");
+          form.setValue("subject", "");
         });
     } catch (error: any) {
-      console.log(error);
-
-      toast.error(`${error?.data?.message}`);
+      toast.error("Error occured! Try later");
     }
   };
 
