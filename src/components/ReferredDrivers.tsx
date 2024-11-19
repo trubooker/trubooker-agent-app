@@ -5,16 +5,17 @@ import { Button } from "./ui/button";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
+import { useLoggedInUser } from "@/hooks/useLoggedUser";
 
 const ReferredDrivers = () => {
+  const { userData: data } = useLoggedInUser();
+  const referralLink = `Trubooker.com/${data?.referral}`;
   const [copied, setCopied] = useState(false);
-  const referralLink = "Trubooker.com/krvw-224";
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(referralLink)
       .then(() => {
         setCopied(true);
-        // alert("Referral link copied!");
       })
       .catch((err) => console.error("Failed to copy: ", err));
   };
@@ -33,9 +34,7 @@ const ReferredDrivers = () => {
         <li className="my-2">Drivers sign up using your link.</li>
       </ul>
       <div className="border border-gray-400 py-3 px-4 rounded-lg w-full justify-between items-center flex">
-        <p className="text-left text-gray-400 text-sm">
-          {truncateText(referralLink, 18)}
-        </p>
+        <p className="text-left text-gray-400 text-sm">{referralLink}</p>
         <Button onClick={handleCopyLink} variant="ghost" className="text-sm">
           {copied ? "Copied" : "Copy"}
         </Button>

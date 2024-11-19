@@ -7,12 +7,14 @@ import { Button } from "@/components/ui/button";
 import { truncateText } from "@/lib/utils";
 import React, { useState } from "react";
 import { useGetReferralsQuery } from "@/redux/services/Slices/Dashboard/dashboardApiSlice";
+import { useLoggedInUser } from "@/hooks/useLoggedUser";
 
 const Referall = () => {
   const { data } = useGetReferralsQuery(null);
   const referall = data?.data;
   const [copied, setCopied] = useState(false);
-  const referralLink = "Trubooker.com/krvw-224";
+  const { userData } = useLoggedInUser();
+  const referralLink = `Trubooker.com/${userData?.referral}`;
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(referralLink)
