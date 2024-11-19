@@ -15,9 +15,9 @@ import {
 import Image from "next/image";
 import Logo from "@/public/trubookerAgent.svg";
 
-export function AppSidebar({ data }: any) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar>
+    <Sidebar {...props} className="">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -32,7 +32,7 @@ export function AppSidebar({ data }: any) {
       </SidebarContent>
       <SidebarFooter className="w-full">
         <div className="p-1 bottom-0 absolute w-full left-0">
-          <SidebarOptInForm data={data} />
+          <SidebarOptInForm />
         </div>
       </SidebarFooter>
       <SidebarRail />

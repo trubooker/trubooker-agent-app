@@ -5,8 +5,10 @@ import { IoPersonOutline } from "react-icons/io5";
 import { FaRegCopy } from "react-icons/fa";
 import { truncateText } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { useLoggedInUser } from "@/hooks/useLoggedUser";
 
-export function SidebarOptInForm({ data }: any) {
+export function SidebarOptInForm() {
+  const { userData: data } = useLoggedInUser();
   const router = useRouter();
   const referralLink = `Trubooker.com/${data?.referral}`;
   const handleCopyLink = () => {

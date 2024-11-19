@@ -29,7 +29,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
       <LogoutModal open={openLog} setOpen={setOpenLog} />
       <SidebarProvider>
         {/* Sidebar */}
-        <AppSidebar data={userData} />
+        <AppSidebar />
 
         {/* Navheader */}
         <SidebarInset>
