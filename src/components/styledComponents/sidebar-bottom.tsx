@@ -6,9 +6,9 @@ import { FaRegCopy } from "react-icons/fa";
 import { truncateText } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-export function SidebarOptInForm() {
+export function SidebarOptInForm({ data }: any) {
   const router = useRouter();
-  const referralLink = "Trubooker.com/krvw-224";
+  const referralLink = `Trubooker.com/${data?.referral}`;
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(referralLink)
@@ -33,17 +33,15 @@ export function SidebarOptInForm() {
         className="flex hover:bg-blue-50 rounded-full p-2 cursor-pointer w-full items-center space-x-4"
       >
         <Avatar className="w-12 h-12">
-          <AvatarImage
-            src={
-              "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load"
-            }
-          />
+          <AvatarImage src={data?.profile_image} />
           <AvatarFallback>
             <IoPersonOutline />
           </AvatarFallback>
         </Avatar>
         <div className="grid grid-rows-1 text-left text-xs lg:text-base lg:gap-1">
-          <p className="font-bold text-lg">{truncateText("John Smith", 12)}</p>
+          <p className="font-bold text-lg">
+            {data?.first_name} {data?.last_name}
+          </p>
           <p className="text-gray-400 font-medium text-sm">Edit your profile</p>
         </div>
       </div>

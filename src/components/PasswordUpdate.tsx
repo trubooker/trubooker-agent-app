@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { FaRubleSign } from "react-icons/fa6";
 import Link from "next/link";
+import { useUpdatePasswordMutation } from "@/redux/services/Slices/userApiSlice";
 
 const PasswordUpdate = () => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -35,8 +36,9 @@ const PasswordUpdate = () => {
     checkPasswordStrength(password);
   };
 
+  const [submitPassword] = useUpdatePasswordMutation();
   // Function to handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     // Basic validation
@@ -62,13 +64,24 @@ const PasswordUpdate = () => {
     }
 
     setError(null);
-
+    await submitPassword({
+      current_password: currentPassword,
+      password: newPassword,
+      password_confirmation: confirmPassword,
+    })
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     // Placeholder for submission logic, e.g., API call
-    console.log("Form submitted:", {
-      currentPassword,
-      newPassword,
-      confirmPassword,
-    });
+    // console.log("Form submitted:", {
+    //   currentPassword,
+    //   newPassword,
+    //   confirmPassword,
+    // });
 
     // Reset fields after submission
     setCurrentPassword("");

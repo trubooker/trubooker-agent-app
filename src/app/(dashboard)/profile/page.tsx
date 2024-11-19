@@ -3,16 +3,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { IoPersonOutline } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
@@ -21,52 +21,36 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 // import { Bounce, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
-import { countries, states } from "@/constants";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { useEffect, useState } from "react";
-import { IoKeyOutline } from "react-icons/io5";
-import Image from "next/image";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaCamera } from "react-icons/fa";
 import fetchToken from "@/lib/auth";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import Goback from "@/components/Goback";
 import PasswordUpdate from "@/components/PasswordUpdate";
-import { useGetCurrentUserQuery } from "@/redux/services/Slices/userApiSlice";
+import { useLoggedInUser } from "@/hooks/useLoggedUser";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { useUpdateProfileMutation } from "@/redux/services/Slices/userApiSlice";
 
 const FormSchema = z.object({
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-  state: z.string().optional(),
-  telephone: z.string().optional(),
-  telCode: z.string().optional(),
-  email: z.string().email().optional(),
-  // password: z
-  //   .string()
-  //   .min(6, { message: "Password must be 6 chracters or more" })
-  //   .max(15, { message: "Password too long" }),
-  // newPassword: z
-  //   .string()
-  //   .min(6, { message: "Password must be 6 chracters or more" })
-  //   .max(15, { message: "Password too long" }),
-  // confirmNewPassword: z.string().min(0),
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
+  city: z.string().optional(),
+  address: z.string().optional(),
+  country: z.string().optional(),
+  gender: z.enum(["male", "female"]).optional(),
 });
-// .refine((data) => data.newPassword === data.confirmNewPassword, {
-//   message: "Passwords must match",
-//   path: ["confirmPassword"],
-// });
 
 const Profile = () => {
+  const { userData, userLoading, userRefetching } = useLoggedInUser();
   const [previewSrc, setPreviewSrc] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const [telephoneError, setTelephoneError] = useState("");
+  const [phoneError, setphoneError] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [dobError, setDobError] = useState("");
+
   const handleFileChange = async (e: any) => {
     const file = e.target.files?.[0];
 
@@ -99,58 +83,76 @@ const Profile = () => {
 
   const router = useRouter();
 
-  const { data: userData, refetch } = useGetCurrentUserQuery(null);
+  const [update] = useUpdateProfileMutation();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setLoading(true);
+
     try {
-      console.log("Form submitted:", {
-        ...data,
-        selectedFile,
-      });
+      if (selectedFile) {
+        const formdata = new FormData();
+        selectedFile && formdata.append("profile_image", selectedFile);
 
-      // const formdata = new FormData();
-      // selectedFile && formdata.append("profile_picture", selectedFile);
-      // formdata.append("first_name", data.firstName);
-      // formdata.append("last_name", data.lastName);
+        const token = await fetchToken();
+        const headers = {
+          Authorization: `Bearer ${token?.data?.token}`,
+          Accept: "application/json",
+        };
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/upload-profile-picture`,
+          {
+            method: "POST",
+            headers,
+            body: formdata,
+          }
+        );
 
-      // const token = await fetchToken();
-      // const headers = {
-      //   Authorization: `Bearer ${token?.data?.token}`,
-      //   Accept: "application/json",
-      // };
-      // const res = await fetch(
-      //   `${process.env.NEXT_PUBLIC_API_URL}/user/update-profile`,
-      //   {
-      //     method: "POST",
-      //     headers,
-      //     body: formdata,
-      //   }
-      // );
+        const resdata = await res.json();
+        if (resdata?.status == "success") {
+          userRefetching();
+          setLoading(false);
+        }
+      }
 
-      // const resdata = await res.json();
-      // if (resdata?.status == "success") {
-      //   setLoading(false);
-      //   // refetch();
-      // }
+      const dateString = selectedDate
+        ? selectedDate.toISOString().split("T")[0]
+        : null;
+      const formdata = {
+        first_name: data.first_name || null,
+        last_name: data.last_name || null,
+        city: data.city || null,
+        address: data.address || null,
+        country: data.country || null,
+        gender: data.gender || null,
+        dob: dateString,
+      };
+      console.log("formdata: ", formdata);
+
+      await update(formdata)
+        .unwrap()
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
     } catch {
       setLoading(false);
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <div>
       <Goback name={"Profile"} />
       <div className="flex flex-col pt-4 justify-center w-full lg:w-8/12 gap-y-10">
         <div className="text-center w-full">
           <Avatar className="w-56 h-56 mx-auto">
-            {userData?.data?.attributes?.profile_picture || previewSrc ? (
+            {userData?.data?.user?.profile_image || previewSrc ? (
               <AvatarImage
                 src={
-                  previewSrc
-                    ? previewSrc
-                    : userData?.data?.attributes?.profile_picture
+                  previewSrc ? previewSrc : userData?.data?.user?.profile_image
                 }
               />
             ) : (
@@ -183,19 +185,19 @@ const Profile = () => {
           <small>Joined 2016</small>
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="">
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4">
               <div className="grid grid-rows-1 lg:grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
-                    name="firstName"
+                    name="first_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>First Name</FormLabel>
                         <FormControl>
                           <Input
-                            id="firstName"
+                            id="first_name"
                             type="text"
                             placeholder="John"
                             {...field}
@@ -209,13 +211,13 @@ const Profile = () => {
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
-                    name="lastName"
+                    name="last_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Last Name</FormLabel>
                         <FormControl>
                           <Input
-                            id="lastName"
+                            id="last_name"
                             type="text"
                             placeholder="Doe"
                             {...field}
@@ -228,117 +230,18 @@ const Profile = () => {
                 </div>
               </div>
               <div className="grid grid-rows-1 lg:grid-cols-2 gap-4">
-                <div className="">
-                  <FormLabel>Phone number</FormLabel>
-                  <div className="flex items-center border h-12 mt-2 border-input rounded-lg">
-                    <FormField
-                      control={form.control}
-                      name="telCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="border-none shadow-none ">
-                                <SelectValue
-                                  placeholder="+234"
-                                  className="placeholder:text-gray-100 "
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="">
-                              {countries?.map((country, i) => (
-                                <SelectItem
-                                  className=""
-                                  key={i}
-                                  value={country?.telCode}
-                                >
-                                  <div className="flex space-x-2 ">
-                                    <Image
-                                      alt={country.telCode}
-                                      src={country?.flag}
-                                      width="20"
-                                      height="10"
-                                    />
-                                    <p>{country?.telCode}</p>
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="telephone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              placeholder="234*******"
-                              {...field}
-                              className="border-none outline-none w-full shadow-none h-6 text-base py-4 placeholder:text-sm"
-                            />
-                          </FormControl>
-                          {telephoneError && (
-                            <FormMessage>{telephoneError}</FormMessage>
-                          )}
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
-                    name="state"
+                    name="country"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>State</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger className="h-12">
-                              <SelectValue
-                                placeholder="Choose State"
-                                className="placeholder:text-gray-100"
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {states?.map((state, i) => (
-                              <SelectItem key={i} value={state?.name}>
-                                <p>{state?.name}</p>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-rows-1 lg:grid-cols-2 gap-4 items-end">
-                <div className="grid gap-2">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>Country</FormLabel>
                         <FormControl>
                           <Input
-                            // disabled
-                            id="email"
-                            type="email"
-                            placeholder="admin@yea.com"
+                            id="country"
+                            type="text"
+                            placeholder="Nigeria"
                             {...field}
                           />
                         </FormControl>
@@ -347,23 +250,123 @@ const Profile = () => {
                     )}
                   />
                 </div>
-
-                <div className="mx-auto w-full text-center">
-                  <Button
-                    variant="default"
-                    type="submit"
-                    className="w-full h-14 bg-[--primary] hover:bg-[--primary-hover] text-white hover:text-white font-bold"
-                  >
-                    {loading ? (
-                      <>
-                        <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                        Saving...
-                      </>
-                    ) : (
-                      "Save Changes"
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="city"
+                            type="text"
+                            placeholder="Owerri"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     )}
-                  </Button>
+                  />
                 </div>
+              </div>
+              <div className="grid grid-rows-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <FormLabel htmlFor="dateInput">Date of Birth</FormLabel>
+                  <div className="border border-gray-200 p-2 mt-2 rounded-lg flex flex-col">
+                    <DatePicker
+                      selected={selectedDate}
+                      onChange={(date: Date | null) => setSelectedDate(date)}
+                      dateFormat="yyyy-MM-dd"
+                      placeholderText="YYYY-MM-DD"
+                      id="dateInput"
+                      className="date-picker-input border-none w-full outline-none h-10 pl-3 text-base py-4 placeholder:text-sm"
+                    />
+                  </div>
+
+                  {dobError ? (
+                    <FormMessage className="mt-2 text-red-500">
+                      {dobError}
+                    </FormMessage>
+                  ) : (
+                    <FormDescription className="mt-2">
+                      Input date of birth, not less than 18 years of age
+                    </FormDescription>
+                  )}
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem className="">
+                      <FormLabel>Gender</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="border grid grid-cols-2 p-4 mt-0 rounded-lg"
+                        >
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem
+                                className="border-muted-foreground h-5 w-5"
+                                value="male"
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal text-base text-muted-foreground">
+                              Male
+                            </FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem
+                                className="border-muted-foreground h-5 w-5"
+                                value="female"
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal text-base text-muted-foreground">
+                              Female
+                            </FormLabel>
+                          </FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter Address" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <div className="mx-auto w-full text-center">
+                <Button
+                  variant="default"
+                  type="submit"
+                  disabled={loading || userLoading}
+                  className="w-full h-14 bg-[--primary] hover:bg-[--primary-hover] text-white hover:text-white font-bold"
+                >
+                  {loading || userLoading ? (
+                    <>
+                      <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Changes"
+                  )}
+                </Button>
               </div>
             </div>
           </form>

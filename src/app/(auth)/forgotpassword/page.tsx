@@ -23,6 +23,8 @@ import { useState } from "react";
 import axios from "axios";
 import React from "react";
 import ResponseModal from "@/components/ResponseModal";
+import { useForgotPasswordMutation } from "@/redux/services/Slices/auth/forgotpasswordApiSlice";
+import toast from "react-hot-toast";
 
 const LoginFormSchema = z.object({
   email: z.string().email().min(1, { message: "Required" }),
@@ -35,7 +37,6 @@ export default function ForgotPassword() {
     defaultValues: {},
   });
 
-  const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -45,31 +46,19 @@ export default function ForgotPassword() {
     setSuccessMessage(null);
     setErrorMessage(null);
   };
+  const [getResetLink, { isLoading: loading }] = useForgotPasswordMutation();
 
   const onSubmit = async (data: z.infer<typeof LoginFormSchema>) => {
-    setLoading(true);
-    const form = {
-      email: data.email,
-    };
-
-    try {
-      const response = await axios.post(`/api/forget-password`, form);
-
-      if (response.status === 200) {
-        setLoading(false);
-        setSuccessMessage("Password reset link sent to your email");
-        setIsModalOpen(true);
-        setTimeout(
-          () => router.push(`/forgotpassword/otp?email=${data?.email}`),
-          5000
-        );
-      }
-    } catch (error: any) {
-      setLoading(false);
-      setServerError(error.response?.data?.message?.email[0]);
-      setErrorMessage(error.response?.data?.message);
-      setIsModalOpen(true);
-    }
+    await getResetLink(data)
+      .unwrap()
+      .then((res) => {
+        form.setValue("email", "");
+        toast.success("Reset link sent to registered email.");
+      })
+      .catch((error) => {
+        form.setValue("email", "");
+        toast.error(error.data.msg);
+      });
   };
 
   const handleBack = () => {

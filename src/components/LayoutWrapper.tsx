@@ -14,6 +14,7 @@ import { useState } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
 import { Separator } from "./ui/separator";
 import useAuthCheck from "@/hooks/useAuthCheck";
+import { useLoggedInUser } from "@/hooks/useLoggedUser";
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   useAuthCheck();
@@ -22,11 +23,15 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const handleLogout = () => {
     setOpenLog(true);
   };
+  const { userData, userLoading, userRefetching } = useLoggedInUser();
   return (
     <div>
       <LogoutModal open={openLog} setOpen={setOpenLog} />
       <SidebarProvider>
-        <AppSidebar />
+        {/* Sidebar */}
+        <AppSidebar data={userData} />
+
+        {/* Navheader */}
         <SidebarInset>
           {isMobile ? (
             <header className="flex h-20 w-full justify-between shrink-0 items-center gap-2 border-b px-4">
@@ -43,7 +48,9 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
                 </Avatar>
                 <div className="grid grid-rows-1 text-xs lg:text-base gap-1">
                   <p className="text-gray-400 font-medium text-sm">Hello</p>
-                  <p className="font-bold text-lg text-black">John Smith</p>
+                  <p className="font-bold text-lg text-black">
+                    {userData?.first_name} {userData?.last_name}
+                  </p>
                 </div>
               </div>
 
@@ -59,13 +66,11 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
           ) : (
             <header className="flex h-16 justify-between shrink-0 items-center gap-2 border-b px-4">
               <div className="flex w-full items-center space-x-4 justify-end">
-                <p className="text-base text-black">Hello, John Smith</p>
+                <p className="text-base text-black">
+                  Hello, {userData?.first_name} {userData?.last_name}
+                </p>
                 <Avatar className="w-10 h-10">
-                  <AvatarImage
-                    src={
-                      "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load"
-                    }
-                  />
+                  <AvatarImage src={userData?.profile_image} />
                   <AvatarFallback>
                     <IoPersonOutline />
                   </AvatarFallback>
