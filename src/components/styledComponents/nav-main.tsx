@@ -22,8 +22,8 @@ export function NavMain() {
       <LogoutModal open={openLog} setOpen={setOpenLog} />
       <SidebarMenu>
         <nav className=" space-y-4 ms-3">
-          {links.map((feature) => (
-            <>
+          {links.map((feature, index: number) => (
+            <div key={index}>
               {isMobile ? (
                 feature.title !== "Logout" ? (
                   <div key={feature.id}>
@@ -76,7 +76,7 @@ export function NavMain() {
                   </div>
                 </div>
               )}
-            </>
+            </div>
           ))}
         </nav>
       </SidebarMenu>

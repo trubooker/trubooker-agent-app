@@ -33,6 +33,10 @@ import { useSearchParams } from "next/navigation";
 import { truncateNumber } from "@/lib/utils";
 import Link from "next/link";
 import useCountdown from "@/hooks/otpHook";
+import {
+  useOtpMutation,
+  useResendOtpMutation,
+} from "@/redux/services/Slices/auth/otpApiSlice";
 
 const FormSchema = z.object({
   code: z.string().min(6, {
@@ -42,15 +46,17 @@ const FormSchema = z.object({
 
 const OTPForm = () => {
   const params = useSearchParams();
-  const phone = String(params.get("phone"));
+  const email = String(params.get("email"));
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {},
   });
-  const { timeLeft, isActive, startTimer } = useCountdown(30);
+  const { timeLeft, isActive, startTimer } = useCountdown(5);
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
   const router = useRouter();
+  const [Otp, { isLoading }] = useOtpMutation();
+  const [Resend, { isLoading: isResendLoading }] = useResendOtpMutation();
 
   useEffect(() => {
     startTimer();
@@ -60,20 +66,9 @@ const OTPForm = () => {
   const handleResendOtp = async () => {
     try {
       startTimer();
-      const token = await fetchToken();
-      const headers = {
-        Authorization: `Bearer ${token?.data?.token}`,
-        "Content-Type": "application/json",
-      };
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/otp/resend`,
-        { headers }
-      );
-
-      if (response.status === 200) {
-        // Handle success response here
-        // console.log(response);
-      }
+      await Resend(null)
+        .unwrap()
+        .then((res) => console.log(res));
     } catch (error: any) {
       console.error(
         "Error sending Code:",
@@ -86,12 +81,18 @@ const OTPForm = () => {
     router.back();
   };
 
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    setLoading(true);
-    const value = {
-      code: Number(data.code),
-    };
-    router.push("/resetpassword");
+  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    try {
+      await Otp({ ...values })
+        .unwrap()
+        .then((res) => {
+          console.log(res);
+          router.push("/dashboard");
+        });
+    } catch (error: any) {
+      console.log(error);
+      setServerError(error?.data?.error?.message);
+    }
   };
 
   return (
@@ -116,8 +117,8 @@ const OTPForm = () => {
             Verify OTP
           </h2>
           <p className="w-full mb-5">
-            Please enter the code we just sent to your phone number{" "}
-            <span className="text-[--primary]">{truncateNumber(phone, 6)}</span>
+            Please enter the code we just sent to your email{" "}
+            <span className="text-[--primary]">{truncateNumber(email, 6)}</span>
           </p>
           <Form {...form}>
             <form
@@ -176,8 +177,9 @@ const OTPForm = () => {
                 className="w-full text-lg text-white mb-10 hover:text-white py-5 bg-[--primary] hover:bg-[--primary-hover]"
                 variant={"ghost"}
                 type="submit"
+                disabled={isLoading}
               >
-                {loading ? (
+                {isLoading ? (
                   <>
                     <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                     Verifying...

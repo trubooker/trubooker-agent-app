@@ -21,13 +21,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import React from "react";
+import { useSendSupportMessageMutation } from "@/redux/services/Slices/contactSupportApiSlice";
+import toast from "react-hot-toast";
 
 const Contact = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const contactFormSchema = z.object({
     firstName: z.string().min(1, { message: "First name is required" }),
     lastName: z.string().min(1, { message: "Last name is required" }),
@@ -35,6 +37,11 @@ const Contact = () => {
       .string()
       .email({ message: "Email is invalid" })
       .min(1, { message: "Email is required" }),
+    phoneNumber: z
+      .string()
+      .min(1, { message: "Required Field" })
+      .min(10, { message: "Number must be atleast 10 digits" })
+      .max(20, { message: "Number not more than 20 digits" }),
     message: z.string().min(10, { message: "Message is required" }),
     subject: z.string().min(10, { message: "Message is required" }),
   });
@@ -43,14 +50,18 @@ const Contact = () => {
     resolver: zodResolver(contactFormSchema),
     defaultValues: {},
   });
-
+  const [support, { isLoading }] = useSendSupportMessageMutation();
   const onSubmit = async (values: z.infer<typeof contactFormSchema>) => {
-    setIsLoading(true);
     try {
-      // await Send({ ...values });
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
+      await support({ ...values })
+        .unwrap()
+        .then((res) => {
+          toast.success(`${res?.data?.message}`);
+        });
+    } catch (error: any) {
+      console.log(error);
+
+      toast.error(`${error?.data?.message}`);
     }
   };
 
@@ -122,7 +133,26 @@ const Contact = () => {
                             {...field}
                           />
                         </FormControl>
-                        <FormMessage />
+                        {emailError && <FormMessage>{emailError}</FormMessage>}
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="">
+                  <FormField
+                    control={form.control}
+                    name="phoneNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone number</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="234*******"
+                            {...field}
+                          />
+                        </FormControl>
+                        {phoneError && <FormMessage>{phoneError}</FormMessage>}
                       </FormItem>
                     )}
                   />
@@ -168,9 +198,10 @@ const Contact = () => {
                 </div>
                 <Button
                   type="submit"
+                  disabled={isLoading}
                   className="bg-[--primary] hover:bg-[--primary-hover] text-white py-2 px-4 rounded-md"
                 >
-                  Send request
+                  {isLoading ? "Sending..." : "Send request"}
                 </Button>
               </div>
             </CardContent>

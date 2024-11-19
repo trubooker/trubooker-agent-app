@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/form";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Img from "@/public/forgotPassword.svg";
 import Image from "next/image";
@@ -26,7 +25,7 @@ import React from "react";
 import ResponseModal from "@/components/ResponseModal";
 
 const LoginFormSchema = z.object({
-  phone: z.string().min(1, { message: "Required" }),
+  email: z.string().email().min(1, { message: "Required" }),
 });
 
 export default function ForgotPassword() {
@@ -50,23 +49,26 @@ export default function ForgotPassword() {
   const onSubmit = async (data: z.infer<typeof LoginFormSchema>) => {
     setLoading(true);
     const form = {
-      phone: data?.phone,
+      email: data.email,
     };
 
     try {
-      router.push(`/forgotpassword/otp?phone=${data?.phone}`);
-      // const response = await axios.post(`/api/forget-password`, form);
+      const response = await axios.post(`/api/forget-password`, form);
 
-      // if (response.status === 200) {
-      //   setLoading(false);
-      //   setSuccessMessage("Password reset link sent to your email");
-      //   setIsModalOpen(true);
-      // }
+      if (response.status === 200) {
+        setLoading(false);
+        setSuccessMessage("Password reset link sent to your email");
+        setIsModalOpen(true);
+        setTimeout(
+          () => router.push(`/forgotpassword/otp?email=${data?.email}`),
+          5000
+        );
+      }
     } catch (error: any) {
-      // setLoading(false);
-      // setServerError(error.response?.data?.message?.email[0]);
-      // setErrorMessage(error.response?.data?.message);
-      // setIsModalOpen(true);
+      setLoading(false);
+      setServerError(error.response?.data?.message?.email[0]);
+      setErrorMessage(error.response?.data?.message);
+      setIsModalOpen(true);
     }
   };
 
@@ -107,22 +109,22 @@ export default function ForgotPassword() {
             Forgot password?
           </h2>
           <p className="w-full text-sm mb-5">
-            Don&apos;t worry, it occurs. please enter the phone number linked to
-            your account
+            Don&apos;t worry, it occurs. please enter the email address linked
+            to your account
           </p>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="space-y-6">
                 <FormField
                   control={form.control}
-                  name="phone"
+                  name="email"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
                         <Input
-                          id="phone"
-                          type="number"
-                          placeholder="Enter Phone Number"
+                          id="email"
+                          type="email"
+                          placeholder="Enter email address"
                           className="h-14 w-full"
                           {...field}
                         />

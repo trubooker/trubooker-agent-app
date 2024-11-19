@@ -13,12 +13,13 @@ import LogoutModal from "./LogoutModal";
 import { useState } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
 import { Separator } from "./ui/separator";
+import useAuthCheck from "@/hooks/useAuthCheck";
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
+  useAuthCheck();
   const isMobile = useIsMobile();
   const [openLog, setOpenLog] = useState(false);
   const handleLogout = () => {
-    // alert("clicked");
     setOpenLog(true);
   };
   return (

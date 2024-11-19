@@ -9,8 +9,8 @@ const DashboardCard = ({ title, amount }: any) => {
         <span className="text-white">
           <BsFillPersonFill className="text-[--primary] w-12 h-12" />
         </span>
-        <div className="flex flex-col text-black justify-between mb-2">
-          <span className="text-sm font-bold ms-2">{amount}</span>
+        <div className="flex flex-col lg:flex-row gap-x-3 text-black justify-between mb-2 lg:mb-0">
+          <span className="text-base font-bold ms-2">{amount}</span>
           <span className="text-base font-light">{title}</span>
         </div>
       </div>

@@ -18,9 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
-// import { Bounce, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
+import axios from "axios";
 
 export default function Login() {
   const LoginFormSchema = z.object({
@@ -38,60 +37,40 @@ export default function Login() {
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {},
   });
-
-  const handleBack = () => {
-    router.back();
-  };
-  const registerUser: any = [];
-  const [isLoading] = useState(false);
-  const router = useRouter();
-  const [telephoneError, setTelephoneError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  // const toggleConfirmPasswordVisibility = () => {
-  //   setShowConfirmPassword(!showConfirmPassword);
-  // };
 
   const onSubmit = async (values: z.infer<typeof LoginFormSchema>) => {
-    const data = {};
+    setLoading(true);
+    try {
+      const response = await axios.post(`/api/login`, values);
 
-    // await registerUser(data)
-    //   .unwrap()
-    //   .then(
-    //     () => (
-    //       toast.success(
-    //         "Account created successfully! Check Your email for the verification link",
-    //         {
-    //           position: "top-center",
-    //           autoClose: 2000,
-    //           hideProgressBar: false,
-    //           closeOnClick: true,
-    //           pauseOnHover: true,
-    //           draggable: true,
-    //           progress: undefined,
-    //           transition: Bounce,
-    //         }
-    //       ),
-    //       router.push("/auth/login")
-    //     )
-    //   )
-    //   .catch((error: any) => {
-    //     toast.error(error.data.msg, {
-    //       position: "top-center",
-    //       autoClose: 2000,
-    //       hideProgressBar: true,
-    //     });
-    //   });
-    // alert(values);
-    setTimeout(() => router.push("/dashboard"), 2000);
-
-    form.setValue("email", "");
-    form.setValue("password", "");
+      if (response.status === 200) {
+        // if (response?.data?.data?.user?.attributes?.is_email_verified == true) {
+        //   if (response?.data?.data?.user?.attributes?.role === "teacher") {
+        //     router.push("/classes");
+        //   } else {
+        //     router.push("/");
+        //   }
+        // } else {
+        //   router.push("/otp");
+        // }
+        form.setValue("email", "");
+        form.setValue("password", "");
+        setLoading(false);
+        setTimeout(() => router.push("/dashboard"), 2000);
+      }
+    } catch (error: any) {
+      setLoading(false);
+      setEmailError(error.response?.data?.message?.email[0]);
+      setPasswordError(error.response?.data?.message?.password[0]);
+    }
   };
   return (
     <div className="h-screen flex flex-col justify-center">
@@ -117,8 +96,7 @@ export default function Login() {
                           {...field}
                         />
                       </FormControl>
-                      {/* {emailError && <FormMessage>{emailError}</FormMessage>} */}
-                      <FormMessage />
+                      {emailError && <FormMessage>{emailError}</FormMessage>}
                     </FormItem>
                   )}
                 />
@@ -148,9 +126,9 @@ export default function Login() {
                           </button>
                         </div>
                       </FormControl>
-                      {/* {passwordError && (
+                      {passwordError && (
                         <FormMessage>{passwordError}</FormMessage>
-                        )} */}
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}
@@ -169,9 +147,9 @@ export default function Login() {
                 <Button
                   type="submit"
                   className="w-full h-12 rounded-xl text-white bg-[--primary] hover:bg-[--primary-hover]"
-                  disabled={isLoading}
+                  disabled={loading}
                 >
-                  {isLoading ? "Loading..." : "Log in"}
+                  {loading ? "Loading..." : "Log in"}
                 </Button>
                 <Link
                   href=""

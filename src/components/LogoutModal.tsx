@@ -15,13 +15,10 @@ const LogoutModal = ({ open, setOpen }: any) => {
   const handleLogout = async () => {
     setLoading(true);
     try {
-      // const res = await axios.post(`/api/logout`);
-      // if (res?.status == 200) {
-      push("/");
-      // if (window != undefined) {
-      //   localStorage.removeItem("defaultFarmId");
-      // }
-      // }
+      const res = await axios.post(`/api/logout`);
+      if (res?.status == 200) {
+        push("/");
+      }
     } catch (error) {
       toast.error("Fail to log out");
       setLoading(false);

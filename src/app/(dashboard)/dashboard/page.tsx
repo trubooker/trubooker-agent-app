@@ -7,7 +7,6 @@ import Notification from "@/components/notifications";
 import ReferredDrivers from "@/components/ReferredDrivers";
 
 const Dashboard = () => {
-
   return (
     <div className="flex flex-col h-fit w-full">
       <div className="flex flex-col xl:flex-row w-full gap-8">
@@ -16,8 +15,7 @@ const Dashboard = () => {
             <div className="grid grid-rows-1 lg:grid-cols-2 gap-4 w-full">
               <EarningsCard />
               <div className="flex flex-row lg:flex-col gap-4">
-                <DashboardCard title={"Referrals"} amount={1} />
-                <DashboardCard title={"Pending Referrals"} amount={2} />
+                <DashboardCard title={"Referral(s)"} amount={1} />
               </div>
             </div>
             <div className="w-full hidden mt-14 xl:block">

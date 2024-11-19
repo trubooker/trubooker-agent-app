@@ -38,6 +38,7 @@ import fetchToken from "@/lib/auth";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import Goback from "@/components/Goback";
 import PasswordUpdate from "@/components/PasswordUpdate";
+import { useGetCurrentUserQuery } from "@/redux/services/Slices/userApiSlice";
 
 const FormSchema = z.object({
   firstName: z.string().optional(),
@@ -97,9 +98,8 @@ const Profile = () => {
   });
 
   const router = useRouter();
-  const userData: any = {};
 
-  // const { data: userData, refetch } = useGetCurrentUserQuery(null);
+  const { data: userData, refetch } = useGetCurrentUserQuery(null);
 
   const onSubmit = async (data: any) => {
     setLoading(true);

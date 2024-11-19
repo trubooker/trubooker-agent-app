@@ -2,12 +2,15 @@
 
 import Goback from "@/components/Goback";
 import React, { useState } from "react";
-import { Referall } from "@/constants";
+// import { Referall } from "@/constants";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { truncateText } from "@/lib/utils";
+import { useGetReferralsQuery } from "@/redux/services/Slices/Dashboard/dashboardApiSlice";
 
 const AllReferredDrivers = () => {
+  const { data } = useGetReferralsQuery(null);
+  const referall = data?.data;
   const [copied, setCopied] = useState(false);
   const referralLink = "Trubooker.com/krvw-224";
   const handleCopyLink = () => {
@@ -24,7 +27,7 @@ const AllReferredDrivers = () => {
       <Goback name={"Referred Drivers"} />
       <div className="w-10/5 lg:w-full mx-auto grid grid-cols-1 xl:grid-cols-6 pt-5 pb-10 lg:py-10 gap-12">
         <div className="overflow-hidden xl:col-span-4">
-          {Referall.map((data: any, index: number) => (
+          {referall.map((data: any, index: number) => (
             <div key={index}>
               <div className="flex justify-between text-sm lg:text-base items-center my-5">
                 <span>{data.name}</span>

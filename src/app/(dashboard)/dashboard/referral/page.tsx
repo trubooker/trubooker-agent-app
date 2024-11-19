@@ -6,8 +6,11 @@ import ReferralSteps from "@/components/ReferalInfo";
 import { Button } from "@/components/ui/button";
 import { truncateText } from "@/lib/utils";
 import React, { useState } from "react";
+import { useGetReferralsQuery } from "@/redux/services/Slices/Dashboard/dashboardApiSlice";
 
 const Referall = () => {
+  const { data } = useGetReferralsQuery(null);
+  const referall = data?.data;
   const [copied, setCopied] = useState(false);
   const referralLink = "Trubooker.com/krvw-224";
   const handleCopyLink = () => {
@@ -15,7 +18,6 @@ const Referall = () => {
       .writeText(referralLink)
       .then(() => {
         setCopied(true);
-        // alert("Referral link copied!");
       })
       .catch((err) => console.error("Failed to copy: ", err));
   };
@@ -42,7 +44,7 @@ const Referall = () => {
           </div>
         </div>
         <div className="lg:mt-5">
-          <Referred />
+          <Referred Referall={referall} />
         </div>
       </div>
     </div>

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "../globals.css";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { Montserrat } from "next/font/google";
+import StoreProvider from "@/redux/providers";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,8 +22,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className={montserrat.className} suppressHydrationWarning={true}>
-      <LayoutWrapper>{children}</LayoutWrapper>
-    </main>
+    <StoreProvider>
+      <html lang="en" suppressHydrationWarning={true}>
+        <body className={montserrat.className} suppressHydrationWarning={true}>
+          <LayoutWrapper>
+            {children}
+            <Toaster />
+          </LayoutWrapper>
+        </body>
+      </html>
+    </StoreProvider>
   );
 }

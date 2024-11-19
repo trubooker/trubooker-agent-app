@@ -31,48 +31,51 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { countries, states } from "@/constants";
+import axios from "axios";
 
 export default function RegisterComponent() {
-  const RegisterFormSchema = z.object({
-    firstName: z
-      .string()
-      .min(1, { message: "First name is required" })
-      .max(10, {
+  const RegisterFormSchema = z
+    .object({
+      fisrt_name: z
+        .string()
+        .min(1, { message: "First name is required" })
+        .max(10, {
+          message: "Too long, max of 10 characters",
+        }),
+      last_name: z
+        .string()
+        .min(1, { message: "last name is required" })
+        .max(10, {
+          message: "Too long, max of 10 characters",
+        }),
+      city: z.string().min(1, { message: "City is required" }).max(10, {
         message: "Too long, max of 10 characters",
       }),
-    lastName: z.string().min(1, { message: "First name is required" }).max(10, {
-      message: "Too long, max of 10 characters",
-    }),
-    state: z.string().min(1, { message: "First name is required" }),
-    telephone: z.string({ message: "Phone number is required" }),
-    telCode: z.string({ message: "tel code is required" }),
-    email: z
-      .string()
-      .email({ message: "Email is invalid" })
-      .min(1, { message: "Email is required" }),
-    password: z
-      .string()
-      .min(6, { message: "Password must be 6 chracters or more" })
-      .max(15, { message: "Password too long" }),
-    iagree: z.boolean(),
-  });
-  // .refine((data) => data.password === data.confirmPassword, {
-  //   message: "Passwords must match",
-  //   path: ["confirmPassword"],
-  // });
+      email: z
+        .string()
+        .email({ message: "Email is invalid" })
+        .min(1, { message: "Email is required" }),
+      phone: z.string({ message: "Phone number is required" }),
+      password: z
+        .string()
+        .min(6, { message: "Password must be 6 chracters or more" })
+        .max(15, { message: "Password too long" }),
+      iagree: z.boolean(),
+      // referral_code: z.string().optional(),
+      password_confirmation: z.string(),
+    })
+    .refine((data) => data.password === data.password_confirmation, {
+      message: "Passwords must match",
+      path: ["password_confirmation"],
+    });
 
   const form = useForm<z.infer<typeof RegisterFormSchema>>({
     resolver: zodResolver(RegisterFormSchema),
     defaultValues: {},
   });
 
-  const handleBack = () => {
-    router.back();
-  };
-  const registerUser: any = [];
-  const [isLoading] = useState(false);
   const router = useRouter();
-  const [telephoneError, setTelephoneError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -80,52 +83,44 @@ export default function RegisterComponent() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  // const toggleConfirmPasswordVisibility = () => {
-  //   setShowConfirmPassword(!showConfirmPassword);
-  // };
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (values: z.infer<typeof RegisterFormSchema>) => {
-    const data = {};
+    // const code =
+    // values.referral_code === undefined ? null : values.referral_code;
+    // const formdata = { ...values, referral_code: code };
+    // console.log(formdata);
+    const formdata = { ...values };
+    setLoading(true);
+    try {
+      const response = await axios.post(`/api/register`, formdata);
 
-    // await registerUser(data)
-    //   .unwrap()
-    //   .then(
-    //     () => (
-    //       toast.success(
-    //         "Account created successfully! Check Your email for the verification link",
-    //         {
-    //           position: "top-center",
-    //           autoClose: 2000,
-    //           hideProgressBar: false,
-    //           closeOnClick: true,
-    //           pauseOnHover: true,
-    //           draggable: true,
-    //           progress: undefined,
-    //           transition: Bounce,
-    //         }
-    //       ),
-    //       router.push("/auth/login")
-    //     )
-    //   )
-    //   .catch((error: any) => {
-    //     toast.error(error.data.msg, {
-    //       position: "top-center",
-    //       autoClose: 2000,
-    //       hideProgressBar: true,
-    //     });
-    //   });
-    alert(values);
-    form.setValue("firstName", "");
-    form.setValue("lastName", "");
-    form.setValue("email", "");
-    form.setValue("telCode", "");
-    form.setValue("iagree", false);
-    form.setValue("state", "");
-    form.setValue("telephone", "");
-    form.setValue("password", "");
-    setTimeout(() => {
-      router.push(`/otp?phone=${values.telephone}`);
-    }, 1000);
+      // if (response.status === 200) {
+      if (response.status === 200) {
+        form.setValue("fisrt_name", "");
+        form.setValue("last_name", "");
+        form.setValue("email", "");
+        // form.setValue("referral_code", "");
+        form.setValue("iagree", false);
+        form.setValue("city", "");
+        form.setValue("phone", "");
+        form.setValue("password", "");
+        form.setValue("password_confirmation", "");
+        setLoading(false);
+        setTimeout(() => {
+          router.push(`/otp`);
+        }, 1000);
+      }
+    } catch (error: any) {
+      console.log(error);
+      setLoading(false);
+      setPhoneError(error.response?.data?.message?.phone[0]);
+      setEmailError(error.response?.data?.message?.email[0]);
+      setPasswordError(error.response?.data?.message?.password[0]);
+    }
   };
   return (
     <div className="h-full flex flex-col justify-center">
@@ -140,13 +135,13 @@ export default function RegisterComponent() {
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
-                    name="firstName"
+                    name="fisrt_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>First Name</FormLabel>
                         <FormControl>
                           <Input
-                            id="firstName"
+                            id="fisrt_name"
                             type="text"
                             placeholder="Enter first name"
                             {...field}
@@ -160,13 +155,13 @@ export default function RegisterComponent() {
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
-                    name="lastName"
+                    name="last_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Last Name</FormLabel>
                         <FormControl>
                           <Input
-                            id="lastName"
+                            id="last_name"
                             type="text"
                             placeholder="Enter last name"
                             {...field}
@@ -201,103 +196,67 @@ export default function RegisterComponent() {
                 </div>
 
                 <div className="">
-                  <FormLabel>Phone number</FormLabel>
-                  <div className="flex items-center border h-12 mt-2 border-input rounded-lg">
-                    <FormField
-                      control={form.control}
-                      name="telCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="border-none shadow-none ">
-                                <SelectValue
-                                  placeholder="+234"
-                                  className="placeholder:text-gray-100 "
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="">
-                              {countries?.map((country, i) => (
-                                <SelectItem
-                                  className=""
-                                  key={i}
-                                  value={country?.telCode}
-                                >
-                                  <div className="flex space-x-2 ">
-                                    <Image
-                                      alt={country.telCode}
-                                      src={country?.flag}
-                                      width="20"
-                                      height="10"
-                                    />
-                                    <p>{country?.telCode}</p>
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="telephone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              placeholder="234*******"
-                              {...field}
-                              className="border-none outline-none w-full shadow-none h-6 text-base py-4 placeholder:text-sm"
-                            />
-                          </FormControl>
-                          {telephoneError && (
-                            <FormMessage>{telephoneError}</FormMessage>
-                          )}
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone number</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="234*******"
+                            {...field}
+                          />
+                        </FormControl>
+                        {phoneError && <FormMessage>{phoneError}</FormMessage>}
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </div>
+              {/* <div className="grid grid-rows-1 lg:grid-cols-2 gap-4"> */}
               <div className="grid gap-2">
                 <FormField
                   control={form.control}
-                  name="state"
+                  name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>State</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="h-12">
-                            <SelectValue
-                              placeholder="Choose State"
-                              className="placeholder:text-gray-100"
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {states?.map((state, i) => (
-                            <SelectItem key={i} value={state?.name}>
-                              <p>{state?.name}</p>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormLabel>City</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="city"
+                          type="text"
+                          placeholder="Enter City"
+                          {...field}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-
+              {/* <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="referral_code"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Referral Code (optional)</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="referral_code"
+                            type="text"
+                            placeholder="Enter referral code"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div> */}
+              {/* </div> */}
               <div className="grid gap-2">
                 <FormField
                   control={form.control}
@@ -329,6 +288,35 @@ export default function RegisterComponent() {
                   )}
                 />
               </div>
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="password_confirmation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            id="confirmPpassword"
+                            type={showConfirmPassword ? "text" : "password"}
+                            placeholder="Re-enter password"
+                            {...field}
+                          />
+                          <button
+                            type="button"
+                            onClick={toggleConfirmPasswordVisibility}
+                            className="text-xs underline absolute top-5 right-4 font-semibold"
+                          >
+                            {showConfirmPassword ? "Hide" : "Show"}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="iagree"
@@ -354,9 +342,9 @@ export default function RegisterComponent() {
                 <Button
                   type="submit"
                   className="w-full h-12 rounded-xl text-white bg-[--primary] hover:bg-[--primary-hover]"
-                  disabled={isLoading}
+                  disabled={loading}
                 >
-                  {isLoading ? "Loading..." : "Sign Up"}
+                  {loading ? "Loading..." : "Sign Up"}
                 </Button>
                 <Link
                   href=""
