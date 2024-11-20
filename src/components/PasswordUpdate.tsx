@@ -4,6 +4,8 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import { FaRubleSign } from "react-icons/fa6";
 import Link from "next/link";
 import { useUpdatePasswordMutation } from "@/redux/services/Slices/userApiSlice";
+import { useRouter } from "next/navigation";
+import { FormMessage } from "./ui/form";
 
 const PasswordUpdate = () => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -35,7 +37,8 @@ const PasswordUpdate = () => {
     setNewPassword(password);
     checkPasswordStrength(password);
   };
-
+  const [passwordError, setPasswordError] = useState("");
+  const router = useRouter();
   const [submitPassword] = useUpdatePasswordMutation();
   // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,9 +75,13 @@ const PasswordUpdate = () => {
       .unwrap()
       .then((res) => {
         console.log(res);
+        setLoading(false);
+        router.push("/");
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
+        setPasswordError(err?.data?.error?.message);
       });
     // Placeholder for submission logic, e.g., API call
     // console.log("Form submitted:", {
@@ -120,6 +127,9 @@ const PasswordUpdate = () => {
         >
           Forgot current password?
         </Link>
+        {passwordError && (
+          <div className="text-red-500 text-sm">{passwordError}</div>
+        )}
       </div>
 
       <div className="mb-4">

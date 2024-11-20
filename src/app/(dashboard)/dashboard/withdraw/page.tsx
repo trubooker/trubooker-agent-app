@@ -47,7 +47,7 @@ const WithdrawFunds = () => {
     save_beneficiary: z.boolean().optional(),
     narration: z.string().min(1, { message: "Narration is required" }),
     bank_name: z.string().min(1, { message: "Bank Name is required" }),
-    amount: z.string({ message: "Amount is required" }),
+    amount: z.string().min(1, { message: "Amount is required" }),
     bank_holder_name: z
       .string()
       .min(1, { message: "Bank Holder Name is required" }),

@@ -41,9 +41,7 @@ export function SidebarOptInForm() {
           </AvatarFallback>
         </Avatar>
         <div className="grid grid-rows-1 text-left text-xs lg:text-base lg:gap-1">
-          <p className="font-bold text-lg">
-            {data?.first_name} {data?.last_name}
-          </p>
+          <p className="font-bold text-base">{data?.first_name}</p>
           <p className="text-gray-400 font-medium text-sm">Edit your profile</p>
         </div>
       </div>
