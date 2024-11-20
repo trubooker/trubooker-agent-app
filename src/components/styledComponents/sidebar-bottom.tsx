@@ -15,7 +15,7 @@ export function SidebarOptInForm() {
     navigator.clipboard
       .writeText(referralLink)
       .then(() => alert("Referral link copied!"))
-      .catch((err) => console.error("Failed to copy: ", err));
+      .catch((error) => console.error("Failed to copy: ", error));
   };
   return (
     <div className="w-full p-4">
