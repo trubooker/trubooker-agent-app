@@ -52,19 +52,10 @@ export default function Login() {
       const response = await axios.post(`/api/login`, values);
 
       if (response.status === 200) {
-        // if (response?.data?.data?.user?.attributes?.is_email_verified == true) {
-        //   if (response?.data?.data?.user?.attributes?.role === "teacher") {
-        //     router.push("/classes");
-        //   } else {
-        //     router.push("/");
-        //   }
-        // } else {
-        //   router.push("/otp");
-        // }
         form.setValue("email", "");
         form.setValue("password", "");
         setLoading(false);
-        setTimeout(() => router.push("/dashboard"), 2000);
+        router.push("/dashboard");
       }
     } catch (error: any) {
       setLoading(false);
