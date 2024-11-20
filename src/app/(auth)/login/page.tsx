@@ -20,6 +20,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const LoginFormSchema = z.object({
@@ -59,8 +60,16 @@ export default function Login() {
       }
     } catch (error: any) {
       setLoading(false);
-      setEmailError(error.response?.data?.message?.email[0]);
-      setPasswordError(error.response?.data?.message?.password[0]);
+      if (error?.status === 400) {
+        setEmailError(error.response?.data?.message?.email[0]);
+        setPasswordError(error.response?.data?.message?.password[0]);
+      }
+      if (error.status === 401) {
+        toast.error(error?.response?.data?.message);
+      }
+      if (error?.status === 500) {
+        toast.error("Internal Server Error");
+      }
     }
   };
   return (
