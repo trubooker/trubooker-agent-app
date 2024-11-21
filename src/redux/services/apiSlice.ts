@@ -26,8 +26,8 @@ const CustomBaseQuery: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions);
 
-  if (result?.error?.status == 503) {
-    window.location.href = "/";
+  if (result?.error?.status == 401) {
+    // window.location.href = "/";
   }
 
   return result;

@@ -149,11 +149,9 @@ const Profile = () => {
       <div className="flex flex-col pt-4 justify-center w-full lg:w-8/12 gap-y-10">
         <div className="text-center w-full">
           <Avatar className="w-56 h-56 mx-auto">
-            {userData?.data?.user?.profile_image || previewSrc ? (
+            {userData?.profile_image || previewSrc ? (
               <AvatarImage
-                src={
-                  previewSrc ? previewSrc : userData?.data?.user?.profile_image
-                }
+                src={previewSrc ? previewSrc : userData?.profile_image}
               />
             ) : (
               <AvatarImage
@@ -181,8 +179,10 @@ const Profile = () => {
               <IoPersonOutline />
             </AvatarFallback>
           </Avatar>
-          <p className="mt-5 font-bold text-xl">John Smith</p>
-          <small>Joined 2016</small>
+          <p className="mt-5 font-bold text-xl">
+            {userData?.first_name} {userData?.last_name}
+          </p>
+          <small>Joined {new Date(userData?.created_at).getFullYear()}</small>
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

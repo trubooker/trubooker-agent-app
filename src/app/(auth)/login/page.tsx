@@ -30,8 +30,7 @@ export default function Login() {
       .min(1, { message: "Email is required" }),
     password: z
       .string()
-      .min(6, { message: "Password must be 6 chracters or more" })
-      .max(15, { message: "Password too long" }),
+      .min(6, { message: "Password must be 6 chracters or more" }),
   });
 
   const form = useForm<z.infer<typeof LoginFormSchema>>({
