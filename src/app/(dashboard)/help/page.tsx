@@ -15,7 +15,7 @@ const Help = () => {
           <FAQS />
           <Contact />
         </div>
-        <div className="xl:col-span-2">
+        {/* <div className="xl:col-span-2">
           <div className="fixed pe-10 lg:pe-0 w-full bottom-5 lg:relative lg:top-0">
             <div className=" border-2 bg-gray-50 lg:border-none shadow-lg lg:shadow-md py-5 px-4 rounded-lg w-full justify-between items-center flex flex-col gap-4">
               <div className="text-center">Didn&apos;t find what you are looking for?</div>
@@ -24,7 +24,7 @@ const Help = () => {
               </Button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
