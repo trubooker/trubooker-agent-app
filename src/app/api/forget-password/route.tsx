@@ -18,6 +18,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   const data = await resData.json();
 
+  console.log(data);
+
   if (data?.status == "success") {
     const response = {
       message: data?.data,
@@ -28,7 +30,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     });
   } else {
     const response = {
-      message: data?.message,
+      message: data?.error,
     };
     return new Response(JSON.stringify(response), {
       status: 400,
