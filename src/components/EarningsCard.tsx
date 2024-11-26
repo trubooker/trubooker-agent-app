@@ -4,10 +4,11 @@ import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import { useLoggedInUser } from "@/hooks/useLoggedUser";
 
 const EarningsCard = () => {
   const [isVisible, setIsVisible] = useState(false);
-
+  const { userData } = useLoggedInUser();
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
   };
@@ -27,7 +28,11 @@ const EarningsCard = () => {
           )}
         </button>
         <span className=" font-bold">
-          {isVisible ? "NGN 1,640.09" : "* * * *"}
+          {isVisible
+            ? userData?.current_balance === null
+              ? "₦ 0.00"
+              : `₦ ${userData?.current_balance}`
+            : "* * * *"}
         </span>
       </div>
       <Button

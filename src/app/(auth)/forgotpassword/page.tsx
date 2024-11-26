@@ -36,7 +36,7 @@ export default function ForgotPassword() {
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {},
   });
-
+  const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -46,19 +46,39 @@ export default function ForgotPassword() {
     setSuccessMessage(null);
     setErrorMessage(null);
   };
-  const [getResetLink, { isLoading: loading }] = useForgotPasswordMutation();
+  // const [getResetLink, { isLoading: loading }] = useForgotPasswordMutation();
 
   const onSubmit = async (data: z.infer<typeof LoginFormSchema>) => {
-    await getResetLink(data)
-      .unwrap()
-      .then((res) => {
-        form.setValue("email", "");
-        toast.success("Reset link sent to registered email.");
-      })
-      .catch((error) => {
-        form.setValue("email", "");
-        toast.error(error.data.msg);
-      });
+    // await getResetLink(data)
+    //   .unwrap()
+    //   .then((res) => {
+    //     form.setValue("email", "");
+    //     toast.success("Reset link sent to registered email.");
+    //   })
+    //   .catch((error) => {
+    //     form.setValue("email", "");
+    //     toast.error(error.data.msg);
+    //   });
+
+    setLoading(true);
+
+    try {
+      const response = await axios.post(`/api/forget-password`, data);
+      if (response.status === 200) {
+        console.log(response);
+        form.setValue("email", ""),
+          setLoading(false),
+          toast.success("Reset link sent to registered email.");
+        setTimeout(() => {
+          router.push(`/forgotpassword/otp?email=${data?.email}`);
+        }, 1000);
+      }
+    } catch (error: any) {
+      console.log(error);
+      setLoading(false);
+      form.setValue("email", "");
+      toast.error(error?.data?.error?.message);
+    }
   };
 
   const handleBack = () => {
@@ -127,6 +147,7 @@ export default function ForgotPassword() {
                   className="w-full text-lg text-white mb-10 hover:text-white py-5 bg-[--primary] hover:bg-[--primary-hover]"
                   variant={"ghost"}
                   type="submit"
+                  disabled={loading}
                 >
                   {loading ? (
                     <>

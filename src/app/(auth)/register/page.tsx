@@ -58,8 +58,7 @@ export default function RegisterComponent() {
       phone: z.string({ message: "Phone number is required" }),
       password: z
         .string()
-        .min(6, { message: "Password must be 6 chracters or more" })
-        .max(15, { message: "Password too long" }),
+        .min(6, { message: "Password must be 6 chracters or more" }),
       iagree: z.boolean(),
       // referral_code: z.string().optional(),
       password_confirmation: z.string(),
@@ -111,15 +110,42 @@ export default function RegisterComponent() {
         form.setValue("password_confirmation", "");
         setLoading(false);
         setTimeout(() => {
-          router.push(`/otp`);
+          router.push(`/otp?email=${values?.email}`);
         }, 1000);
       }
     } catch (error: any) {
       console.log(error);
       setLoading(false);
-      setPhoneError(error.response?.data?.message?.phone[0]);
-      setEmailError(error.response?.data?.message?.email[0]);
-      setPasswordError(error.response?.data?.message?.password[0]);
+      setPhoneError(  error.response?.data?.message?.phone.map(
+        (err: any, index: number) => (
+          <div key={index}>
+            <ul className="list-disc list-inside">
+              <li>{err}</li>
+            </ul>
+          </div>
+        )
+      ));
+      setEmailError(  error.response?.data?.message?.email.map(
+        (err: any, index: number) => (
+          <div key={index}>
+            <ul className="list-disc list-inside">
+              <li>{err}</li>
+            </ul>
+          </div>
+        )
+      ));
+      setPasswordError(
+        error.response?.data?.message?.password.map(
+          (err: any, index: number) => (
+            <div key={index}>
+              <ul className="list-disc list-inside">
+                <li>{err}</li>
+              </ul>
+            </div>
+          )
+        )
+      );
+     
     }
   };
   return (
@@ -189,6 +215,7 @@ export default function RegisterComponent() {
                             {...field}
                           />
                         </FormControl>
+                        <FormMessage />
                         {emailError && <FormMessage>{emailError}</FormMessage>}
                       </FormItem>
                     )}
@@ -209,6 +236,7 @@ export default function RegisterComponent() {
                             {...field}
                           />
                         </FormControl>
+                        <FormMessage />
                         {phoneError && <FormMessage>{phoneError}</FormMessage>}
                       </FormItem>
                     )}
@@ -281,9 +309,8 @@ export default function RegisterComponent() {
                           </button>
                         </div>
                       </FormControl>
-                      {passwordError && (
-                        <FormMessage>{passwordError}</FormMessage>
-                      )}
+                      <FormMessage />
+                      {passwordError && <FormMessage>{passwordError}</FormMessage>}
                     </FormItem>
                   )}
                 />
