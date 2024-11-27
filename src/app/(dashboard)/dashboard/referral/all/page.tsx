@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { truncateText } from "@/lib/utils";
 import { useGetReferralsQuery } from "@/redux/services/Slices/Dashboard/dashboardApiSlice";
+import toast from "react-hot-toast";
 
 const AllReferredDrivers = () => {
   const { data } = useGetReferralsQuery(null);
@@ -18,7 +19,7 @@ const AllReferredDrivers = () => {
       .writeText(referralLink)
       .then(() => {
         setCopied(true);
-        // alert("Referral link copied!");
+        toast("✅ Referral code copied to clipboard");
       })
       .catch((err) => console.error("Failed to copy: ", err));
   };

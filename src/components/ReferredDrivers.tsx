@@ -6,6 +6,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { useLoggedInUser } from "@/hooks/useLoggedUser";
+import toast from "react-hot-toast";
 
 const ReferredDrivers = () => {
   const { userData: data } = useLoggedInUser();
@@ -16,6 +17,7 @@ const ReferredDrivers = () => {
       .writeText(referralLink)
       .then(() => {
         setCopied(true);
+        toast("✅ Referral code copied to clipboard");
       })
       .catch((err) => console.error("Failed to copy: ", err));
   };

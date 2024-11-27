@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useUpdatePasswordMutation } from "@/redux/services/Slices/userApiSlice";
 import { useRouter } from "next/navigation";
 import { FormMessage } from "./ui/form";
+import toast from "react-hot-toast";
 
 const PasswordUpdate = () => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -60,13 +61,16 @@ const PasswordUpdate = () => {
     }
 
     if (passwordStrength < 3) {
-      setError("Password strength should be at least moderate");
+      setError(
+        "Password too weak! must include at least one uppercase letter, one lowercase letter, one number, and one special character (e.g., @$!%*?&#)."
+      );
       setLoading(false);
 
       return;
     }
 
     setError(null);
+    setPasswordError("");
     await submitPassword({
       current_password: currentPassword,
       password: newPassword,
@@ -74,9 +78,13 @@ const PasswordUpdate = () => {
     })
       .unwrap()
       .then((res) => {
+        setPasswordError("");
         console.log(res);
         setLoading(false);
-        router.push("/");
+        toast.success("Password is updated! Heading to login");
+        setTimeout(() => {
+          router.push("/");
+        }, 2000);
       })
       .catch((err) => {
         console.log(err);

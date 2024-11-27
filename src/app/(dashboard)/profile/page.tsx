@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 // import { Bounce, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaCamera } from "react-icons/fa";
 import fetchToken from "@/lib/auth";
@@ -47,7 +47,7 @@ const Profile = () => {
   const [previewSrc, setPreviewSrc] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const [phoneError, setphoneError] = useState("");
+  // const [phoneError, setphoneError] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [dobError, setDobError] = useState("");
 
@@ -84,6 +84,22 @@ const Profile = () => {
   const router = useRouter();
 
   const [update] = useUpdateProfileMutation();
+
+  useEffect(() => {
+    if (userData) {
+      form.reset({
+        first_name: userData?.first_name,
+        last_name: userData?.last_name,
+        city: userData?.city,
+        address: userData?.address,
+        country: userData?.country,
+        gender: userData?.gender,
+      });
+
+      const DOB = new Date(userData?.dob);
+      setSelectedDate(DOB);
+    }
+  }, [userData, form]);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setLoading(true);
@@ -196,12 +212,7 @@ const Profile = () => {
                       <FormItem>
                         <FormLabel>First Name</FormLabel>
                         <FormControl>
-                          <Input
-                            id="first_name"
-                            type="text"
-                            placeholder="John"
-                            {...field}
-                          />
+                          <Input id="first_name" type="text" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -216,12 +227,7 @@ const Profile = () => {
                       <FormItem>
                         <FormLabel>Last Name</FormLabel>
                         <FormControl>
-                          <Input
-                            id="last_name"
-                            type="text"
-                            placeholder="Doe"
-                            {...field}
-                          />
+                          <Input id="last_name" type="text" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -238,12 +244,7 @@ const Profile = () => {
                       <FormItem>
                         <FormLabel>Country</FormLabel>
                         <FormControl>
-                          <Input
-                            id="country"
-                            type="text"
-                            placeholder="Nigeria"
-                            {...field}
-                          />
+                          <Input id="country" type="text" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -258,12 +259,7 @@ const Profile = () => {
                       <FormItem>
                         <FormLabel>City</FormLabel>
                         <FormControl>
-                          <Input
-                            id="city"
-                            type="text"
-                            placeholder="Owerri"
-                            {...field}
-                          />
+                          <Input id="city" type="text" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -345,7 +341,7 @@ const Profile = () => {
                   <FormItem>
                     <FormLabel>Address</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter Address" {...field} />
+                      <Input {...field} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -358,7 +354,7 @@ const Profile = () => {
                   disabled={loading || userLoading}
                   className="w-full h-14 bg-[--primary] hover:bg-[--primary-hover] text-white hover:text-white font-bold"
                 >
-                  {loading || userLoading ? (
+                  {loading ? (
                     <>
                       <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                       Saving...

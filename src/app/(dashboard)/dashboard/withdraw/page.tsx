@@ -1,7 +1,7 @@
 "use client";
 
 import Goback from "@/components/Goback";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -56,6 +56,10 @@ const WithdrawFunds = () => {
     bank_name: "",
     bank_code: "",
   });
+  const [accountError, setAccountError] = useState("");
+  const [bankError, setBankError] = useState("");
+  const [bankSearch, setBankSearch] = useState(""); // User's search input
+  const [showDropdown, setShowDropdown] = useState(false);
   const [isFadingOut] = useState(false);
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [beneficiaryId, setBeneficiaryId] = useState<number | null>(null);
@@ -64,6 +68,10 @@ const WithdrawFunds = () => {
   const [resolve, { isLoading: resolveLoading }] =
     useResolveAccountNumberMutation();
   const banks = data?.data;
+  const filteredBanks = banks?.filter((bank: any) =>
+    bank.name.toLowerCase().includes(bankSearch.toLowerCase())
+  );
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -95,15 +103,40 @@ const WithdrawFunds = () => {
       const res = await resolve(data).unwrap();
       console.log("Account number resolved successfully:", res);
       if (res.status == true) {
+        setAccountError("");
+        setBankError("");
         const resolvedName = res?.data?.account_name || "";
         form.setValue("bank_holder_name", resolvedName);
         toast.success(res?.message);
         setShowPasswordInput(true);
       } else if (res.data.status == false) {
-        toast.error(res?.data?.message);
+        setAccountError("");
+        setBankError("");
+        console.log(res);
+        setAccountError(res?.data?.message);
       }
-    } catch (error) {
-      console.error("Error resolving account number:", error);
+    } catch (err: any) {
+      console.error("Error resolving account number:", err);
+      if (err.status === 422) {
+        setAccountError(
+          err?.data?.errors?.account_number?.map((err: any, index: number) => (
+            <div key={index}>
+              <ul className="list-disc list-inside">
+                <li>{err}</li>
+              </ul>
+            </div>
+          ))
+        );
+        setBankError(
+          err?.data?.errors?.bank_code?.map((err: any, index: number) => (
+            <div key={index}>
+              <ul className="list-disc list-inside">
+                <li>{err}</li>
+              </ul>
+            </div>
+          ))
+        );
+      }
     }
   };
 
@@ -133,6 +166,25 @@ const WithdrawFunds = () => {
       });
   };
 
+  const dropdownRef = useRef<HTMLDivElement | null>(null); // Ref for the dropdown
+
+  useEffect(() => {
+    // Detect clicks outside of the dropdown
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false); // Close the dropdown
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div>
       <Goback name={"Apply for withdrawal"} />
@@ -147,7 +199,7 @@ const WithdrawFunds = () => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="">
               <div className="grid gap-4">
-                <div className="grid grid-rows-1 lg:grid-cols-2 gap-4">
+                <div className="grid grid-rows-1 lg:grid-cols-2 gap-4 relative">
                   <div className="grid gap-2">
                     <FormField
                       control={form.control}
@@ -163,7 +215,9 @@ const WithdrawFunds = () => {
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage />
+                          {accountError && (
+                            <FormMessage>{accountError}</FormMessage>
+                          )}
                         </FormItem>
                       )}
                     />
@@ -175,48 +229,62 @@ const WithdrawFunds = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Bank Name</FormLabel>
-                          <Select
-                            onValueChange={(value) => {
-                              const selected = banks.find(
-                                (bank: any) => bank.name === value
-                              );
-                              if (selected) {
-                                setSelectedBank({
-                                  bank_name: selected.name,
-                                  bank_code: selected.code,
-                                });
-                                field.onChange(value);
-                              }
-                            }}
-                            defaultValue={field.value}
-                            disabled={bankLoading}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="h-14">
-                                <SelectValue
-                                  placeholder={
-                                    bankLoading ? (
-                                      <div className="flex items-center gap-x-7">
-                                        <BouncingBall />
-                                        Fetching banks...
-                                      </div>
-                                    ) : (
-                                      "Select bank"
-                                    )
-                                  }
-                                  className="text-gray-100"
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {banks?.map((bank: any) => (
-                                <SelectItem key={bank.id} value={bank.name}>
-                                  <p>{bank.name}</p>
-                                </SelectItem>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                id="bank_name"
+                                type="text"
+                                disabled={bankLoading}
+                                placeholder={
+                                  !bankLoading
+                                    ? `Select bank`
+                                    : "Fetching Bank List"
+                                }
+                                value={bankSearch}
+                                onChange={(e) => {
+                                  setBankSearch(e.target.value);
+                                  setShowDropdown(true);
+                                }}
+                                onFocus={() => setShowDropdown(true)}
+                              />
+                              {bankLoading && (
+                                <div className="absolute inset-y-0 left-40 flex items-center">
+                                  <BouncingBall />
+                                </div>
+                              )}
+                            </div>
+                          </FormControl>
+                          {showDropdown && filteredBanks?.length > 0 && (
+                            <div
+                              className="absolute z-10 bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-auto mt-2 w-full"
+                              ref={dropdownRef}
+                              onMouseDown={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+                            >
+                              {filteredBanks.map((bank: any) => (
+                                <div
+                                  key={bank.code}
+                                  onClick={() => {
+                                    setSelectedBank({
+                                      bank_name: bank.name,
+                                      bank_code: bank.code,
+                                    });
+                                    form.setValue("bank_name", bank.name);
+                                    setBankSearch(bank.name);
+                                    setShowDropdown(false);
+                                  }}
+                                  className="p-2 cursor-pointer hover:bg-gray-200"
+                                >
+                                  {bank.name}
+                                </div>
                               ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
+                            </div>
+                          )}
+                          {bankSearch && filteredBanks?.length === 0 && (
+                            <div className="absolute z-10 bg-white border border-gray-300 rounded-md shadow-md mt-2 w-full p-2 text-gray-500">
+                              No banks found
+                            </div>
+                          )}
+                          {bankError && <FormMessage>{bankError}</FormMessage>}
                         </FormItem>
                       )}
                     />
@@ -224,6 +292,7 @@ const WithdrawFunds = () => {
                   {!showPasswordInput && (
                     <div className="flex flex-col gap-y-4 mt-5">
                       <Button
+                        type="submit"
                         className="w-full h-12 rounded-xl text-white bg-[--primary] hover:bg-[--primary-hover]"
                         disabled={resolveLoading}
                         onClick={handleResolve}
