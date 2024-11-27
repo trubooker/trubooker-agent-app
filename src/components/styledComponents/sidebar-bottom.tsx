@@ -6,6 +6,7 @@ import { FaRegCopy } from "react-icons/fa";
 import { truncateText } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useLoggedInUser } from "@/hooks/useLoggedUser";
+import toast from "react-hot-toast";
 
 export function SidebarOptInForm() {
   const { userData: data } = useLoggedInUser();
@@ -14,7 +15,7 @@ export function SidebarOptInForm() {
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(referralLink)
-      .then(() => alert("Referral link copied!"))
+      .then(() => toast("✅ Referral code copied to clipboard"))
       .catch((error) => console.error("Failed to copy: ", error));
   };
   return (

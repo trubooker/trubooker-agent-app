@@ -1,14 +1,17 @@
 "use client";
 
+import { useLoggedInUser } from "@/hooks/useLoggedUser";
 import { FaRegCopy } from "react-icons/fa";
 import { GiTakeMyMoney } from "react-icons/gi";
+import { toast } from "react-hot-toast";
 
 const ReferralSteps = () => {
-  const referralLink = "Trubooker.com/krvw-224";
+  const { userData } = useLoggedInUser();
+  const referralLink = `Trubooker.com/${userData?.referral}`;
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(referralLink)
-      .then(() => alert("Referral link copied!"))
+      .then(() => toast("✅ Referral code copied to clipboard"))
       .catch((err) => console.error("Failed to copy: ", err));
   };
   return (

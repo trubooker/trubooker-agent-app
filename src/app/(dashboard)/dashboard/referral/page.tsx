@@ -8,6 +8,7 @@ import { truncateText } from "@/lib/utils";
 import React, { useState } from "react";
 import { useGetReferralsQuery } from "@/redux/services/Slices/Dashboard/dashboardApiSlice";
 import { useLoggedInUser } from "@/hooks/useLoggedUser";
+import { toast } from "react-hot-toast";
 
 const Referall = () => {
   const { data } = useGetReferralsQuery(null);
@@ -20,6 +21,7 @@ const Referall = () => {
       .writeText(referralLink)
       .then(() => {
         setCopied(true);
+        toast("✅ Referral code copied to clipboard");
       })
       .catch((err) => console.error("Failed to copy: ", err));
   };
