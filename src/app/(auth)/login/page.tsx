@@ -52,12 +52,19 @@ export default function Login() {
       const response = await axios.post(`/api/login`, values);
 
       if (response.status === 200) {
+        setEmailError("");
+        setPasswordError("");
         form.setValue("email", "");
         form.setValue("password", "");
         setLoading(false);
-        router.push("/dashboard");
+        toast.success("Successfully Logged In");
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 2000);
       }
     } catch (error: any) {
+      setEmailError("");
+      setPasswordError("");
       setLoading(false);
       if (error?.status === 400) {
         setEmailError(error.response?.data?.message?.email[0]);
