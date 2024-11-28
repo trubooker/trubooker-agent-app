@@ -32,17 +32,10 @@ export function DrawerDialogDemo({
   const isDesktop = useIsMobile();
   const { data, isLoading } = useGetBeneficiaryQuery(null);
   const beneficiary = data?.data;
-  // const beneficiary = [
-  //   { id: 1, bank_holder_name: "Uchenna" },
-  //   { id: 2, bank_holder_name: "Chisom" },
-  //   { id: 3, bank_holder_name: "Adaeze" },
-  //   { id: 4, bank_holder_name: "Ifeanyi" },
-  //   { id: 5, bank_holder_name: "Ngozi" },
-  // ];
 
   const handleSelectBeneficiary = (id: number) => {
-    onSelectBeneficiary(id); // Pass the selected ID to the parent component.
-    setOpen(false); // Close the modal.
+    onSelectBeneficiary(id);
+    setOpen(false);
   };
 
   const renderBeneficiaries = () => {

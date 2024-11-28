@@ -146,9 +146,7 @@ const WithdrawFunds = () => {
       amount: Number(values.amount),
       beneficiary_id: beneficiaryId ? String(beneficiaryId) : null,
       bank_code: selectedBank.bank_code,
-      save_beneficiary: values.save_beneficiary
-        ? values.save_beneficiary
-        : null,
+      save_beneficiary: true,
     };
     console.log(formData);
     await withdraw(formData)
@@ -162,7 +160,16 @@ const WithdrawFunds = () => {
         form.setValue("amount", "");
       })
       .catch((err) => {
-        toast.error(err?.data?.error?.message?.message);
+        if (err?.status !== 503) {
+          toast.error(err?.data?.error?.message?.message);
+        }
+        if (err?.status === 503) {
+          toast.error("Service Unavailable");
+          setShowPasswordInput(false);
+          form.setValue("narration", "");
+          form.setValue("bank_holder_name", "");
+          form.setValue("amount", "");
+        }
       });
   };
 
@@ -190,7 +197,11 @@ const WithdrawFunds = () => {
       <Goback name={"Apply for withdrawal"} />
       <div className="h-full flex flex-col justify-center">
         <div className="w-full px-5 pb-24 lg:w-8/12">
-          <DrawerDialogDemo onSelectBeneficiary={handleBeneficiarySelection} />
+          {!showPasswordInput && (
+            <DrawerDialogDemo
+              onSelectBeneficiary={handleBeneficiarySelection}
+            />
+          )}
 
           <h2 className=" w-full text-left text-gray-400 text-base my-10">
             Request a payout of your earnings. Ensure your bank details are
@@ -211,7 +222,7 @@ const WithdrawFunds = () => {
                             <Input
                               id="account_number"
                               type="text"
-                              placeholder="00112233"
+                              placeholder="Enter account number"
                               {...field}
                             />
                           </FormControl>
@@ -332,7 +343,6 @@ const WithdrawFunds = () => {
                                     id="bank_holder_name"
                                     type="text"
                                     disabled
-                                    placeholder="John doe"
                                     {...field}
                                   />
                                 </FormControl>
@@ -341,7 +351,7 @@ const WithdrawFunds = () => {
                             )}
                           />
                         </div>
-                        <div className="grid gap-2">
+                        <div className="grid gap-2 mx-1">
                           <FormField
                             control={form.control}
                             name="amount"
@@ -352,7 +362,6 @@ const WithdrawFunds = () => {
                                   <Input
                                     id="narration"
                                     type="number"
-                                    placeholder="NGN1,400.00"
                                     {...field}
                                   />
                                 </FormControl>
@@ -363,7 +372,7 @@ const WithdrawFunds = () => {
                         </div>
                       </div>
                       <div className="flex flex-col gap-y-3 mt-4">
-                        <div className="grid gap-2">
+                        <div className="grid gap-2 m-1">
                           <FormField
                             control={form.control}
                             name="narration"
@@ -383,7 +392,7 @@ const WithdrawFunds = () => {
                             )}
                           />
                         </div>
-                        <FormField
+                        {/* <FormField
                           control={form.control}
                           name="save_beneficiary"
                           render={({ field }) => (
@@ -402,7 +411,7 @@ const WithdrawFunds = () => {
                               </div>
                             </FormItem>
                           )}
-                        />
+                        /> */}
                       </div>
                     </div>
                   )}
