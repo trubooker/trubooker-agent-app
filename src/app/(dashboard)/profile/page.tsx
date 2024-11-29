@@ -47,7 +47,6 @@ const Profile = () => {
   const [previewSrc, setPreviewSrc] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  // const [phoneError, setphoneError] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [dobError, setDobError] = useState("");
 
@@ -75,6 +74,7 @@ const Profile = () => {
       setPreviewSrc("");
     }
   };
+  const [update] = useUpdateProfileMutation();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -82,8 +82,6 @@ const Profile = () => {
   });
 
   const router = useRouter();
-
-  const [update] = useUpdateProfileMutation();
 
   useEffect(() => {
     if (userData) {
@@ -93,13 +91,19 @@ const Profile = () => {
         city: userData?.city,
         address: userData?.address,
         country: userData?.country,
-        gender: userData?.gender,
       });
 
       const DOB = new Date(userData?.dob);
       setSelectedDate(DOB);
     }
   }, [userData, form]);
+
+  const genderString =
+    userData?.gender === "male"
+      ? "male"
+      : userData?.gender === "female"
+      ? "female"
+      : undefined;
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setLoading(true);
@@ -139,7 +143,7 @@ const Profile = () => {
         city: data.city || null,
         address: data.address || null,
         country: data.country || null,
-        gender: data.gender || null,
+        gender: data.gender || genderString,
         dob: dateString,
       };
       console.log("formdata: ", formdata);
@@ -148,6 +152,12 @@ const Profile = () => {
         .unwrap()
         .then((res) => {
           console.log(res);
+          toast.success(`Updated Successfully!! ✅`);
+          form.setValue("last_name", "");
+          form.setValue("first_name", "");
+          form.setValue("country", "");
+          form.setValue("city", "");
+          form.setValue("address", "");
         })
         .catch((err: any) => {
           console.log(err);
@@ -299,34 +309,129 @@ const Profile = () => {
                     <FormItem className="">
                       <FormLabel>Gender</FormLabel>
                       <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="border grid grid-cols-2 p-4 mt-0 rounded-lg"
-                        >
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem
-                                className="border-muted-foreground h-5 w-5"
-                                value="male"
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal text-base text-muted-foreground">
-                              Male
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem
-                                className="border-muted-foreground h-5 w-5"
-                                value="female"
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal text-base text-muted-foreground">
-                              Female
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
+                        <>
+                          {userData ? (
+                            <>
+                              {userData?.gender === "male" ? (
+                                <RadioGroup
+                                  onValueChange={field.onChange}
+                                  defaultValue="male"
+                                  className="border grid grid-cols-2 p-4 mt-0 rounded-lg"
+                                >
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem
+                                        className="border-muted-foreground h-5 w-5"
+                                        value="male"
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="font-normal text-base text-muted-foreground">
+                                      Male
+                                    </FormLabel>
+                                  </FormItem>
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem
+                                        className="border-muted-foreground h-5 w-5"
+                                        value="female"
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="font-normal text-base text-muted-foreground">
+                                      Female
+                                    </FormLabel>
+                                  </FormItem>
+                                </RadioGroup>
+                              ) : userData?.gender === "female" ? (
+                                <RadioGroup
+                                  onValueChange={field.onChange}
+                                  defaultValue={"female"}
+                                  className="border grid grid-cols-2 p-4 mt-0 rounded-lg"
+                                >
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem
+                                        className="border-muted-foreground h-5 w-5"
+                                        value="male"
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="font-normal text-base text-muted-foreground">
+                                      Male
+                                    </FormLabel>
+                                  </FormItem>
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem
+                                        className="border-muted-foreground h-5 w-5"
+                                        value="female"
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="font-normal text-base text-muted-foreground">
+                                      Female
+                                    </FormLabel>
+                                  </FormItem>
+                                </RadioGroup>
+                              ) : (
+                                <RadioGroup
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                  className="border grid grid-cols-2 p-4 mt-0 rounded-lg"
+                                >
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem
+                                        className="border-muted-foreground h-5 w-5"
+                                        value="male"
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="font-normal text-base text-muted-foreground">
+                                      Male
+                                    </FormLabel>
+                                  </FormItem>
+                                  <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem
+                                        className="border-muted-foreground h-5 w-5"
+                                        value="female"
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="font-normal text-base text-muted-foreground">
+                                      Female
+                                    </FormLabel>
+                                  </FormItem>
+                                </RadioGroup>
+                              )}
+                            </>
+                          ) : (
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="border grid grid-cols-2 p-4 mt-0 rounded-lg"
+                            >
+                              <FormItem className="flex items-center space-x-3 space-y-0">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    className="border-muted-foreground h-5 w-5"
+                                    value="male"
+                                  />
+                                </FormControl>
+                                <FormLabel className="font-normal text-base text-muted-foreground">
+                                  Male
+                                </FormLabel>
+                              </FormItem>
+                              <FormItem className="flex items-center space-x-3 space-y-0">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    className="border-muted-foreground h-5 w-5"
+                                    value="female"
+                                  />
+                                </FormControl>
+                                <FormLabel className="font-normal text-base text-muted-foreground">
+                                  Female
+                                </FormLabel>
+                              </FormItem>
+                            </RadioGroup>
+                          )}
+                        </>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

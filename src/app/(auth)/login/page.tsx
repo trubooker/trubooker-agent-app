@@ -49,11 +49,11 @@ export default function Login() {
   const onSubmit = async (values: z.infer<typeof LoginFormSchema>) => {
     setLoading(true);
     try {
+      setEmailError("");
+      setPasswordError("");
       const response = await axios.post(`/api/login`, values);
 
       if (response.status === 200) {
-        setEmailError("");
-        setPasswordError("");
         form.setValue("email", "");
         form.setValue("password", "");
         setLoading(false);
