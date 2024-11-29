@@ -37,11 +37,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
             <header className="flex h-20 w-full justify-between shrink-0 items-center gap-2 border-b px-4">
               <div className="flex w-full items-center space-x-4">
                 <Avatar className="w-14 h-14">
-                  <AvatarImage
-                    src={
-                      "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load"
-                    }
-                  />
+                  <AvatarImage src={userData?.profile_image} />
                   <AvatarFallback>
                     <IoPersonOutline />
                   </AvatarFallback>

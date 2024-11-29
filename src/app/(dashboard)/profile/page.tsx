@@ -175,17 +175,9 @@ const Profile = () => {
       <div className="flex flex-col pt-4 justify-center w-full lg:w-8/12 gap-y-10">
         <div className="text-center w-full">
           <Avatar className="w-56 h-56 mx-auto">
-            {userData?.profile_image || previewSrc ? (
-              <AvatarImage
-                src={previewSrc ? previewSrc : userData?.profile_image}
-              />
-            ) : (
-              <AvatarImage
-                src={
-                  "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load"
-                }
-              />
-            )}
+            <AvatarImage
+              src={previewSrc ? previewSrc : userData?.profile_image}
+            />
             <div className="font-bold lg:text-2xl">
               <label
                 htmlFor="fileInput"
