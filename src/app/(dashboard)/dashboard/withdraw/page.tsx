@@ -15,23 +15,14 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 import {
   useGetBankCodesQuery,
   useWithdrawFundsMutation,
   useResolveAccountNumberMutation,
 } from "@/redux/services/Slices/Withdrawal/withdrawalApiSlice";
 import { DrawerDialogDemo } from "@/components/DualModal";
-import { Checkbox } from "@/components/ui/checkbox";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import toast from "react-hot-toast";
 import BouncingBall from "@/components/BounceXanimation";
@@ -52,6 +43,7 @@ const WithdrawFunds = () => {
       .string()
       .min(1, { message: "Bank Holder Name is required" }),
   });
+  const [isFadingOut, setIsFadingOut] = useState(false);
   const [selectedBank, setSelectedBank] = useState({
     bank_name: "",
     bank_code: "",
@@ -60,9 +52,21 @@ const WithdrawFunds = () => {
   const [bankError, setBankError] = useState("");
   const [bankSearch, setBankSearch] = useState(""); // User's search input
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isFadingOut] = useState(false);
-  const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [showDropdownInputs, setShowDropdownInputs] = useState(false);
+
+  //  Beneficiary states
   const [beneficiaryId, setBeneficiaryId] = useState<number | null>(null);
+  const [beneficiaryBankName, setBeneficiaryBankName] = useState<string | null>(
+    null
+  );
+  const [beneficiaryAccountNumber, setBeneficiaryAccountNumber] = useState<
+    string | null
+  >(null);
+  const [beneficiaryBankHolderName, setBeneficiaryBankHolderName] = useState<
+    string | null
+  >(null);
+  const [beneficiaryCode, setBeneficiaryCode] = useState<string | null>(null);
+
   const { data, isLoading: bankLoading } = useGetBankCodesQuery(null);
   const [withdraw, { isLoading: withdrawLoading }] = useWithdrawFundsMutation();
   const [resolve, { isLoading: resolveLoading }] =
@@ -84,12 +88,55 @@ const WithdrawFunds = () => {
     },
   });
 
-  const router = useRouter();
-
-  const handleBeneficiarySelection = (id: number) => {
+  const handleBeneficiarySelection = (
+    id: number,
+    account_Number: string,
+    beneficiary_bank_holder_name: string,
+    bank_Name: string,
+    bank_code: string
+  ) => {
     setBeneficiaryId(id);
-    console.log("Beneficiary ID updated:", id);
+    setBeneficiaryBankName(bank_Name);
+    setBeneficiaryBankHolderName(beneficiary_bank_holder_name);
+    setBeneficiaryAccountNumber(account_Number);
+    setBeneficiaryCode(bank_code);
   };
+
+  const handleClose = () => {
+    setIsFadingOut(true);
+    setTimeout(() => {
+      setShowDropdownInputs(false);
+      setIsFadingOut(false);
+    }, 500);
+    form.setValue("account_number", "");
+    form.setValue("narration", "");
+    form.setValue("bank_holder_name", "");
+    form.setValue("bank_name", "");
+    form.setValue("amount", "");
+    setBeneficiaryId(null);
+    setBeneficiaryBankName(null);
+    setBeneficiaryBankHolderName(null);
+    setBeneficiaryAccountNumber(null);
+    setBeneficiaryCode(null);
+  };
+
+  useEffect(() => {
+    if (
+      beneficiaryBankHolderName &&
+      beneficiaryBankName &&
+      beneficiaryAccountNumber
+    ) {
+      form.setValue("account_number", beneficiaryAccountNumber);
+      form.setValue("bank_holder_name", beneficiaryBankHolderName);
+      form.setValue("bank_name", beneficiaryBankName);
+      setShowDropdownInputs(true);
+    }
+  }, [
+    beneficiaryBankHolderName,
+    beneficiaryBankName,
+    beneficiaryAccountNumber,
+    form,
+  ]);
 
   const handleResolve = async () => {
     const accountNumber = form.getValues("account_number");
@@ -108,7 +155,7 @@ const WithdrawFunds = () => {
         const resolvedName = res?.data?.account_name || "";
         form.setValue("bank_holder_name", resolvedName);
         toast.success(res?.message);
-        setShowPasswordInput(true);
+        setShowDropdownInputs(true);
       } else if (res.data.status == false) {
         setAccountError("");
         setBankError("");
@@ -145,9 +192,11 @@ const WithdrawFunds = () => {
       ...values,
       amount: Number(values.amount),
       beneficiary_id: beneficiaryId ? String(beneficiaryId) : null,
-      bank_code: selectedBank.bank_code,
+      bank_code: beneficiaryCode || selectedBank.bank_code,
       save_beneficiary: true,
     };
+    setAccountError("");
+    setBankError("");
     console.log(formData);
     await withdraw(formData)
       .unwrap()
@@ -158,6 +207,11 @@ const WithdrawFunds = () => {
         form.setValue("bank_holder_name", "");
         form.setValue("bank_name", "");
         form.setValue("amount", "");
+        setBeneficiaryId(null);
+        setBeneficiaryBankName(null);
+        setBeneficiaryBankHolderName(null);
+        setBeneficiaryAccountNumber(null);
+        setBeneficiaryCode(null);
       })
       .catch((err) => {
         if (err?.status !== 503) {
@@ -165,10 +219,17 @@ const WithdrawFunds = () => {
         }
         if (err?.status === 503) {
           toast.error("Service Unavailable");
-          setShowPasswordInput(false);
+          setShowDropdownInputs(false);
           form.setValue("narration", "");
           form.setValue("bank_holder_name", "");
           form.setValue("amount", "");
+          form.setValue("bank_name", "");
+          form.setValue("account_number", "");
+          setBeneficiaryId(null);
+          setBeneficiaryBankName(null);
+          setBeneficiaryBankHolderName(null);
+          setBeneficiaryAccountNumber(null);
+          setBeneficiaryCode(null);
         }
       });
   };
@@ -197,10 +258,20 @@ const WithdrawFunds = () => {
       <Goback name={"Apply for withdrawal"} />
       <div className="h-full flex flex-col justify-center">
         <div className="w-full px-5 pb-24 lg:w-8/12">
-          {!showPasswordInput && (
+          {!showDropdownInputs && (
             <DrawerDialogDemo
               onSelectBeneficiary={handleBeneficiarySelection}
             />
+          )}
+
+          {showDropdownInputs && (
+            <Button
+              variant="outline"
+              onClick={handleClose}
+              className="ms-auto flex justify-end font-bold"
+            >
+              Close
+            </Button>
           )}
 
           <h2 className=" w-full text-left text-gray-400 text-base my-10">
@@ -222,6 +293,11 @@ const WithdrawFunds = () => {
                             <Input
                               id="account_number"
                               type="text"
+                              disabled={
+                                beneficiaryAccountNumber || showDropdownInputs
+                                  ? true
+                                  : false
+                              }
                               placeholder="Enter account number"
                               {...field}
                             />
@@ -234,73 +310,101 @@ const WithdrawFunds = () => {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <FormField
-                      control={form.control}
-                      name="bank_name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Bank Name</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Input
-                                id="bank_name"
-                                type="text"
-                                disabled={bankLoading}
-                                placeholder={
-                                  !bankLoading
-                                    ? `Select bank`
-                                    : "Fetching Bank List"
-                                }
-                                value={bankSearch}
-                                onChange={(e) => {
-                                  setBankSearch(e.target.value);
-                                  setShowDropdown(true);
-                                }}
-                                onFocus={() => setShowDropdown(true)}
-                              />
-                              {bankLoading && (
-                                <div className="absolute inset-y-0 left-40 flex items-center">
-                                  <BouncingBall />
+                    <>
+                      {beneficiaryBankName ? (
+                        <FormField
+                          control={form.control}
+                          name="bank_name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Bank Name</FormLabel>
+                              <FormControl>
+                                <Input
+                                  id="bank_name"
+                                  type="text"
+                                  disabled
+                                  {...field}
+                                />
+                              </FormControl>
+                              {accountError && (
+                                <FormMessage>{accountError}</FormMessage>
+                              )}
+                            </FormItem>
+                          )}
+                        />
+                      ) : (
+                        <FormField
+                          control={form.control}
+                          name="bank_name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Bank Name</FormLabel>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input
+                                    id="bank_name"
+                                    type="text"
+                                    disabled={bankLoading || showDropdownInputs}
+                                    placeholder={
+                                      !bankLoading
+                                        ? `Select bank`
+                                        : "Fetching Bank List"
+                                    }
+                                    value={bankSearch}
+                                    onChange={(e) => {
+                                      setBankSearch(e.target.value);
+                                      setShowDropdown(true);
+                                    }}
+                                    onFocus={() => setShowDropdown(true)}
+                                  />
+                                  {bankLoading && (
+                                    <div className="absolute inset-y-0 left-40 flex items-center">
+                                      <BouncingBall />
+                                    </div>
+                                  )}
+                                </div>
+                              </FormControl>
+
+                              {showDropdown && filteredBanks?.length > 0 && (
+                                <div
+                                  className="absolute z-10 bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-auto mt-2 w-full"
+                                  ref={dropdownRef}
+                                  onMouseDown={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+                                >
+                                  {filteredBanks.map((bank: any) => (
+                                    <div
+                                      key={bank.code}
+                                      onClick={() => {
+                                        setSelectedBank({
+                                          bank_name: bank.name,
+                                          bank_code: bank.code,
+                                        });
+                                        form.setValue("bank_name", bank.name);
+                                        setBankSearch(bank.name);
+                                        setShowDropdown(false);
+                                      }}
+                                      className="p-2 cursor-pointer hover:bg-gray-200"
+                                    >
+                                      {bank.name}
+                                    </div>
+                                  ))}
                                 </div>
                               )}
-                            </div>
-                          </FormControl>
-                          {showDropdown && filteredBanks?.length > 0 && (
-                            <div
-                              className="absolute z-10 bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-auto mt-2 w-full"
-                              ref={dropdownRef}
-                              onMouseDown={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-                            >
-                              {filteredBanks.map((bank: any) => (
-                                <div
-                                  key={bank.code}
-                                  onClick={() => {
-                                    setSelectedBank({
-                                      bank_name: bank.name,
-                                      bank_code: bank.code,
-                                    });
-                                    form.setValue("bank_name", bank.name);
-                                    setBankSearch(bank.name);
-                                    setShowDropdown(false);
-                                  }}
-                                  className="p-2 cursor-pointer hover:bg-gray-200"
-                                >
-                                  {bank.name}
+                              {bankSearch && filteredBanks?.length === 0 && (
+                                <div className="absolute z-10 bg-white border border-gray-300 rounded-md shadow-md mt-2 w-full p-2 text-gray-500">
+                                  No banks found
                                 </div>
-                              ))}
-                            </div>
+                              )}
+                              {bankError && (
+                                <FormMessage>{bankError}</FormMessage>
+                              )}
+                            </FormItem>
                           )}
-                          {bankSearch && filteredBanks?.length === 0 && (
-                            <div className="absolute z-10 bg-white border border-gray-300 rounded-md shadow-md mt-2 w-full p-2 text-gray-500">
-                              No banks found
-                            </div>
-                          )}
-                          {bankError && <FormMessage>{bankError}</FormMessage>}
-                        </FormItem>
+                        />
                       )}
-                    />
+                    </>
                   </div>
-                  {!showPasswordInput && (
+                  {!showDropdownInputs && (
                     <div className="flex flex-col gap-y-4 mt-5">
                       <Button
                         type="submit"
@@ -323,12 +427,12 @@ const WithdrawFunds = () => {
 
                 <div
                   className={`transition-all duration-500 ease-in-out overflow-hidden ${
-                    showPasswordInput && !isFadingOut
+                    showDropdownInputs && !isFadingOut
                       ? "opacity-100 max-h-screen"
                       : "opacity-0 max-h-0"
                   }`}
                 >
-                  {showPasswordInput && (
+                  {showDropdownInputs && (
                     <div>
                       <div className="grid grid-rows-1 lg:grid-cols-2 gap-4">
                         <div className="grid gap-2">
@@ -417,7 +521,7 @@ const WithdrawFunds = () => {
                   )}
                 </div>
               </div>
-              {showPasswordInput && (
+              {showDropdownInputs && (
                 <div className="flex flex-col gap-y-4 mt-5">
                   <Button
                     type="submit"

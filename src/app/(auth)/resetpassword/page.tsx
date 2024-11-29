@@ -12,29 +12,30 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FcGoogle } from "react-icons/fc";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 // import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
 import { IoChevronBackOutline } from "react-icons/io5";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function ResetPassword() {
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
+  const reference = searchParams.get("reference");
   const ResetPasswordFormSchema = z
     .object({
       password: z
         .string()
-        .min(6, { message: "Password must be 6 chracters or more" })
-        .max(15, { message: "Password too long" }),
-      confirmPassword: z.string(),
+        .min(6, { message: "Password must be 6 chracters or more" }),
+      password_confirmation: z.string(),
     })
-    .refine((data) => data.password === data.confirmPassword, {
+    .refine((data) => data.password === data.password_confirmation, {
       message: "Passwords must match",
-      path: ["confirmPassword"],
+      path: ["password_confirmation"],
     });
 
   const form = useForm<z.infer<typeof ResetPasswordFormSchema>>({
@@ -45,55 +46,50 @@ export default function ResetPassword() {
   const handleBack = () => {
     router.back();
   };
-  const registerUser: any = [];
   const [isLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [telephoneError, setTelephoneError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showpassword_confirmation, setShowpassword_confirmation] =
+    useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
+  const togglepassword_confirmationVisibility = () => {
+    setShowpassword_confirmation(!showpassword_confirmation);
   };
 
   const onSubmit = async (values: z.infer<typeof ResetPasswordFormSchema>) => {
-    const data = {};
+    setLoading(true);
+    const data = {
+      password_confirmation: values.password_confirmation,
+      password: values.password,
+      email: String(email),
+      reference: String(reference),
+    };
 
-    // await registerUser(data)
-    //   .unwrap()
-    //   .then(
-    //     () => (
-    //       toast.success(
-    //         "Account created successfully! Check Your email for the verification link",
-    //         {
-    //           position: "top-center",
-    //           autoClose: 2000,
-    //           hideProgressBar: false,
-    //           closeOnClick: true,
-    //           pauseOnHover: true,
-    //           draggable: true,
-    //           progress: undefined,
-    //           transition: Bounce,
-    //         }
-    //       ),
-    //       router.push("/auth/ResetPassword")
-    //     )
-    //   )
-    //   .catch((error: any) => {
-    //     toast.error(error.data.msg, {
-    //       position: "top-center",
-    //       autoClose: 2000,
-    //       hideProgressBar: true,
-    //     });
-    //   });
-    alert(values);
+    try {
+      const response = await axios.post(`/api/resetPassword`, data);
+      if (response.status === 200) {
+        setLoading(false);
+        console.log(response);
+        toast.success(String(response?.data?.message));
+        setTimeout(() => {
+          router.push("/login");
+        }, 3000);
+      }
+    } catch (error: any) {
+      toast.error(`error occured!`);
+      // setTimeout(() => {
+      //   router.back;
+      // }, 3000);
+    }
 
     form.setValue("password", "");
-    form.setValue("confirmPassword", "");
+    form.setValue("password_confirmation", "");
   };
   return (
     <div className="h-screen flex flex-col justify-center">
@@ -147,7 +143,7 @@ export default function ResetPassword() {
               <div className="grid gap-2">
                 <FormField
                   control={form.control}
-                  name="confirmPassword"
+                  name="password_confirmation"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Confirm Password</FormLabel>
@@ -155,16 +151,18 @@ export default function ResetPassword() {
                         <div className="relative">
                           <Input
                             id="confirmPpassword"
-                            type={showConfirmPassword ? "text" : "password"}
+                            type={
+                              showpassword_confirmation ? "text" : "password"
+                            }
                             placeholder="Re-enter password"
                             {...field}
                           />
                           <button
                             type="button"
-                            onClick={toggleConfirmPasswordVisibility}
+                            onClick={togglepassword_confirmationVisibility}
                             className="text-xs underline absolute top-5 right-4 font-semibold"
                           >
-                            {showConfirmPassword ? "Hide" : "Show"}
+                            {showpassword_confirmation ? "Hide" : "Show"}
                           </button>
                         </div>
                       </FormControl>
@@ -178,9 +176,9 @@ export default function ResetPassword() {
                 <Button
                   type="submit"
                   className="w-full h-12 rounded-xl text-white bg-[--primary] hover:bg-[--primary-hover]"
-                  disabled={isLoading}
+                  disabled={loading}
                 >
-                  {isLoading ? "Resetting..." : "Reset Password"}
+                  {loading ? "Resetting..." : "Reset Password"}
                 </Button>
               </div>
             </div>

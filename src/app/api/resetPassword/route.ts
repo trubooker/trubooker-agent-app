@@ -9,7 +9,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   };
 
   const resData = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/reset-password`,
+    `${process.env.NEXT_PUBLIC_API_URL}/reset-passowrd`,
     {
       method: "POST",
       headers,
@@ -18,6 +18,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
   );
 
   const data = await resData.json();
+
+  console.log(data);
 
   if (data?.status == "success") {
     const response = {

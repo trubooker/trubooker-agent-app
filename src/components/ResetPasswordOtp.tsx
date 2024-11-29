@@ -33,6 +33,7 @@ import { useSearchParams } from "next/navigation";
 import { truncateNumber } from "@/lib/utils";
 import Link from "next/link";
 import useCountdown from "@/hooks/otpHook";
+import toast from "react-hot-toast";
 
 const FormSchema = z.object({
   code: z.string().min(6, {
@@ -60,14 +61,9 @@ const ResetPasswordOTPForm = () => {
   const handleResendOtp = async () => {
     try {
       startTimer();
-      const token = await fetchToken();
-      const headers = {
-        Authorization: `Bearer ${token?.data?.token}`,
-        "Content-Type": "application/json",
-      };
+
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/otp/resend`,
-        { headers }
+        `${process.env.NEXT_PUBLIC_API_URL}/otp/resend`
       );
 
       if (response.status === 200) {
@@ -92,28 +88,26 @@ const ResetPasswordOTPForm = () => {
       code: Number(data.code),
       email: email,
     };
-    const token = await fetchToken();
-    const headers = {
-      Authorization: `Bearer ${token?.data?.token}`,
-      "Content-Type": "application/json",
-    };
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/resetPasswordOtp`,
-        value,
-        { headers }
-      );
 
-      if (response?.status === 200) {
-        router.push("/resetpassword");
+    try {
+      const response = await axios.post(`/api/resetPasswordOtp`, value);
+      if (response.status === 200) {
+        setLoading(false), toast.success("Successfully verified!");
+        setTimeout(() => {
+          router.push(`/resetpassword?email=${email}&reference=${data.code}`);
+        }, 3000);
       }
     } catch (error: any) {
-      setLoading(false);
-      setServerError(error?.response?.data?.error?.message);
-      console.error(
-        "Error registering:",
-        error?.response?.data?.error?.message || error.message
-      );
+      if (error?.status === 400 || error?.status === 503) {
+        toast.error("Internal Server error");
+      }
+
+      if (error?.status !== 400) {
+        toast.error(`${`Error Occured!! Start over!`}`);
+        setTimeout(() => {
+          router.back;
+        }, 3000);
+      }
     }
   };
 
