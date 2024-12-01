@@ -37,31 +37,31 @@ export function DrawerDialogDemo({
   const [open, setOpen] = React.useState(false);
   const isDesktop = useIsMobile();
   const { data, isLoading } = useGetBeneficiaryQuery(null);
-  // const beneficiary = data?.data;
+  const beneficiary = data?.data;
 
-  const beneficiary = [
-    {
-      id: 1,
-      account_Number: "1234567890",
-      account_Name: "John Doe",
-      bank_Name: "Bank of America",
-      bank_code: "034",
-    },
-    {
-      id: 2,
-      account_Number: "9876543210",
-      account_Name: "Jane Doe",
-      bank_Name: "UBA",
-      bank_code: "235",
-    },
-    {
-      id: 3,
-      account_Number: "1111111111",
-      account_Name: "John Doe",
-      bank_Name: "First Bank",
-      bank_code: "436",
-    },
-  ];
+  // const beneficiary = [
+  //   {
+  //     id: 1,
+  //     account_Number: "1234567890",
+  //     account_Name: "John Doe",
+  //     bank_Name: "Bank of America",
+  //     bank_code: "034",
+  //   },
+  //   {
+  //     id: 2,
+  //     account_Number: "9876543210",
+  //     account_Name: "Jane Doe",
+  //     bank_Name: "UBA",
+  //     bank_code: "235",
+  //   },
+  //   {
+  //     id: 3,
+  //     account_Number: "1111111111",
+  //     account_Name: "John Doe",
+  //     bank_Name: "First Bank",
+  //     bank_code: "436",
+  //   },
+  // ];
 
   const handleSelectBeneficiary = (
     id: number,

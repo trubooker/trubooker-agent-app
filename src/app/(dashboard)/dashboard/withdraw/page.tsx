@@ -216,6 +216,17 @@ const WithdrawFunds = () => {
       .catch((err) => {
         if (err?.status !== 503) {
           toast.error(err?.data?.error?.message?.message);
+          setShowDropdownInputs(false);
+          form.setValue("narration", "");
+          form.setValue("bank_holder_name", "");
+          form.setValue("amount", "");
+          form.setValue("bank_name", "");
+          form.setValue("account_number", "");
+          setBeneficiaryId(null);
+          setBeneficiaryBankName(null);
+          setBeneficiaryBankHolderName(null);
+          setBeneficiaryAccountNumber(null);
+          setBeneficiaryCode(null);
         }
         if (err?.status === 503) {
           toast.error("Service Unavailable");
