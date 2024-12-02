@@ -157,7 +157,7 @@ export default function Login() {
                 >
                   {loading ? "Loading..." : "Log in"}
                 </Button>
-                <Link
+                {/* <Link
                   href=""
                   className="shadow-md py-3 w-full justify-center hover:bg-blue-50 rounded-lg flex items-center px-4"
                 >
@@ -167,7 +167,7 @@ export default function Login() {
                       Continue with Google
                     </p>
                   </div>
-                </Link>
+                </Link> */}
               </div>
             </div>
           </form>
