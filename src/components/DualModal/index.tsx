@@ -27,10 +27,10 @@ export function DrawerDialogDemo({
   onSelectBeneficiary,
 }: {
   onSelectBeneficiary: (
-    id: number,
-    account_Number: string,
-    account_Name: string,
-    bank_Name: string,
+    id: string,
+    account_number: string,
+    bank_holder_name: string,
+    bank_name: string,
     bank_code: string
   ) => void;
 }) {
@@ -39,38 +39,20 @@ export function DrawerDialogDemo({
   const { data, isLoading } = useGetBeneficiaryQuery(null);
   const beneficiary = data?.data;
 
-  // const beneficiary = [
-  //   {
-  //     id: 1,
-  //     account_Number: "1234567890",
-  //     account_Name: "John Doe",
-  //     bank_Name: "Bank of America",
-  //     bank_code: "034",
-  //   },
-  //   {
-  //     id: 2,
-  //     account_Number: "9876543210",
-  //     account_Name: "Jane Doe",
-  //     bank_Name: "UBA",
-  //     bank_code: "235",
-  //   },
-  //   {
-  //     id: 3,
-  //     account_Number: "1111111111",
-  //     account_Name: "John Doe",
-  //     bank_Name: "First Bank",
-  //     bank_code: "436",
-  //   },
-  // ];
-
   const handleSelectBeneficiary = (
-    id: number,
-    account_Number: string,
-    account_Name: string,
-    bank_Name: string,
+    id: string,
+    account_number: string,
+    bank_holder_name: string,
+    bank_name: string,
     bank_code: string
   ) => {
-    onSelectBeneficiary(id, account_Number, account_Name, bank_Name, bank_code);
+    onSelectBeneficiary(
+      id,
+      account_number,
+      bank_holder_name,
+      bank_name,
+      bank_code
+    );
     setOpen(false);
   };
 
@@ -83,7 +65,7 @@ export function DrawerDialogDemo({
 
     return (
       <ul>
-        <ScrollArea className="max-h-[500px]">
+        <ScrollArea className="max-h-[500px] overflow-y-auto">
           <>
             {beneficiary.map((item: any) => (
               <li key={item.id}>
@@ -92,22 +74,22 @@ export function DrawerDialogDemo({
                   onClick={() =>
                     handleSelectBeneficiary(
                       item?.id,
-                      item?.account_Number,
-                      item?.account_Name,
-                      item?.bank_Name,
+                      item?.account_number,
+                      item?.bank_holder_name,
+                      item?.bank_name,
                       item?.bank_code
                     )
                   }
                 >
                   <div className="bg-white shadow-md p-3 rounded-md border hover:shadow-lg transition-shadow">
-                    <h3 className="text-base font-medium">
-                      {item?.account_Name}
+                    <h3 className="text-base font-medium capitalize">
+                      {item?.bank_holder_name}
                     </h3>
                     <p className="text-sm font-light text-gray-600">
-                      Account Number: {item?.account_Number}
+                      Account Number: {item?.account_number}
                     </p>
                     <p className="text-sm font-light text-gray-600">
-                      Bank: {item?.bank_Name}
+                      Bank: {item?.bank_name}
                     </p>
                   </div>
                 </div>

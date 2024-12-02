@@ -1,6 +1,3 @@
-import { IoPersonOutline } from "react-icons/io5";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { truncateText } from "@/lib/utils";
