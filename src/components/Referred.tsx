@@ -22,18 +22,40 @@ const Referred = ({ Referall }: any) => {
         <div className="h-full">
           {Referall.slice(0, 3).map((data: any, index: number) => (
             <div key={index}>
-              <div className="flex justify-between text-sm lg:text-base items-center my-5">
-                <span>{data.name}</span>
-                <div>
-                  {data.status === "Pending" ? (
-                    <div className="flex items-center mx-auto gap-x-2 px-3 py-1 rounded-full justify-center w-auto bg-[#FFF3E5] text-[#FD8C00]">
-                      <span className="font-bold">Pending</span>
+              <div className="flex items-start gap-x-3 w-full my-5">
+                <small className="text-gray-500">#{index + 1}</small>
+                <div className="flex justify-between text-sm lg:text-base items-center w-full">
+                  <div>
+                    <div className="flex flex-col gap-y-2">
+                      <small className="text-gray-500">Driver: </small>
+                      <span>{data?.driver}</span>
                     </div>
-                  ) : (
-                    <div className="flex items-center mx-auto gap-x-2 px-3 py-1 rounded-full justify-center w-auto bg-[#CCFFCD] text-[#00B771]">
-                      <span className="font-bold">{data.status}%</span>
+                  </div>
+
+                  <div className="hidden md:block">
+                    <div className="flex flex-col gap-y-2">
+                      <small className="text-gray-500">Referral Date: </small>
+                      <small>
+                        {new Date(data?.referred_at).toLocaleDateString(
+                          "en-US",
+                          {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          }
+                        )}
+                      </small>
                     </div>
-                  )}
+                  </div>
+
+                  <div>
+                    <div className="flex flex-col gap-y-2">
+                      <small className="text-gray-500">Earnings: </small>
+                      <span className="font-semibold text-sm text-end">
+                        ₦ {data?.earned_amount}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <Separator />

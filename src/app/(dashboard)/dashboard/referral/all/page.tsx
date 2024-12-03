@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button";
 import { truncateText } from "@/lib/utils";
 import { useGetReferralsQuery } from "@/redux/services/Slices/Dashboard/dashboardApiSlice";
 import toast from "react-hot-toast";
+import { useLoggedInUser } from "@/hooks/useLoggedUser";
 
 const AllReferredDrivers = () => {
   const { data } = useGetReferralsQuery(null);
   const referall = data?.data;
   const [copied, setCopied] = useState(false);
-  const referralLink = "Trubooker.com/krvw-224";
+  const { userData } = useLoggedInUser();
+  const referralLink = `Trubooker.com/${userData?.referral}`;
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(referralLink)
@@ -28,20 +30,42 @@ const AllReferredDrivers = () => {
       <Goback name={"Referred Drivers"} />
       <div className="w-10/5 lg:w-full mx-auto grid grid-cols-1 xl:grid-cols-6 pt-5 pb-10 lg:py-10 gap-12">
         <div className="overflow-hidden xl:col-span-4">
-          {referall.map((data: any, index: number) => (
+          {referall?.map((data: any, index: number) => (
             <div key={index}>
-              <div className="flex justify-between text-sm lg:text-base items-center my-5">
-                <span>{data.name}</span>
-                <div>
-                  {data.status === "Pending" ? (
-                    <div className="flex items-center mx-auto gap-x-2 px-3 py-1 rounded-full justify-center w-auto bg-[#FFF3E5] text-[#FD8C00]">
-                      <span className="font-bold">Pending</span>
+              <div className="flex items-start gap-x-3 w-full my-5">
+                <small className="text-gray-500">#{index + 1}</small>
+                <div className="flex justify-between text-sm lg:text-base items-center w-full">
+                  <div>
+                    <div className="flex flex-col gap-y-2">
+                      <small className="text-gray-500">Driver: </small>
+                      <span>{data?.driver}</span>
                     </div>
-                  ) : (
-                    <div className="flex items-center mx-auto gap-x-2 px-3 py-1 rounded-full justify-center w-auto bg-[#CCFFCD] text-[#00B771]">
-                      <span className="font-bold">{data.status}%</span>
+                  </div>
+
+                  <div className="hidden md:block">
+                    <div className="flex flex-col gap-y-2">
+                      <small className="text-gray-500">Referral Date: </small>
+                      <small>
+                        {new Date(data?.referred_at).toLocaleDateString(
+                          "en-US",
+                          {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          }
+                        )}
+                      </small>
                     </div>
-                  )}
+                  </div>
+
+                  <div>
+                    <div className="flex flex-col gap-y-2">
+                      <small className="text-gray-500">Earnings: </small>
+                      <span className="font-semibold text-sm text-end">
+                        ₦ {data?.earned_amount}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <Separator />

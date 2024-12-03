@@ -81,7 +81,7 @@ const PasswordUpdate = () => {
         setPasswordError("");
         console.log(res);
         setLoading(false);
-        toast.success("Password is updated! Heading to login");
+        toast.success("Password is updated! Login again");
         setTimeout(() => {
           router.push("/");
         }, 2000);

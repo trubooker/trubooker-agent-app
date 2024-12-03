@@ -55,7 +55,7 @@ const WithdrawFunds = () => {
   const [showDropdownInputs, setShowDropdownInputs] = useState(false);
 
   //  Beneficiary states
-  const [beneficiaryId, setBeneficiaryId] = useState<number | null>(null);
+  const [beneficiaryId, setBeneficiaryId] = useState<string | null>(null);
   const [beneficiaryBankName, setBeneficiaryBankName] = useState<string | null>(
     null
   );
@@ -89,16 +89,16 @@ const WithdrawFunds = () => {
   });
 
   const handleBeneficiarySelection = (
-    id: number,
-    account_Number: string,
-    beneficiary_bank_holder_name: string,
-    bank_Name: string,
+    id: string,
+    account_number: string,
+    bank_holder_name: string,
+    bank_name: string,
     bank_code: string
   ) => {
     setBeneficiaryId(id);
-    setBeneficiaryBankName(bank_Name);
-    setBeneficiaryBankHolderName(beneficiary_bank_holder_name);
-    setBeneficiaryAccountNumber(account_Number);
+    setBeneficiaryBankName(bank_name);
+    setBeneficiaryBankHolderName(bank_holder_name);
+    setBeneficiaryAccountNumber(account_number);
     setBeneficiaryCode(bank_code);
   };
 
@@ -118,6 +118,7 @@ const WithdrawFunds = () => {
     setBeneficiaryBankHolderName(null);
     setBeneficiaryAccountNumber(null);
     setBeneficiaryCode(null);
+    setBankSearch("");
   };
 
   useEffect(() => {
@@ -148,7 +149,6 @@ const WithdrawFunds = () => {
 
     try {
       const res = await resolve(data).unwrap();
-      console.log("Account number resolved successfully:", res);
       if (res.status == true) {
         setAccountError("");
         setBankError("");
@@ -159,7 +159,6 @@ const WithdrawFunds = () => {
       } else if (res.data.status == false) {
         setAccountError("");
         setBankError("");
-        console.log(res);
         setAccountError(res?.data?.message);
       }
     } catch (err: any) {
@@ -197,7 +196,6 @@ const WithdrawFunds = () => {
     };
     setAccountError("");
     setBankError("");
-    console.log(formData);
     await withdraw(formData)
       .unwrap()
       .then((res) => {
@@ -212,10 +210,23 @@ const WithdrawFunds = () => {
         setBeneficiaryBankHolderName(null);
         setBeneficiaryAccountNumber(null);
         setBeneficiaryCode(null);
+        setBankSearch("");
       })
       .catch((err) => {
         if (err?.status !== 503) {
           toast.error(err?.data?.error?.message?.message);
+          setShowDropdownInputs(false);
+          form.setValue("narration", "");
+          form.setValue("bank_holder_name", "");
+          form.setValue("amount", "");
+          form.setValue("bank_name", "");
+          form.setValue("account_number", "");
+          setBeneficiaryId(null);
+          setBeneficiaryBankName(null);
+          setBeneficiaryBankHolderName(null);
+          setBeneficiaryAccountNumber(null);
+          setBeneficiaryCode(null);
+          setBankSearch("");
         }
         if (err?.status === 503) {
           toast.error("Service Unavailable");
@@ -230,6 +241,7 @@ const WithdrawFunds = () => {
           setBeneficiaryBankHolderName(null);
           setBeneficiaryAccountNumber(null);
           setBeneficiaryCode(null);
+          setBankSearch("");
         }
       });
   };
@@ -257,7 +269,7 @@ const WithdrawFunds = () => {
     <div>
       <Goback name={"Apply for withdrawal"} />
       <div className="h-full flex flex-col justify-center">
-        <div className="w-full px-5 pb-24 lg:w-8/12">
+        <div className="w-full lg:px-5 pb-24 lg:w-8/12">
           {!showDropdownInputs && (
             <DrawerDialogDemo
               onSelectBeneficiary={handleBeneficiarySelection}
