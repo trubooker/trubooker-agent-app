@@ -34,11 +34,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useUpdateProfileMutation } from "@/redux/services/Slices/userApiSlice";
 
 const FormSchema = z.object({
-  first_name: z.string().optional(),
-  last_name: z.string().optional(),
-  city: z.string().optional(),
-  address: z.string().optional(),
-  country: z.string().optional(),
+  first_name: z.any().optional(),
+  last_name: z.any().optional(),
+  city: z.any().optional(),
+  address: z.any().optional(),
+  country: z.any().optional(),
   gender: z.enum(["male", "female"]).optional(),
 });
 
