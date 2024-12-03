@@ -129,7 +129,7 @@ const Profile = () => {
 
         const resdata = await res.json();
         if (resdata?.status == "success") {
-          userRefetching();
+          // userRefetching();
           setLoading(false);
         }
       }
@@ -153,11 +153,6 @@ const Profile = () => {
         .then((res) => {
           console.log(res);
           toast.success(`Updated Successfully!! ✅`);
-          form.setValue("last_name", "");
-          form.setValue("first_name", "");
-          form.setValue("country", "");
-          form.setValue("city", "");
-          form.setValue("address", "");
         })
         .catch((err: any) => {
           console.log(err);
@@ -289,7 +284,8 @@ const Profile = () => {
                     </FormMessage>
                   ) : (
                     <FormDescription className="mt-2">
-                      Input date of birth, not less than 18 years of age
+                      Input date of birth. If null, defaults to
+                      &apos;1970-01-01&apos;
                     </FormDescription>
                   )}
                 </div>
