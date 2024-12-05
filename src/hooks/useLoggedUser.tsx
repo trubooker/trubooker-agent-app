@@ -6,10 +6,18 @@ export const useLoggedInUser = () => {
     refetch: userRefetching,
     isLoading: userLoading,
     isError: userError,
+    isFetching: userFetching,
     status,
   } = useGetCurrentUserQuery(null);
 
   const userData = data?.data || null;
 
-  return { userData, userError, userLoading, userRefetching, status };
+  return {
+    userData,
+    userError,
+    userLoading,
+    userRefetching,
+    status,
+    userFetching,
+  };
 };

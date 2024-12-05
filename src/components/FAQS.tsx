@@ -18,10 +18,9 @@ const FAQS = () => {
             How do I refer a driver?
           </AccordionTrigger>
           <AccordionContent className="text-xs lg:text-sm text-gray-500">
-            If you miss your bus, check for alternative options in the app,
-            contact customer support for assistance, and review the cancellation
-            and refund policies. If needed, update your booking for a future
-            trip.
+            You can refer a driver by sharing your unique referral link from
+            your dashboard. Simply navigate to the &apos;Referrals&apos;
+            section, copy your link, and send it to potential drivers.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2">
@@ -29,12 +28,10 @@ const FAQS = () => {
             How do I apply for withdrawal?
           </AccordionTrigger>
           <AccordionContent className="text-xs lg:text-sm text-gray-500">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Numquam
-            consectetur, ipsam ut sed labore impedit reiciendis in sint iusto
-            asperiores repellat quam suscipit odio explicabo quisquam id
-            corrupti veniam mollitia commodi animi architecto repudiandae.
-            Expedita, repellendus modi nesciunt nam optio nulla veniam dicta!
-            Accusamus culpa, nihil dolorem laudantium ab cupiditate.
+            Go to the &apos;Earnings&apos; section on your dashboard. Check your
+            total eligible earnings and click on the &apos;Withdraw&apos;
+            button. Fill in the required details, including your bank account,
+            and submit your request.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-3">
@@ -42,12 +39,9 @@ const FAQS = () => {
             What should I do if I forget my password?
           </AccordionTrigger>
           <AccordionContent className="text-xs lg:text-sm text-gray-500">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Numquam
-            consectetur, ipsam ut sed labore impedit reiciendis in sint iusto
-            asperiores repellat quam suscipit odio explicabo quisquam id
-            corrupti veniam mollitia commodi animi architecto repudiandae.
-            Expedita, repellendus modi nesciunt nam optio nulla veniam dicta!
-            Accusamus culpa, nihil dolorem laudantium ab cupiditate.
+            Click on the &apos;Forgot Password&apos; option on the login screen.
+            Enter your registered email, and a password reset link will be sent
+            to you. Follow the instructions to reset your password.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-4">
@@ -55,12 +49,11 @@ const FAQS = () => {
             How can I change my booking details?
           </AccordionTrigger>
           <AccordionContent className="text-xs lg:text-sm text-gray-500">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Numquam
-            consectetur, ipsam ut sed labore impedit reiciendis in sint iusto
-            asperiores repellat quam suscipit odio explicabo quisquam id
-            corrupti veniam mollitia commodi animi architecto repudiandae.
-            Expedita, repellendus modi nesciunt nam optio nulla veniam dicta!
-            Accusamus culpa, nihil dolorem laudantium ab cupiditate.
+            You earn a commission for every driver you refer once they start
+            completing trips. Payments are processed after the driver completes
+            trips, and TruBooker deducts its percentage for payment processing.
+            You can track your earnings in the &apos;Earnings&apos; section of
+            your dashboard. Once eligible, you can apply for withdrawal.
           </AccordionContent>
         </AccordionItem>
       </Accordion>
