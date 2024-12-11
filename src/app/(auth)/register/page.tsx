@@ -36,7 +36,7 @@ import axios from "axios";
 export default function RegisterComponent() {
   const RegisterFormSchema = z
     .object({
-      fisrt_name: z
+      first_name: z
         .string()
         .min(1, { message: "First name is required" })
         .max(10, {
@@ -92,6 +92,10 @@ export default function RegisterComponent() {
     // values.referral_code === undefined ? null : values.referral_code;
     // const formdata = { ...values, referral_code: code };
     // console.log(formdata);
+
+    setPhoneError("");
+    setEmailError("");
+    setPasswordError("");
     const formdata = { ...values };
     setLoading(true);
     try {
@@ -99,7 +103,7 @@ export default function RegisterComponent() {
 
       // if (response.status === 200) {
       if (response.status === 200) {
-        form.setValue("fisrt_name", "");
+        form.setValue("first_name", "");
         form.setValue("last_name", "");
         form.setValue("email", "");
         // form.setValue("referral_code", "");
@@ -116,26 +120,26 @@ export default function RegisterComponent() {
     } catch (error: any) {
       console.log(error);
       setLoading(false);
-      setPhoneError(  error.response?.data?.message?.phone.map(
-        (err: any, index: number) => (
+      setPhoneError(
+        error.response?.data?.message?.phone?.map((err: any, index: number) => (
           <div key={index}>
             <ul className="list-disc list-inside">
               <li>{err}</li>
             </ul>
           </div>
-        )
-      ));
-      setEmailError(  error.response?.data?.message?.email.map(
-        (err: any, index: number) => (
+        ))
+      );
+      setEmailError(
+        error.response?.data?.message?.email?.map((err: any, index: number) => (
           <div key={index}>
             <ul className="list-disc list-inside">
               <li>{err}</li>
             </ul>
           </div>
-        )
-      ));
+        ))
+      );
       setPasswordError(
-        error.response?.data?.message?.password.map(
+        error.response?.data?.message?.password?.map(
           (err: any, index: number) => (
             <div key={index}>
               <ul className="list-disc list-inside">
@@ -145,7 +149,6 @@ export default function RegisterComponent() {
           )
         )
       );
-     
     }
   };
   return (
@@ -161,13 +164,13 @@ export default function RegisterComponent() {
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
-                    name="fisrt_name"
+                    name="first_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>First Name</FormLabel>
                         <FormControl>
                           <Input
-                            id="fisrt_name"
+                            id="first_name"
                             type="text"
                             placeholder="Enter first name"
                             {...field}
@@ -215,7 +218,7 @@ export default function RegisterComponent() {
                             {...field}
                           />
                         </FormControl>
-                        <FormMessage />
+                        {!emailError ? <FormMessage /> : ""}
                         {emailError && <FormMessage>{emailError}</FormMessage>}
                       </FormItem>
                     )}
@@ -236,7 +239,7 @@ export default function RegisterComponent() {
                             {...field}
                           />
                         </FormControl>
-                        <FormMessage />
+                        {!phoneError ? <FormMessage /> : ""}
                         {phoneError && <FormMessage>{phoneError}</FormMessage>}
                       </FormItem>
                     )}
@@ -310,7 +313,9 @@ export default function RegisterComponent() {
                         </div>
                       </FormControl>
                       <FormMessage />
-                      {passwordError && <FormMessage>{passwordError}</FormMessage>}
+                      {passwordError && (
+                        <FormMessage>{passwordError}</FormMessage>
+                      )}
                     </FormItem>
                   )}
                 />
@@ -373,7 +378,7 @@ export default function RegisterComponent() {
                 >
                   {loading ? "Loading..." : "Sign Up"}
                 </Button>
-                <Link
+                {/* <Link
                   href=""
                   className="shadow-md py-3 w-full justify-center hover:bg-blue-50 rounded-lg flex items-center px-4"
                 >
@@ -383,7 +388,7 @@ export default function RegisterComponent() {
                       Continue with Google
                     </p>
                   </div>
-                </Link>
+                </Link> */}
               </div>
             </div>
           </form>

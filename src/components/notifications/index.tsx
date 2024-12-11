@@ -12,7 +12,7 @@ const Notifications = () => {
     // <div className="xl:sticky xl:top-[25vh] mb-10 xl:mb-5">
     <div className="mb-10 xl:mb-5">
       <Card className="w-full h-fit overflow-auto max-h-[500px] xl:shadow-xl border-none">
-        <CardHeader className="sticky pt-5 pb-3 top-0 z-50 bg-white text-left text-xl">
+        <CardHeader className="pt-5 pb-3 top-0 z-50 bg-white text-left text-xl">
           Notifications
         </CardHeader>
         <CardContent>

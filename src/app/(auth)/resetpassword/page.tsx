@@ -99,7 +99,7 @@ export default function ResetPassword() {
       >
         <IoChevronBackOutline className="h-6 w-6 text-gray-800" />
       </button>
-      <div className="lg:mx-auto w-full px-5 pt-10 pb-24 lg:w-8/12">
+      <div className="lg:mx-auto w-full px-5 pt-10 pb-24 lg:w-4/12">
         <h2 className=" w-full text-center font-bold text-3xl my-10">
           Reset your password
         </h2>
