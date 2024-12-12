@@ -36,18 +36,8 @@ import axios from "axios";
 export default function RegisterComponent() {
   const RegisterFormSchema = z
     .object({
-      first_name: z
-        .string()
-        .min(1, { message: "First name is required" })
-        .max(10, {
-          message: "Too long, max of 10 characters",
-        }),
-      last_name: z
-        .string()
-        .min(1, { message: "last name is required" })
-        .max(10, {
-          message: "Too long, max of 10 characters",
-        }),
+      first_name: z.string().min(1, { message: "First name is required" }),
+      last_name: z.string().min(1, { message: "last name is required" }),
       city: z.string().min(1, { message: "City is required" }).max(10, {
         message: "Too long, max of 10 characters",
       }),
