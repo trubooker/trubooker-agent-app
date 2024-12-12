@@ -12,7 +12,6 @@ const Support = () => {
           Help categories
         </h2>
         <div className="flex flex-col gap-y-3">
-          
           <div className="flex items-center mb-4 lg:mb-8">
             <div className="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 font-bold mr-3">
               <CiSettings className="w-6 h-6" />
@@ -20,7 +19,7 @@ const Support = () => {
             <div className=" w-[90%] flex flex-col gap-y-2">
               <span>Getting Started</span>
               <span className="text-xs text-gray-400">
-                Learn how to set up and begin using the agent platform.
+                Learn how to set up and begin using the connector platform.
               </span>
             </div>
           </div>

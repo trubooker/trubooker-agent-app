@@ -33,7 +33,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
       {userFetching || userLoading ? (
         <div className="fixed inset-0 flex flex-col gap-y-2 items-center justify-center bg-white z-50">
           {/* <div className="w-48 h-32 relative">
-            <Image src="/trubookerAgent.svg" alt="Logo" fill />
+            <Image src="/trubookerConnector.svg" alt="Logo" fill />
           </div> */}
           <Logo className="w-48 h-32" />
           <div className="">

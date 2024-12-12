@@ -3,7 +3,7 @@ import "./globals.css";
 import localFont from "next/font/local";
 
 export const metadata: Metadata = {
-  title: "Agent | truBooker",
+  title: "Connector | truBooker",
   icons: "/logo.svg",
 };
 

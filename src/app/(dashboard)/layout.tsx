@@ -6,7 +6,7 @@ import { Toaster } from "react-hot-toast";
 import localFont from "next/font/local";
 
 export const metadata: Metadata = {
-  title: "Agent | truBooker",
+  title: "Connector | truBooker",
   icons: "/logo.svg",
 };
 
