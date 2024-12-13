@@ -32,6 +32,9 @@ import { useLoggedInUser } from "@/hooks/useLoggedUser";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useUpdateProfileMutation } from "@/redux/services/Slices/userApiSlice";
+import ImageUploader from "@/components/ImageUploader";
+import { FaSpinner } from "react-icons/fa6";
+import { MdDeleteForever } from "react-icons/md";
 
 const FormSchema = z.object({
   first_name: z.any().optional(),
@@ -42,38 +45,46 @@ const FormSchema = z.object({
   gender: z.enum(["male", "female"]).optional(),
 });
 
+interface ImagePreview {
+  file: File;
+  url: string;
+}
+
 const Profile = () => {
   const { userData, userLoading, userRefetching } = useLoggedInUser();
   const [previewSrc, setPreviewSrc] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [images, setImages] = useState<ImagePreview[]>([]);
   const [dobError, setDobError] = useState("");
+  const [imageChange, setImageChange] = useState(false);
 
-  const handleFileChange = async (e: any) => {
-    const file = e.target.files?.[0];
+  // const handleFileChange = async (e: any) => {
+  //   const file = e.target.files?.[0];
 
-    if (file) {
-      const validImageTypes = ["image/jpeg", "image/jpg", "image/png"];
+  //   if (file) {
+  //     const validImageTypes = ["image/jpeg", "image/jpg", "image/png"];
 
-      // Check if the file type is valid
-      if (validImageTypes.includes(file.type)) {
-        const reader = new FileReader();
+  //     // Check if the file type is valid
+  //     if (validImageTypes.includes(file.type)) {
+  //       const reader = new FileReader();
 
-        reader.onloadend = () => {
-          setPreviewSrc(reader.result as string);
-        };
+  //       reader.onloadend = () => {
+  //         setPreviewSrc(reader.result as string);
+  //       };
 
-        reader.readAsDataURL(file);
-        setSelectedFile(file);
-      } else {
-        toast.error("Please upload a valid image file (JPEG, JPG, or PNG)");
-        setPreviewSrc("");
-      }
-    } else {
-      setPreviewSrc("");
-    }
-  };
+  //       reader.readAsDataURL(file);
+  //       setSelectedFile(file);
+  //     } else {
+  //       toast.error("Please upload a valid image file (JPEG, JPG, or PNG)");
+  //       setPreviewSrc("");
+  //     }
+  //   } else {
+  //     setPreviewSrc("");
+  //   }
+  // };
+
   const [update] = useUpdateProfileMutation();
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -105,13 +116,16 @@ const Profile = () => {
       ? "female"
       : undefined;
 
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+  const handleUploadPicture = async () => {
     setLoading(true);
 
     try {
-      if (selectedFile) {
+      if (images) {
         const formdata = new FormData();
-        selectedFile && formdata.append("profile_image", selectedFile);
+        images &&
+          images.forEach((image) => {
+            formdata.append("profile_image", image.file);
+          });
 
         const token = await fetchToken();
         const headers = {
@@ -128,12 +142,30 @@ const Profile = () => {
         );
 
         const resdata = await res.json();
+        console.log(resdata);
         if (resdata?.status == "success") {
-          // userRefetching();
+          toast.success(`Profile Image Updated!! ✅`);
+          setImages([]);
+          setImageChange(false);
           setLoading(false);
+          userRefetching();
         }
       }
+    } catch {
+      setLoading(false);
+      setImages([]);
+      setImageChange(false);
+      toast.error("File size is too large. Please upload a smaller file.");
+    }
+  };
 
+  const handleImageChange = () => {
+    setImageChange(true);
+  };
+
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setLoading(true);
+    try {
       const dateString = selectedDate
         ? selectedDate.toISOString().split("T")[0]
         : null;
@@ -166,32 +198,72 @@ const Profile = () => {
 
   return (
     <div>
-      <Goback name={"Profile"} />
       <div className="flex flex-col pt-4 justify-center w-full lg:w-8/12 gap-y-10">
-        <div className="text-center w-full">
-          <Avatar className="w-56 h-56 mx-auto">
-            <AvatarImage
-              src={previewSrc ? previewSrc : userData?.profile_image}
-            />
-            <div className="font-bold lg:text-2xl">
-              <label
-                htmlFor="fileInput"
-                className="bg-white p-5 border border-gray-600 rounded-full flex justify-center items-center  cursor-pointer absolute right-[34%] bottom-[32%]"
-              >
-                <FaCamera className="text-3xl lg:text-2xl" />
-                <input
-                  type="file"
-                  id="fileInput"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleFileChange}
+        <div className="flex justify-between items-center">
+          <Goback name={"Profile"} />
+          <div>
+            {images.length > 0 && imageChange ? (
+              <div className="flex justify-center max-w-[130px] mx-auto gap-x-3 items-center">
+                <MdDeleteForever
+                  onClick={() => {
+                    setImages([]);
+                    setImageChange(false);
+                  }}
+                  className="text-red-500 rounded-full cursor-pointer w-10 h-8 mx-auto"
                 />
-              </label>
+
+                <div
+                  onClick={handleUploadPicture}
+                  className="py-2 px-5 bg-[--primary] rounded-lg text-[13px] w-auto mx-auto text-white hover:text-white cursor-pointer border hover:bg-[--primary-hover]"
+                >
+                  {loading ? (
+                    <FaSpinner
+                      className="animate-spin w-4 h-4 text-white mx-auto"
+                      size={24}
+                    />
+                  ) : (
+                    "Upload"
+                  )}
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
+        </div>
+        <div className="text-center w-full">
+          <Avatar className="w-56 h-56 mb-5 mx-auto">
+            {imageChange ? (
+              <>
+                {images?.map((image, index: number) => (
+                  <>
+                    <AvatarImage src={image.url} />
+                  </>
+                ))}
+              </>
+            ) : (
+              <AvatarImage src={userData?.profile_image} />
+            )}
+            <div className="font-bold lg:text-2xl">
+              {images.length === 0 && !imageChange ? (
+                <ImageUploader
+                  setImages={setImages}
+                  onImageChange={handleImageChange}
+                  classname={
+                    "bg-white p-5 border border-gray-600 rounded-full flex justify-center items-center  cursor-pointer absolute right-[34%] bottom-[32%]"
+                  }
+                  trigger={<FaCamera className="text-3xl lg:text-2xl" />}
+                  multiple={false}
+                />
+              ) : (
+                ""
+              )}
             </div>
             <AvatarFallback>
               <IoPersonOutline />
             </AvatarFallback>
           </Avatar>
+
           <p className="mt-5 font-bold text-xl">
             {userData?.first_name} {userData?.last_name}
           </p>
