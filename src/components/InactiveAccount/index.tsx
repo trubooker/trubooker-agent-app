@@ -22,7 +22,7 @@ const InactiveAccount = () => {
         </p>
         <div className="flex items-center justify-center gap-x-6">
           <Link
-            href="mailto:trubookerofficial@gmail.com"
+            href="https://www.trubooker.com/contact"
             className="w-auto bg-[--primary] shadow-md text-white p-4 rounded-xl hover:scale-105 duration-300"
           >
             Send an email to truBooker Support

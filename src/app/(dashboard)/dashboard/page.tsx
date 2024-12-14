@@ -18,21 +18,24 @@ const Dashboard = () => {
           <div className="w-full xl:w-[80%] flex flex-col">
             <div className="grid grid-rows-1 lg:grid-cols-2 gap-4 w-full">
               <EarningsCard />
-              <div className="flex flex-row lg:flex-col gap-4">
-                {referall?.length > 0 ? (
-                  <Link href="/dashboard/referral/all">
-                    <DashboardCard
-                      title={"Referral(s)"}
-                      amount={referall?.length}
-                    />
-                  </Link>
-                ) : (
+              {referall?.length > 0 ? (
+                <Link
+                  href="/dashboard/referral/all"
+                  className="flex flex-row lg:flex-col gap-4"
+                >
                   <DashboardCard
                     title={"Referral(s)"}
                     amount={referall?.length}
                   />
-                )}
-              </div>
+                </Link>
+              ) : (
+                <div className="flex flex-row lg:flex-col gap-4">
+                  <DashboardCard
+                    title={"Referral(s)"}
+                    amount={referall?.length}
+                  />
+                </div>
+              )}
             </div>
             <div className="w-full hidden mt-14 xl:block">
               <ReferredDrivers />
