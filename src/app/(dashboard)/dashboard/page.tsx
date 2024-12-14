@@ -46,7 +46,7 @@ const Dashboard = () => {
           </div>
         </>
       </div>
-      <div className="xl:hidden">
+      <div className="xl:hidden mt-5">
         <ReferredDrivers />
       </div>
     </div>
