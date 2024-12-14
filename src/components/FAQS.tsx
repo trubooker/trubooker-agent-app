@@ -8,8 +8,8 @@ import {
 
 const FAQS = () => {
   return (
-    <div>
-      <h2 className=" w-full text-left text-gray-600 font-bold text-base my-3">
+    <div id="faq">
+      <h2 className=" w-full text-left text-gray-600 font-bold text-base py-3">
         FAQ&apos;s
       </h2>
       <Accordion type="single" collapsible className="w-full">

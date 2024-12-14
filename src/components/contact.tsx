@@ -68,7 +68,7 @@ const Contact = () => {
   };
 
   return (
-    <div>
+    <div id="contact">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <Card className="border-none shadow-none my-5">
