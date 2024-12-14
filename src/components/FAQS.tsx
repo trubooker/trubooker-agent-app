@@ -46,7 +46,7 @@ const FAQS = () => {
         </AccordionItem>
         <AccordionItem value="item-4">
           <AccordionTrigger className="font-medium text-sm text-left">
-            How can I change my booking details?
+            How do I get paid from driver referrals?
           </AccordionTrigger>
           <AccordionContent className="text-xs lg:text-sm text-gray-500">
             You earn a commission for every driver you refer once they start
