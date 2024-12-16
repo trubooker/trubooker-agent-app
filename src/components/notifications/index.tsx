@@ -93,62 +93,30 @@ const Notifications = () => {
     <div>
       <div className="">
         <Card className="w-full overflow-y-auto overflow-x-hidden max-h-[500px]">
-          <CardHeader className="sticky pt-4 pb-2 px-5 bg-white shadow-lg top-0 z-50 border-b text-left text-lg font-bold flex flex-row justify-between items-start">
-            <span>
+          <CardHeader className="sticky pt-4 pb-2 px-5 bg-white shadow-lg top-0 z-50 border-b text-left text-lg font-bold ">
+            <span className="flex flex-row justify-between items-start">
               Notifications
               <div>
-                {viewType === "read" ? (
-                  <small>
-                    <Badge
-                      variant="outline"
-                      className="text-[--primary] border-[--primary] mb-1"
-                    >
-                      Seen
-                    </Badge>
-                  </small>
+                {viewType === "unread" ? (
+                  <Badge
+                    onClick={() => setViewType("read")}
+                    variant="outline"
+                    className="cursor-pointer text-[white] bg-[--primary] border-[--primary] rounded-xl mb-1"
+                  >
+                    Unread
+                  </Badge>
                 ) : (
                   <Badge
+                    onClick={() => setViewType("unread")}
                     variant="outline"
-                    className="text-[--primary] border-[--primary] mb-1"
+                    className="cursor-pointer text-[--primary] border-[--primary] rounded-xl mb-1"
                   >
                     Unread
                   </Badge>
                 )}
               </div>
             </span>
-            <span>
-              {viewType === "read" ? (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <IoMailUnreadOutline
-                        onClick={() => setViewType("unread")}
-                        className="text-[--primary] cursor-pointer w-6 h-6 mx-auto"
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>View Unread Messages</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ) : (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <GoRead
-                        onClick={() => setViewType("read")}
-                        className="text-[--primary] cursor-pointer w-6 h-6 mx-auto"
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>View Read Messages</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-            </span>
           </CardHeader>
-
           <CardContent className="py-3 px-2">
             <>
               {Notification?.length > 0 ? (
