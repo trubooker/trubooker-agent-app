@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   Card,
   CardHeader,
@@ -18,16 +16,8 @@ import {
   useMarkOneAsReadMutation,
 } from "@/redux/services/Slices/notificationApiSlice";
 import { MdDeleteForever } from "react-icons/md";
-import { IoMailUnreadOutline } from "react-icons/io5";
-import { GoRead } from "react-icons/go";
 import { BsCheckAll } from "react-icons/bs";
 import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Notification } from "@/constants";
 import SwipeableNotification from "../SwipeableContent";
 
@@ -174,34 +164,23 @@ const Notifications = () => {
               )}
             </>
           </CardContent>
-          <CardFooter className="sticky z-50 bottom-0 bg-white shadow-lg border-t px-5 py-3">
-            <div className="flex gap-x-2 justify-end ms-auto">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <BsCheckAll
-                      onClick={handleMarkAllAsRead}
-                      className="text-[--primary] rounded-full cursor-pointer w-10 h-8 mx-auto"
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Mark all Notifications as Read</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <MdDeleteForever
-                      onClick={handleDeleteAll}
-                      className="text-red-500 rounded-full cursor-pointer w-10 h-8 mx-auto"
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Delete all Notifications</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+          <CardFooter className="sticky z-50 bottom-0 bg-white border-t px-5 py-3">
+            <div className="flex justify-between w-full">
+              <Badge
+                className="cursor-pointer text-[--primary] shadow-none flex gap-x-1"
+                onClick={handleMarkAllAsRead}
+              >
+                <BsCheckAll className="w-4 h-4" />
+                <span>Mark all as read</span>
+              </Badge>
+
+              <Badge
+                className="cursor-pointer text-red-500 shadow-none flex gap-x-1"
+                onClick={handleDeleteAll}
+              >
+                <MdDeleteForever className="w-4 h-4" />
+                <span>Delete all</span>
+              </Badge>
             </div>
           </CardFooter>
         </Card>
