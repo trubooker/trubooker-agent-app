@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
 import "./globals.css";
+import localFont from "next/font/local";
 
 export const metadata: Metadata = {
-  title: "Agent | truBooker",
+  title: "Connector | truBooker",
   icons: "/logo.svg",
 };
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["200", "300", "400"],
+const gilroy = localFont({
+  src: "./fonts/Gilroy-Regular.woff",
+  variable: "--font-gilroy",
+  weight: "100 200 300 400 500 600 700 800 900",
   display: "swap",
 });
 
@@ -20,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className={montserrat.className}>{children}</body>
+      <body className={gilroy.className}>{children}</body>
     </html>
   );
 }

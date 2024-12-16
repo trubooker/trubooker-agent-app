@@ -9,7 +9,7 @@ const InactiveAccount = () => {
     <div>
       <div className="fixed top-0 left-0 backdrop-blur-3xl bg-[#E9E7E0]/30 z-50 h-screen w-screen flex-col text-center flex justify-center gap-y-8 text-white">
         <div className="relative w-32 lg:w-64 mb-10 h-12 mx-auto">
-          <Image className="mx-auto" src={"/trubookerAgent.svg"} alt="" fill />
+          <Image className="mx-auto" src={"/logo.svg"} alt="" fill />
         </div>
         <div className="relative w-[70%] lg:w-1/4 h-48 lg:h-72 text-white p-10 rounded-2xl mx-auto">
           <Image className="mx-auto" src={"/deny.svg"} alt="" fill />
@@ -22,7 +22,7 @@ const InactiveAccount = () => {
         </p>
         <div className="flex items-center justify-center gap-x-6">
           <Link
-            href="mailto:trubookerofficial@gmail.com"
+            href="https://www.trubooker.com/contact"
             className="w-auto bg-[--primary] shadow-md text-white p-4 rounded-xl hover:scale-105 duration-300"
           >
             Send an email to truBooker Support

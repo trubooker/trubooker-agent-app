@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
 import "../globals.css";
 import LayoutWrapper from "@/components/LayoutWrapper";
-import { Montserrat } from "next/font/google";
 import StoreProvider from "@/redux/providers";
 import { Toaster } from "react-hot-toast";
+import localFont from "next/font/local";
 
 export const metadata: Metadata = {
-  title: "Agent | truBooker",
+  title: "Connector | truBooker",
   icons: "/logo.svg",
 };
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["200", "300", "400"],
+
+const gilroy = localFont({
+  src: "../fonts/Gilroy-Regular.woff",
+  variable: "--font-gilroy",
+  weight: "100 200 300 400 500 600 700 800 900",
   display: "swap",
 });
 
@@ -23,7 +25,7 @@ export default function RootLayout({
   return (
     <StoreProvider>
       <html lang="en" suppressHydrationWarning={true}>
-        <body className={montserrat.className} suppressHydrationWarning={true}>
+        <body className={gilroy.className} suppressHydrationWarning={true}>
           <LayoutWrapper>
             {children}
             <Toaster />

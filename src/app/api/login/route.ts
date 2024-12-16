@@ -27,7 +27,10 @@ export async function POST(req: Request, res: NextRequest) {
   });
 
   if (data?.status == "success") {
-    if (data?.data?.user?.role === "agent") {
+    if (
+      data?.data?.user?.role === "agent" ||
+      data?.data?.user?.role === "connector"
+    ) {
       const response = {
         data: data?.data?.user,
       };
@@ -37,7 +40,7 @@ export async function POST(req: Request, res: NextRequest) {
       });
     } else {
       return new Response(
-        JSON.stringify({ message: "Unauthorized!! Agents only" }),
+        JSON.stringify({ message: "Unauthorized!! Connectors only" }),
         {
           status: 401,
         }

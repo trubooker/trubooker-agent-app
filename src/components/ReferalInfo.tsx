@@ -17,7 +17,7 @@ const ReferralSteps = () => {
   return (
     <div className="w-full text-sm lg:text-base bg-white text-gray-700">
       <h2 className="text-lg font-medium mb-4 lg:mb-8">
-        Follow the steps below and get rewarded as an agent
+        Follow the steps below and get rewarded as a connector
       </h2>
 
       <div className="flex items-start mb-4 lg:mb-8">

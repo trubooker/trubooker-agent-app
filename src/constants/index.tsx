@@ -361,41 +361,41 @@ export const countries: Country[] = [
 ];
 
 export const Notification = [
-  // {
-  //   index: "1",
-  //   image:
-  //     "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load",
-  //   message: "Sandy Jay requested access the admin dashboard as an admin",
-  //   date: "59 minutes ago",
-  // },
-  // {
-  //   index: "2",
-  //   image:
-  //     "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load",
-  //   message: "Sandy Jay requested access the admin dashboard as an admin",
-  //   date: "59 minutes ago",
-  // },
-  // {
-  //   index: "3",
-  //   image:
-  //     "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load",
-  //   message: "Sandy Jay requested access the admin dashboard as an admin",
-  //   date: "59 minutes ago",
-  // },
-  // {
-  //   index: "4",
-  //   image:
-  //     "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load",
-  //   message: "Sandy Jay requested access the admin dashboard as an admin",
-  //   date: "59 minutes ago",
-  // },
-  // {
-  //   index: "5",
-  //   image:
-  //     "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load",
-  //   message: "Sandy Jay requested access the admin dashboard as an admin",
-  //   date: "59 minutes ago",
-  // },
+  {
+    index: "1",
+    image:
+      "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load",
+    message: "Sandy Jay requested access the admin dashboard as an admin",
+    date: "59 minutes ago",
+  },
+  {
+    index: "2",
+    image:
+      "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load",
+    message: "Sandy Jay requested access the admin dashboard as an admin",
+    date: "59 minutes ago",
+  },
+  {
+    index: "3",
+    image:
+      "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load",
+    message: "Sandy Jay requested access the admin dashboard as an admin",
+    date: "59 minutes ago",
+  },
+  {
+    index: "4",
+    image:
+      "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load",
+    message: "Sandy Jay requested access the admin dashboard as an admin",
+    date: "59 minutes ago",
+  },
+  {
+    index: "5",
+    image:
+      "https://images.pexels.com/photos/20594698/pexels-photo-20594698/free-photo-of-raised-arm-with-tattoo-over-antenna.png?auto=compress&cs=tinysrgb&w=400&lazy=load",
+    message: "Sandy Jay requested access the admin dashboard as an admin",
+    date: "59 minutes ago",
+  },
 ];
 
 export const Referall = [

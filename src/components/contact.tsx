@@ -28,8 +28,6 @@ import { useSendSupportMessageMutation } from "@/redux/services/Slices/contactSu
 import toast from "react-hot-toast";
 
 const Contact = () => {
-  const [phoneError, setPhoneError] = useState("");
-  const [emailError, setEmailError] = useState("");
   const contactFormSchema = z.object({
     firstName: z.string().min(1, { message: "First name is required" }),
     lastName: z.string().min(1, { message: "Last name is required" }),
@@ -70,7 +68,7 @@ const Contact = () => {
   };
 
   return (
-    <div>
+    <div id="contact">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <Card className="border-none shadow-none my-5">
@@ -92,11 +90,7 @@ const Contact = () => {
                       <FormItem>
                         <FormLabel>First Name</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="Esther"
-                            className="h-10"
-                            {...field}
-                          />
+                          <Input className="h-10" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -111,11 +105,7 @@ const Contact = () => {
                       <FormItem>
                         <FormLabel>Last Name</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="Adebisi"
-                            className="h-10"
-                            {...field}
-                          />
+                          <Input className="h-10" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -130,14 +120,9 @@ const Contact = () => {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input
-                            type="email"
-                            placeholder="esyadebisi@gmail.coms"
-                            className="h-10"
-                            {...field}
-                          />
+                          <Input type="email" className="h-10" {...field} />
                         </FormControl>
-                        {emailError && <FormMessage>{emailError}</FormMessage>}
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -150,13 +135,9 @@ const Contact = () => {
                       <FormItem>
                         <FormLabel>Phone number</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            placeholder="234*******"
-                            {...field}
-                          />
+                          <Input type="number" className="h-10" {...field} />
                         </FormControl>
-                        {phoneError && <FormMessage>{phoneError}</FormMessage>}
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -169,12 +150,7 @@ const Contact = () => {
                       <FormItem>
                         <FormLabel>Subject</FormLabel>
                         <FormControl>
-                          <Input
-                            type="text"
-                            placeholder="123, Test street, Abuja"
-                            className="h-10"
-                            {...field}
-                          />
+                          <Input type="text" className="h-10" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -189,11 +165,7 @@ const Contact = () => {
                       <FormItem>
                         <FormLabel>Message</FormLabel>
                         <FormControl>
-                          <Textarea
-                            placeholder="Drop a message..."
-                            className="h-20 resize-none"
-                            {...field}
-                          />
+                          <Textarea className="h-20 resize-none" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
