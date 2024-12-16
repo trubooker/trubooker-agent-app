@@ -38,9 +38,7 @@ export default function RegisterComponent() {
     .object({
       first_name: z.string().min(1, { message: "First name is required" }),
       last_name: z.string().min(1, { message: "last name is required" }),
-      city: z.string().min(1, { message: "City is required" }).max(10, {
-        message: "Too long, max of 10 characters",
-      }),
+      city: z.string().min(1, { message: "City is required" }),
       email: z
         .string()
         .email({ message: "Email is invalid" })
@@ -48,7 +46,7 @@ export default function RegisterComponent() {
       phone: z.string({ message: "Phone number is required" }),
       password: z
         .string()
-        .min(6, { message: "Password must be 6 chracters or more" }),
+        .min(6, { message: "Password must be 6 characters or more" }),
       iagree: z.boolean(),
       // referral_code: z.string().optional(),
       password_confirmation: z.string(),
