@@ -26,6 +26,7 @@ const Notifications = () => {
   const { data, isLoading, isFetching } = useFetchNotificationsQuery({
     type: viewType,
   });
+  const notification = data?.data;
 
   const [markAllAsRead, { isLoading: markAllLoading }] =
     useMarkAllAsReadMutation();
@@ -91,7 +92,7 @@ const Notifications = () => {
             <span className="flex flex-row justify-between items-start">
               Notifications
               <div>
-                {data?.length > 0 ? (
+                {notification?.length > 0 ? (
                   <>
                     {viewType === "unread" ? (
                       <Badge
@@ -119,9 +120,9 @@ const Notifications = () => {
           </CardHeader>
           <CardContent className="py-3 px-2">
             <>
-              {data?.length > 0 ? (
+              {notification?.length > 0 ? (
                 <>
-                  {data?.map((notification: any) => (
+                  {notification?.map((notification: any) => (
                     <SwipeableNotification
                       key={notification.index}
                       index={notification.index}
@@ -174,7 +175,7 @@ const Notifications = () => {
               )}
             </>
           </CardContent>
-          {data?.length > 0 ? (
+          {notification?.length > 0 ? (
             <>
               <CardFooter className="sticky z-30 bottom-0 bg-white border-t px-5 py-3">
                 <div className="flex justify-between w-full">
