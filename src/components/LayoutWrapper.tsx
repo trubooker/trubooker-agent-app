@@ -91,7 +91,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
                     </div>
                   </header>
                 )}
-                <div className="flex flex-1 flex-col gap-4 py-10 lg:px-20 px-5">
+                <div className="flex flex-1 flex-col gap-4 py-10 lg:px-10 px-5">
                   {children}
                 </div>
               </SidebarInset>
