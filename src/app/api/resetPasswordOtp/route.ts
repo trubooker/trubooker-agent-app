@@ -30,7 +30,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     });
   } else {
     const response = {
-      message: data?.errors,
+      message: data?.error?.message,
     };
     return new Response(JSON.stringify(response), {
       status: 400,

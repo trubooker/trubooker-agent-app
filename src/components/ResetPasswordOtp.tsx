@@ -92,22 +92,23 @@ const ResetPasswordOTPForm = () => {
     try {
       const response = await axios.post(`/api/resetPasswordOtp`, value);
       if (response.status === 200) {
-        setLoading(false), toast.success("Successfully verified!");
+        setLoading(false);
+        toast.success("Successfully verified!");
         setTimeout(() => {
           router.push(`/resetpassword?email=${email}&reference=${data.code}`);
         }, 3000);
       }
     } catch (error: any) {
-      if (error?.status === 400 || error?.status === 503) {
+      console.log(error);
+      setLoading(false);
+      if (error?.status === 500 || error?.status === 503) {
         toast.error("Internal Server error");
       }
 
-      if (error?.status !== 400) {
-        toast.error(`${`Error Occured!! Start over!`}`);
-        setTimeout(() => {
-          router.back;
-        }, 3000);
+      if (error?.status === 400) {
+        toast.error(error?.response?.data?.message);
       }
+      form.setValue("code", "");
     }
   };
 
