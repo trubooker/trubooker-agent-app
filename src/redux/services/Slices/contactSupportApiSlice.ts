@@ -15,4 +15,3 @@ const supportApi = supportApiConfig.injectEndpoints({
 });
 
 export const { useSendSupportMessageMutation } = supportApi;
-``;

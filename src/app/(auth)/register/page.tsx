@@ -21,16 +21,7 @@ import { useRouter } from "next/navigation";
 import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
-import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { countries, states } from "@/constants";
 import axios from "axios";
 
 export default function RegisterComponent() {
@@ -101,9 +92,7 @@ export default function RegisterComponent() {
         form.setValue("password", "");
         form.setValue("password_confirmation", "");
         setLoading(false);
-        setTimeout(() => {
-          router.push(`/otp?email=${values?.email}`);
-        }, 1000);
+        router.push(`/otp?email=${values?.email}`);
       }
     } catch (error: any) {
       console.log(error);
@@ -223,7 +212,7 @@ export default function RegisterComponent() {
                         <FormControl>
                           <Input
                             type="number"
-                            placeholder="234*******"
+                            placeholder="Enter phone number"
                             {...field}
                           />
                         </FormControl>
@@ -349,8 +338,14 @@ export default function RegisterComponent() {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none flex flex-col">
-                      <FormLabel className="text-gray-600 mt-0.5">
-                        I agree to terms & conditions and privacy policy
+                      <FormLabel className="text-gray-600 flex items-center gap-x-1 mt-0.5">
+                        <span>I agree to</span>
+                        <Link
+                          className="text-[--primary]"
+                          href={"/privacypolicy"}
+                        >
+                          terms & conditions and privacy policy
+                        </Link>
                       </FormLabel>
                       <FormMessage />
                     </div>
