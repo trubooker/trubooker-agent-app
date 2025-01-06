@@ -74,7 +74,13 @@ const SwipeableNotification: React.FC<{
           description={""}
           content={
             <NotificationOpenModal
-              body={content?.body}
+              body={
+                content?.body ? (
+                  content?.body
+                ) : (
+                  <div className="italic text-gray-400">No Data</div>
+                )
+              }
               created_at={content?.created_at}
             />
           }
