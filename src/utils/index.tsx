@@ -1,5 +1,6 @@
 import { parseISO, isValid, format } from "date-fns";
 import { enUS } from "date-fns/locale";
+import { Divide } from "lucide-react";
 
 // export const dateFormaterAndTime = (date: any) => {
 //   const parsedDate = parseISO(date);
@@ -78,9 +79,13 @@ export function reverseArray(arr: any[]) {
   return arr?.slice()?.reverse();
 }
 
-export const truncateText = (text: string, maxLength: number = 20) => {
-  if (text.length > maxLength) {
-    return text.slice(0, maxLength) + "...";
+export const truncateText = (text: string | null, maxLength: number = 20) => {
+  if (text) {
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength) + "...";
+    }
+  } else {
+    return <div className="italic text-gray-400">No Data</div>;
   }
   return text;
 };

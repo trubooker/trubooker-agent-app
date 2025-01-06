@@ -24,7 +24,7 @@ const Referred = ({ Referall }: any) => {
             <div key={index}>
               <div className="flex items-start gap-x-3 w-full my-5">
                 <small className="text-gray-500">#{index + 1}</small>
-                <div className="flex justify-between text-sm lg:text-base items-center w-full">
+                <div className="grid md:grid-cols-3 grid-cols-2 justify-between text-sm lg:text-base items-center w-full">
                   <div>
                     <div className="flex flex-col gap-y-2">
                       <small className="text-gray-500">Driver: </small>
@@ -32,7 +32,7 @@ const Referred = ({ Referall }: any) => {
                     </div>
                   </div>
 
-                  <div className="hidden md:block">
+                  <div className="hidden md:block mx-auto">
                     <div className="flex flex-col gap-y-2">
                       <small className="text-gray-500">Referral Date: </small>
                       <small>
@@ -50,7 +50,7 @@ const Referred = ({ Referall }: any) => {
 
                   <div>
                     <div className="flex flex-col gap-y-2">
-                      <small className="text-gray-500">Earnings: </small>
+                      <small className="text-gray-500 text-end">Earnings: </small>
                       <span className="font-semibold text-sm text-end">
                         ₦ {data?.earned_amount}
                       </span>
