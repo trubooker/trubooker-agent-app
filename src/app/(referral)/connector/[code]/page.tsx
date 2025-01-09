@@ -9,9 +9,9 @@ const ReferredSuccessfully = () => {
   const param = useParams();
   const code = String(param.code);
   const handleDownload = () => {
-    // Replace with the actual app download link
-    window.location.href = "https://example.com/trubooker-drivers-app";
+    // window.location.href = "Replace with the actual app download link"
   };
+  
   return (
     <div className="mx-5">
       <div className="flex fixed mt-10 items-center my-2 lg:my-5 w-full">
