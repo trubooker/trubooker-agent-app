@@ -19,6 +19,7 @@ import InactiveAccount from "./InactiveAccount";
 import BouncingBall from "./BounceXanimation";
 import Logo from "@/public/Logo";
 import { useRouter } from "next/navigation";
+import AnnouncementsCard from "./AnnouncementsCard";
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   useAuthCheck();
@@ -40,7 +41,11 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         </div>
       ) : (
         <div>
-          {userData?.status === "active" ? "" : <InactiveAccount />}
+          {userData?.status === "active" ? (
+            <AnnouncementsCard />
+          ) : (
+            <InactiveAccount />
+          )}
           <>
             <LogoutModal open={openLog} setOpen={setOpenLog} />
             <SidebarProvider>
