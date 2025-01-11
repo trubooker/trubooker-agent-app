@@ -68,7 +68,7 @@ const ReferralSteps = () => {
         </p>
         <p className="mt-2 text-sm">
           Small percentage of the earnings is credited to you for each trip the
-          driver completes, until you earn 1000 Naira from that driver.
+          driver completes, until you earn 2,500 Naira from that driver.
         </p>
       </div>
     </div>

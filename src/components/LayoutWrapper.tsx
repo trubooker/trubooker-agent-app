@@ -17,8 +17,9 @@ import useAuthCheck from "@/hooks/useAuthCheck";
 import { useLoggedInUser } from "@/hooks/useLoggedUser";
 import InactiveAccount from "./InactiveAccount";
 import BouncingBall from "./BounceXanimation";
-import Image from "next/image";
 import Logo from "@/public/Logo";
+import { useRouter } from "next/navigation";
+import AnnouncementsCard from "./AnnouncementsCard";
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   useAuthCheck();
@@ -27,6 +28,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const handleLogout = () => {
     setOpenLog(true);
   };
+  const router = useRouter();
   const { userData, userLoading, userFetching } = useLoggedInUser();
   return (
     <>
@@ -39,7 +41,11 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         </div>
       ) : (
         <div>
-          {userData?.status === "active" ? "" : <InactiveAccount />}
+          {userData?.status === "active" ? (
+            <AnnouncementsCard />
+          ) : (
+            <InactiveAccount />
+          )}
           <>
             <LogoutModal open={openLog} setOpen={setOpenLog} />
             <SidebarProvider>
@@ -51,7 +57,10 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
                 {isMobile ? (
                   <header className="flex h-20 w-full justify-between shrink-0 items-center gap-2 border-b px-4">
                     <div className="flex w-full items-center space-x-4">
-                      <Avatar className="w-14 h-14">
+                      <Avatar
+                        onClick={() => router.push("/profile")}
+                        className="w-14 h-14 cursor-pointer"
+                      >
                         <AvatarImage src={userData?.profile_image} />
                         <AvatarFallback>
                           <IoPersonOutline />
@@ -82,7 +91,10 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
                       <p className="text-base text-black">
                         Hello, {userData?.first_name} {userData?.last_name}
                       </p>
-                      <Avatar className="w-10 h-10">
+                      <Avatar
+                        onClick={() => router.push("/profile")}
+                        className="w-10 h-10 cursor-pointer"
+                      >
                         <AvatarImage src={userData?.profile_image} />
                         <AvatarFallback>
                           <IoPersonOutline />
