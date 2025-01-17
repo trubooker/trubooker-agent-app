@@ -50,6 +50,7 @@ const WithdrawFunds = () => {
   });
   const [accountError, setAccountError] = useState("");
   const [bankError, setBankError] = useState("");
+  const [amountError, setAmountError] = useState("");
   const [bankSearch, setBankSearch] = useState(""); // User's search input
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDropdownInputs, setShowDropdownInputs] = useState(false);
@@ -196,9 +197,11 @@ const WithdrawFunds = () => {
     };
     setAccountError("");
     setBankError("");
+    setAmountError("");
     await withdraw(formData)
       .unwrap()
-      .then((res) => {
+      .then((res: any) => {
+        toast.success(res?.message);
         console.log(res);
         form.setValue("account_number", "");
         form.setValue("narration", "");
@@ -210,11 +213,13 @@ const WithdrawFunds = () => {
         setBeneficiaryBankHolderName(null);
         setBeneficiaryAccountNumber(null);
         setBeneficiaryCode(null);
+        setShowDropdownInputs(false);
         setBankSearch("");
       })
       .catch((err) => {
-        if (err?.status !== 503) {
-          toast.error(err?.data?.error?.message?.message);
+        console.log(err);
+        if (err?.status === 503) {
+          toast.error("Service Unavailable");
           setShowDropdownInputs(false);
           form.setValue("narration", "");
           form.setValue("bank_holder_name", "");
@@ -228,8 +233,18 @@ const WithdrawFunds = () => {
           setBeneficiaryCode(null);
           setBankSearch("");
         }
-        if (err?.status === 503) {
-          toast.error("Service Unavailable");
+        if (err.status === 422) {
+          setAmountError(
+            err?.data?.errors?.amount?.map((err: any, index: number) => (
+              <div key={index}>
+                <ul className="list-disc list-inside">
+                  <li>{err}</li>
+                </ul>
+              </div>
+            ))
+          );
+        } else {
+          toast.error(err?.data?.error?.message?.message);
           setShowDropdownInputs(false);
           form.setValue("narration", "");
           form.setValue("bank_holder_name", "");
@@ -481,7 +496,9 @@ const WithdrawFunds = () => {
                                     {...field}
                                   />
                                 </FormControl>
-                                <FormMessage />
+                                {amountError && (
+                                  <FormMessage>{amountError}</FormMessage>
+                                )}
                               </FormItem>
                             )}
                           />
