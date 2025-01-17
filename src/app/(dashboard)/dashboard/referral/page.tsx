@@ -15,7 +15,7 @@ const Referall = () => {
   const referall = data?.data;
   const [copied, setCopied] = useState(false);
   const { userData } = useLoggedInUser();
-  const referralLink = `Trubooker.com/${userData?.referral}`;
+  const referralLink = `https://connectors.trubooker.com/connector/${userData?.referral}`;
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(referralLink)
@@ -36,7 +36,7 @@ const Referall = () => {
           </p>
           <div className="border border-gray-400 py-3 px-4 rounded-lg w-full justify-between items-center flex">
             <p className="text-left text-gray-400 text-sm">
-              {truncateText(referralLink, 18)}
+              {truncateText(referralLink, 30)}
             </p>
             <Button
               onClick={handleCopyLink}
