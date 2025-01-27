@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 
 const ReferredDrivers = () => {
   const { userData: data } = useLoggedInUser();
-  const referralLink = `Trubooker.com/${data?.referral}`;
+  const referralLink = `https://connectors.trubooker.com/connector/${data?.referral}`;
   const [copied, setCopied] = useState(false);
   const handleCopyLink = () => {
     navigator.clipboard
@@ -36,7 +36,9 @@ const ReferredDrivers = () => {
         <li className="my-2">Drivers sign up using your link.</li>
       </ul>
       <div className="border border-gray-400 py-3 px-4 rounded-lg w-full justify-between items-center flex">
-        <p className="text-left text-gray-400 text-sm">{referralLink}</p>
+        <p className="text-left text-gray-400 text-sm">
+          {truncateText(referralLink, 30)}
+        </p>
         <Button onClick={handleCopyLink} variant="ghost" className="text-sm">
           {copied ? "Copied" : "Copy"}
         </Button>

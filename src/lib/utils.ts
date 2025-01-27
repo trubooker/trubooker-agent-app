@@ -18,3 +18,11 @@ export const truncateNumber = (text: string, maxLength: number = 20) => {
   }
   return text;
 };
+
+export const truncateTextDynamically = (
+  text: string,
+  maxLength: number
+): string => {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 3)}...`;
+};

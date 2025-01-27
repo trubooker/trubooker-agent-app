@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 export function SidebarOptInForm() {
   const { userData: data } = useLoggedInUser();
   const router = useRouter();
-  const referralLink = `Trubooker.com/${data?.referral}`;
+  const referralLink = `https://connectors.trubooker.com/connector/${data?.referral}`;
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(referralLink)

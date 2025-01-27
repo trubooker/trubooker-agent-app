@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 
 const ReferralSteps = () => {
   const { userData } = useLoggedInUser();
-  const referralLink = `Trubooker.com/${userData?.referral}`;
+  const referralLink = `https://connectors.trubooker.com/connector/${userData?.referral}`;
 
   const handleCopyLink = () => {
     navigator.clipboard

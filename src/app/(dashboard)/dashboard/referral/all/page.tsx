@@ -15,7 +15,7 @@ const AllReferredDrivers = () => {
   const referall = data?.data;
   const [copied, setCopied] = useState(false);
   const { userData } = useLoggedInUser();
-  const referralLink = `Trubooker.com/${userData?.referral}`;
+  const referralLink = `https://connectors.trubooker.com/connector/${userData?.referral}`;
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(referralLink)
