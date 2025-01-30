@@ -255,7 +255,6 @@ const WithdrawFunds = () => {
           );
         } else {
           toast.error(err?.data?.error?.message?.message);
-          clearStates();
         }
       });
   };
