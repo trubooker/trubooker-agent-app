@@ -65,18 +65,19 @@ export function TransactionPin({
                 <FormItem className="text-center ">
                   <FormControl>
                     <InputOTP
+                      autoFocus
                       maxLength={6}
                       {...field}
                       onChange={(e) => {
                         field.onChange(e); // Update form state
-                        if (e.length === 6) {
+                        if (e.length === 4) {
                           onSelectValues(e); // Auto-submit when full
                           setOpen(false);
                         }
                       }}
                     >
                       <InputOTPGroup className="w-full max:w-10/12 justify-around">
-                        {[...Array(6)].map((_, index) => (
+                        {[...Array(4)].map((_, index) => (
                           <InputOTPSlot
                             key={index}
                             index={index}
