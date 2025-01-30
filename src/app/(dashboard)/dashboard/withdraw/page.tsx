@@ -26,6 +26,7 @@ import { DrawerDialogDemo } from "@/components/DualModal";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import toast from "react-hot-toast";
 import BouncingBall from "@/components/BounceXanimation";
+import { TransactionPin } from "@/components/DualModal/ReusableDualModal";
 
 const WithdrawFunds = () => {
   const FormSchema = z.object({
@@ -54,9 +55,10 @@ const WithdrawFunds = () => {
   const [bankSearch, setBankSearch] = useState(""); // User's search input
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDropdownInputs, setShowDropdownInputs] = useState(false);
-
+  const [transactionPinExist, setTransactionPinExist] = useState(false);
   //  Beneficiary states
   const [beneficiaryId, setBeneficiaryId] = useState<string | null>(null);
+  const [transactionPin, setTransactionPin] = useState<string | null>(null);
   const [beneficiaryBankName, setBeneficiaryBankName] = useState<string | null>(
     null
   );
@@ -103,6 +105,12 @@ const WithdrawFunds = () => {
     setBeneficiaryCode(bank_code);
   };
 
+  const handleTransactionPin = (code: string) => {
+    setTransactionPin(code);
+    setTransactionPinExist(true);
+    console.log("code: ", code);
+  };
+
   const handleClose = () => {
     setIsFadingOut(true);
     setTimeout(() => {
@@ -120,6 +128,8 @@ const WithdrawFunds = () => {
     setBeneficiaryAccountNumber(null);
     setBeneficiaryCode(null);
     setBankSearch("");
+    setTransactionPin(null);
+    setTransactionPinExist(false);
   };
 
   useEffect(() => {
@@ -187,6 +197,23 @@ const WithdrawFunds = () => {
     }
   };
 
+  const clearStates = () => {
+    setShowDropdownInputs(false);
+    form.setValue("narration", "");
+    form.setValue("bank_holder_name", "");
+    form.setValue("amount", "");
+    form.setValue("bank_name", "");
+    form.setValue("account_number", "");
+    setBeneficiaryId(null);
+    setBeneficiaryBankName(null);
+    setBeneficiaryBankHolderName(null);
+    setBeneficiaryAccountNumber(null);
+    setBeneficiaryCode(null);
+    setBankSearch("");
+    setTransactionPin(null);
+    setTransactionPinExist(false);
+  };
+
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     const formData = {
       ...values,
@@ -194,44 +221,27 @@ const WithdrawFunds = () => {
       beneficiary_id: beneficiaryId ? String(beneficiaryId) : null,
       bank_code: beneficiaryCode || selectedBank.bank_code,
       save_beneficiary: true,
+      transaction_pin: transactionPin,
     };
+    if (!transactionPin) {
+      return;
+    }
+    // console.log("formData: ", formData);
     setAccountError("");
     setBankError("");
     setAmountError("");
-    await withdraw(formData)
+    withdraw(formData)
       .unwrap()
       .then((res: any) => {
         toast.success(res?.message);
         console.log(res);
-        form.setValue("account_number", "");
-        form.setValue("narration", "");
-        form.setValue("bank_holder_name", "");
-        form.setValue("bank_name", "");
-        form.setValue("amount", "");
-        setBeneficiaryId(null);
-        setBeneficiaryBankName(null);
-        setBeneficiaryBankHolderName(null);
-        setBeneficiaryAccountNumber(null);
-        setBeneficiaryCode(null);
-        setShowDropdownInputs(false);
-        setBankSearch("");
+        clearStates();
       })
       .catch((err) => {
         console.log(err);
         if (err?.status === 503) {
           toast.error("Service Unavailable");
-          setShowDropdownInputs(false);
-          form.setValue("narration", "");
-          form.setValue("bank_holder_name", "");
-          form.setValue("amount", "");
-          form.setValue("bank_name", "");
-          form.setValue("account_number", "");
-          setBeneficiaryId(null);
-          setBeneficiaryBankName(null);
-          setBeneficiaryBankHolderName(null);
-          setBeneficiaryAccountNumber(null);
-          setBeneficiaryCode(null);
-          setBankSearch("");
+          clearStates();
         }
         if (err.status === 422) {
           setAmountError(
@@ -245,18 +255,7 @@ const WithdrawFunds = () => {
           );
         } else {
           toast.error(err?.data?.error?.message?.message);
-          setShowDropdownInputs(false);
-          form.setValue("narration", "");
-          form.setValue("bank_holder_name", "");
-          form.setValue("amount", "");
-          form.setValue("bank_name", "");
-          form.setValue("account_number", "");
-          setBeneficiaryId(null);
-          setBeneficiaryBankName(null);
-          setBeneficiaryBankHolderName(null);
-          setBeneficiaryAccountNumber(null);
-          setBeneficiaryCode(null);
-          setBankSearch("");
+          clearStates();
         }
       });
   };
@@ -284,7 +283,7 @@ const WithdrawFunds = () => {
     <div>
       <Goback name={"Apply for withdrawal"} />
       <div className="h-full flex flex-col justify-center">
-        <div className="w-full lg:px-5 pb-24 lg:w-8/12">
+        <div className="w-full lg:px-5 pb-10 lg:pb-24 lg:w-8/12">
           {!showDropdownInputs && (
             <DrawerDialogDemo
               onSelectBeneficiary={handleBeneficiarySelection}
@@ -525,41 +524,41 @@ const WithdrawFunds = () => {
                             )}
                           />
                         </div>
-                        {/* <FormField
-                          control={form.control}
-                          name="save_beneficiary"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                              <div className="space-y-1 leading-none flex flex-col">
-                                <FormLabel className="text-gray-600 mt-0.5">
-                                  Add as beneficiary
-                                </FormLabel>
-                                <FormMessage />
-                              </div>
-                            </FormItem>
-                          )}
-                        /> */}
                       </div>
                     </div>
                   )}
                 </div>
               </div>
+
               {showDropdownInputs && (
-                <div className="flex flex-col gap-y-4 mt-5">
-                  <Button
-                    type="submit"
-                    className="w-full h-12 rounded-xl text-white bg-[--primary] hover:bg-[--primary-hover]"
-                    disabled={withdrawLoading}
-                  >
-                    {withdrawLoading ? "Loading..." : "Confirm Withdrawal"}
-                  </Button>
-                </div>
+                <>
+                  {!transactionPinExist ? (
+                    <div className="my-6">
+                      <TransactionPin
+                        onSelectValues={handleTransactionPin}
+                        exists={transactionPinExist}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex gap-x-3 my-6 w-full">
+                        <TransactionPin
+                          onSelectValues={handleTransactionPin}
+                          exists={transactionPinExist}
+                        />
+                        <Button
+                          type="submit"
+                          className={`w-full h-12 rounded-xl text-white bg-[--primary] mt-5 hover:bg-[--primary-hover]`}
+                          disabled={withdrawLoading || !transactionPinExist}
+                        >
+                          {withdrawLoading
+                            ? "Loading..."
+                            : "Confirm Withdrawal"}
+                        </Button>
+                      </div>
+                    </>
+                  )}
+                </>
               )}
             </form>
           </Form>
