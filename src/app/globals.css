@@ -99,3 +99,8 @@ html ::-webkit-scrollbar-track {
 html ::-webkit-scrollbar-thumb {
   background-color: #02579e;
 }
+
+.spin-button-none::-webkit-outer-spin-button,
+.spin-button-none::-webkit-inner-spin-button {
+  appearance: none;
+}

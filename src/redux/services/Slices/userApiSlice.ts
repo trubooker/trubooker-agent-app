@@ -19,6 +19,21 @@ const userApi = userApiConfig.injectEndpoints({
       invalidatesTags: ["User"],
     }),
 
+    createTransactionPin: builder.mutation({
+      query: ({
+        pin,
+        pin_confirmation,
+      }: {
+        pin: number;
+        pin_confirmation: number;
+      }) => ({
+        url: `/transaction-pin/create`,
+        method: "POST",
+        body: { pin, pin_confirmation },
+      }),
+      invalidatesTags: ["User"],
+    }),
+
     updatePassword: builder.mutation({
       query: ({ current_password, password, password_confirmation }: any) => ({
         url: `/password-update`,
@@ -33,5 +48,6 @@ const userApi = userApiConfig.injectEndpoints({
 export const {
   useGetCurrentUserQuery,
   useUpdateProfileMutation,
+  useCreateTransactionPinMutation,
   useUpdatePasswordMutation,
 } = userApi;

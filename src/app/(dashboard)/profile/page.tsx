@@ -35,6 +35,7 @@ import { useUpdateProfileMutation } from "@/redux/services/Slices/userApiSlice";
 import ImageUploader from "@/components/ImageUploader";
 import { FaSpinner } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
+import CreateTransactionPin from "@/components/CreateTransactionPin";
 
 const FormSchema = z.object({
   first_name: z.any().optional(),
@@ -533,6 +534,7 @@ const Profile = () => {
           </form>
         </Form>
         <PasswordUpdate />
+        <CreateTransactionPin />
       </div>
     </div>
   );

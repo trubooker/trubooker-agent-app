@@ -4,8 +4,10 @@ import * as React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -35,7 +37,7 @@ import {
 
 const FormSchema = z.object({
   code: z.string().min(6, {
-    message: "Enter OTP code sent to your email. Check spam as well",
+    message: "Enter Transaction Pin",
   }),
 });
 
@@ -107,7 +109,7 @@ export function TransactionPin({
                 : "bg-[--primary-orange] hover:bg-[--primary-orange-hover] w-[150px]"
             }  rounded-xl text-white mt-5`}
           >
-            {!exists ? "Confirm Withdrawal" : "Enter Pin"}
+            {!exists ? "Confirm Withdrawal" : "Edit Pin"}
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
@@ -118,6 +120,13 @@ export function TransactionPin({
             </DialogDescription>
           </DialogHeader>
           <div className="px-4 mt-5">{EnterTransactionPin()}</div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button className="w-full mt-8" variant="outline">
+                Cancel
+              </Button>
+            </DialogClose>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     );
@@ -133,7 +142,7 @@ export function TransactionPin({
               : "bg-[--primary-orange] hover:bg-[--primary-orange-hover] w-[150px]"
           }  rounded-xl text-white mt-5`}
         >
-          {!exists ? "Confirm Withdrawal" : "Enter Pin"}
+          {!exists ? "Confirm Withdrawal" : "Edit Pin"}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
