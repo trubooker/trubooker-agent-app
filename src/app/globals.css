@@ -17,6 +17,7 @@ body {
     --primary: #5554ed;
     --primary-hover: #7d7df6;
     --primary-orange: #fd8c00;
+    --primary-orange-hover: #f9a947;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -97,4 +98,9 @@ html ::-webkit-scrollbar-track {
 }
 html ::-webkit-scrollbar-thumb {
   background-color: #02579e;
+}
+
+.spin-button-none::-webkit-outer-spin-button,
+.spin-button-none::-webkit-inner-spin-button {
+  appearance: none;
 }
