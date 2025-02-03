@@ -534,7 +534,7 @@ const Profile = () => {
           </form>
         </Form>
         <PasswordUpdate />
-        <CreateTransactionPin />
+        {/* <CreateTransactionPin /> */}
       </div>
     </div>
   );

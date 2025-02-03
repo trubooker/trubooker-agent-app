@@ -26,6 +26,7 @@ export default function AnnouncementsCard() {
     isLoading: loading,
     data: data,
     isFetching,
+    error,
   } = useGetAnnouncementsQuery(null);
 
   console.log("Announcement", data);

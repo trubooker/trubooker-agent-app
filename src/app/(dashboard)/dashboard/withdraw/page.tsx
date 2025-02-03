@@ -26,7 +26,7 @@ import { DrawerDialogDemo } from "@/components/DualModal";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import toast from "react-hot-toast";
 import BouncingBall from "@/components/BounceXanimation";
-import { TransactionPin } from "@/components/DualModal/ReusableDualModal";
+// import { TransactionPin } from "@/components/DualModal/ReusableDualModal";
 
 const WithdrawFunds = () => {
   const FormSchema = z.object({
@@ -55,10 +55,10 @@ const WithdrawFunds = () => {
   const [bankSearch, setBankSearch] = useState(""); // User's search input
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDropdownInputs, setShowDropdownInputs] = useState(false);
-  const [transactionPinExist, setTransactionPinExist] = useState(false);
+  // const [transactionPinExist, setTransactionPinExist] = useState(false);
   //  Beneficiary states
   const [beneficiaryId, setBeneficiaryId] = useState<string | null>(null);
-  const [transactionPin, setTransactionPin] = useState<string | null>(null);
+  // const [transactionPin, setTransactionPin] = useState<string | null>(null);
   const [beneficiaryBankName, setBeneficiaryBankName] = useState<string | null>(
     null
   );
@@ -105,11 +105,11 @@ const WithdrawFunds = () => {
     setBeneficiaryCode(bank_code);
   };
 
-  const handleTransactionPin = (code: string) => {
-    setTransactionPin(code);
-    setTransactionPinExist(true);
-    console.log("code: ", code);
-  };
+  // const handleTransactionPin = (code: string) => {
+  //   setTransactionPin(code);
+  //   setTransactionPinExist(true);
+  //   console.log("code: ", code);
+  // };
 
   const handleClose = () => {
     setIsFadingOut(true);
@@ -128,8 +128,8 @@ const WithdrawFunds = () => {
     setBeneficiaryAccountNumber(null);
     setBeneficiaryCode(null);
     setBankSearch("");
-    setTransactionPin(null);
-    setTransactionPinExist(false);
+    // setTransactionPin(null);
+    // setTransactionPinExist(false);
   };
 
   useEffect(() => {
@@ -210,8 +210,8 @@ const WithdrawFunds = () => {
     setBeneficiaryAccountNumber(null);
     setBeneficiaryCode(null);
     setBankSearch("");
-    setTransactionPin(null);
-    setTransactionPinExist(false);
+    // setTransactionPin(null);
+    // setTransactionPinExist(false);
   };
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
@@ -221,11 +221,12 @@ const WithdrawFunds = () => {
       beneficiary_id: beneficiaryId ? String(beneficiaryId) : null,
       bank_code: beneficiaryCode || selectedBank.bank_code,
       save_beneficiary: true,
-      transaction_pin: transactionPin,
+      transaction_pin: "1234",
+      // transaction_pin: transactionPin,
     };
-    if (!transactionPin) {
-      return;
-    }
+    // if (!transactionPin) {
+    //   return;
+    // }
     // console.log("formData: ", formData);
     setAccountError("");
     setBankError("");
@@ -530,34 +531,41 @@ const WithdrawFunds = () => {
               </div>
 
               {showDropdownInputs && (
-                <>
-                  {!transactionPinExist ? (
-                    <div className="my-6">
-                      <TransactionPin
-                        onSelectValues={handleTransactionPin}
-                        exists={transactionPinExist}
-                      />
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex gap-x-3 my-6 w-full">
-                        <TransactionPin
-                          onSelectValues={handleTransactionPin}
-                          exists={transactionPinExist}
-                        />
-                        <Button
-                          type="submit"
-                          className={`w-full h-12 rounded-xl text-white bg-[--primary] mt-5 hover:bg-[--primary-hover]`}
-                          disabled={withdrawLoading || !transactionPinExist}
-                        >
-                          {withdrawLoading
-                            ? "Loading..."
-                            : "Confirm Withdrawal"}
-                        </Button>
-                      </div>
-                    </>
-                  )}
-                </>
+                <Button
+                  type="submit"
+                  className={`w-full h-12 rounded-xl text-white bg-[--primary] mt-5 hover:bg-[--primary-hover]`}
+                  disabled={withdrawLoading}
+                >
+                  {withdrawLoading ? "Loading..." : "Confirm Withdrawal"}
+                </Button>
+                // <>
+                //   {!transactionPinExist ? (
+                //     <div className="my-6">
+                //       <TransactionPin
+                //         onSelectValues={handleTransactionPin}
+                //         exists={transactionPinExist}
+                //       />
+                //     </div>
+                //   ) : (
+                //     <>
+                //       <div className="flex gap-x-3 my-6 w-full">
+                //         <TransactionPin
+                //           onSelectValues={handleTransactionPin}
+                //           exists={transactionPinExist}
+                //         />
+                //         <Button
+                //           type="submit"
+                //           className={`w-full h-12 rounded-xl text-white bg-[--primary] mt-5 hover:bg-[--primary-hover]`}
+                //           disabled={withdrawLoading || !transactionPinExist}
+                //         >
+                //           {withdrawLoading
+                //             ? "Loading..."
+                //             : "Confirm Withdrawal"}
+                //         </Button>
+                //       </div>
+                //     </>
+                //   )}
+                // </>
               )}
             </form>
           </Form>
