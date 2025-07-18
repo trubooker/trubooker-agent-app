@@ -8,7 +8,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     Accept: "application/json",
   };
 
-  const resData = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/otp/verify`, {
+  const resData = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/otp/verify-agent`, {
     method: "POST",
     headers,
     body: JSON.stringify(body),

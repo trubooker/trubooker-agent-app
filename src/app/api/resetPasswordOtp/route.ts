@@ -9,7 +9,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   };
 
   const resData = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/verify-email`,
+    `${process.env.NEXT_PUBLIC_API_URL}/verify-email-agent`,
     {
       method: "POST",
       headers,
