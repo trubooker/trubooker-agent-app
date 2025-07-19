@@ -18,7 +18,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
   );
 
   const data = await resData.json();
-  console.log(data);
 
   const token = data?.data?.token;
 

@@ -1,5 +1,5 @@
-import { NextResponse, NextRequest } from "next/server";
-import axios from "axios";
+import { NextRequest } from "next/server";
+
 import { serialize } from "cookie";
 
 export async function POST(req: Request, res: NextRequest) {
@@ -8,7 +8,7 @@ export async function POST(req: Request, res: NextRequest) {
     "Content-Type": "application/json",
     Accept: "application/json",
   };
-  const resData = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+  const resData = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login-agent`, {
     method: "POST",
     headers,
     body: JSON.stringify(body),
@@ -16,7 +16,7 @@ export async function POST(req: Request, res: NextRequest) {
 
   const data = await resData.json();
   const token = data?.data?.token;
-  console.log(data);
+  // console.log(data);
 
   const serialized = serialize(`token`, token, {
     httpOnly: true,
