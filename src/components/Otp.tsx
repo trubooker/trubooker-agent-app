@@ -86,11 +86,9 @@ const OTPForm = () => {
       await Otp({ ...values })
         .unwrap()
         .then((res) => {
-          console.log(res);
           router.push("/dashboard");
         });
     } catch (error: any) {
-      console.log(error);
       setServerError(error?.data?.error?.message);
     }
   };

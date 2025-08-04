@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useResendOtpMutation } from "@/redux/services/Slices/auth/otpApiSlice";
 
 export default function Login() {
   const LoginFormSchema = z.object({
@@ -45,6 +46,7 @@ export default function Login() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const [Resend] = useResendOtpMutation();
 
   const onSubmit = async (values: z.infer<typeof LoginFormSchema>) => {
     setLoading(true);
@@ -56,19 +58,25 @@ export default function Login() {
       if (response.status === 200) {
         form.setValue("email", "");
         form.setValue("password", "");
-        setLoading(false);
-        toast.success("Successfully Logged In");
-        setTimeout(() => {
+        if (response.data?.data?.email_verified_at === null) {
+          await Resend(null)
+            .unwrap()
+            .then((res) => console.log(res));
+          router.push(`/otp?email=${values?.email}`);
+          toast.success("Verify your email to continue");
+        } else {
+          toast.success("Successfully Logged In");
           router.push("/dashboard");
-        }, 2000);
+        }
       }
     } catch (error: any) {
       setEmailError("");
       setPasswordError("");
       setLoading(false);
       if (error?.status === 400) {
-        setEmailError(error.response?.data?.message?.email[0]);
-        setPasswordError(error.response?.data?.message?.password[0]);
+        setEmailError(error.response?.data?.data?.message?.email[0]);
+        setPasswordError(error.response?.data?.message?.message[0]);
+        toast.error(error.response?.data?.message?.message[0]);
       }
       if (error.status === 401) {
         toast.error(error?.response?.data?.message);
