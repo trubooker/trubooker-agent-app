@@ -95,7 +95,6 @@ export default function RegisterComponent() {
         router.push(`/otp?email=${values?.email}`);
       }
     } catch (error: any) {
-      console.log(error);
       setLoading(false);
       setPhoneError(
         error.response?.data?.message?.phone?.map((err: any, index: number) => (
