@@ -70,10 +70,10 @@ const OTPForm = () => {
         .unwrap()
         .then((res) => console.log(res));
     } catch (error: any) {
-      console.error(
-        "Error sending Code:",
-        error?.response?.data?.message || error.message
-      );
+      // console.error(
+      //   "Error sending Code:",
+      //   error?.response?.data?.message || error.message
+      // );
     }
   };
 

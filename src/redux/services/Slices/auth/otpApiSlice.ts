@@ -12,7 +12,7 @@ export const userOtpApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     Otp: builder.mutation<OtpProp, OtpProp>({
       query: (body) => ({
-        url: "/otp/verify",
+        url: "/otp/verify/agent",
         method: "POST",
         body,
       }),
