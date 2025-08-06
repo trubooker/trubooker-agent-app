@@ -4,6 +4,7 @@ import React from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Logo from "@/public/logo.svg";
+import Link from "next/link";
 
 const ReferredSuccessfully = () => {
   const param = useParams();
@@ -11,7 +12,7 @@ const ReferredSuccessfully = () => {
   const handleDownload = () => {
     // window.location.href = "Replace with the actual app download link"
   };
-  
+
   return (
     <div className="mx-5">
       <div className="flex fixed mt-10 items-center my-2 lg:my-5 w-full">
@@ -48,12 +49,46 @@ const ReferredSuccessfully = () => {
             Click the button below to download the Trubooker Drivers App and get
             started.
           </p>
-          <button
-            onClick={handleDownload}
-            className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-          >
-            Download the App
-          </button>
+          <div className="flex items-center flex-wrap justify-center gap-6">
+            <Link
+              href="https://play.google.com/store/apps/details?id=com.trubooker.trubooker&hl=en"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <button
+                onClick={handleDownload}
+                className="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 focus:outline-none"
+              >
+                <Image
+                  src="/playStore.png"
+                  alt="Download Icon"
+                  width={30}
+                  height={30}
+                  className="inline mr-2"
+                />
+                Play store
+              </button>
+            </Link>
+            <Link
+              href="https://apps.apple.com/ng/app/trubooker/id6743930941"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <button
+                onClick={handleDownload}
+                className="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 focus:outline-none"
+              >
+                <Image
+                  src="/AppStore.png"
+                  alt="Download Icon"
+                  width={25}
+                  height={25}
+                  className="inline mr-2"
+                />
+                App store
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
