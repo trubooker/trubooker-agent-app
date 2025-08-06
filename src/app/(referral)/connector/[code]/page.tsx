@@ -51,7 +51,7 @@ const ReferredSuccessfully = () => {
           </p>
           <div className="flex items-center flex-wrap justify-center gap-6">
             <Link
-              href="https://play.google.com/store/apps/details?id=com.trubooker.trubooker&hl=en"
+              href="https://play.google.com/store/apps/details?id=com.trubooker.drivers&hl=en"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -70,7 +70,7 @@ const ReferredSuccessfully = () => {
               </button>
             </Link>
             <Link
-              href="https://apps.apple.com/ng/app/trubooker/id6743930941"
+              href="https://apps.apple.com/ng/app/trubooker-drivers/id6743926575"
               target="_blank"
               rel="noopener noreferrer"
             >
