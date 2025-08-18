@@ -2,7 +2,6 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 
 const InactiveAccount = () => {
   return (
@@ -14,19 +13,20 @@ const InactiveAccount = () => {
         <div className="relative w-[70%] lg:w-1/4 h-48 lg:h-72 text-white p-10 rounded-2xl mx-auto">
           <Image className="mx-auto" src={"/deny.svg"} alt="" fill />
         </div>
-        <p className="mt-6 leading-7 text-base w-[80%] mx-auto font-bold text-gray-600">
-          <span className="mb-2 text-xl text-[#F83937]">🚫 Access Denied</span>{" "}
-          <br /> <br />
-          Your account is currently inactive. Please contact our support team to
-          reactivate your account.
-        </p>
-        <div className="flex items-center justify-center gap-x-6">
-          <Link
-            href="https://www.trubooker.com/contact"
-            className="w-auto bg-[--primary] shadow-md text-white p-4 rounded-xl hover:scale-105 duration-300"
-          >
-            Send an email to truBooker Support
-          </Link>
+        <h2 className="mt-6 leading-7 text-2xl w-[80%] mx-auto font-bold text-gray-600">
+          🚦 Your Connector Account is Under Review
+        </h2>
+        <div className="w-8/12 mx-auto ">
+          <p className="text-lg font-bold text-gray-600">
+            Thank you for joining the TruBooker Connector program! 🙌
+          </p>
+          <p className="mt-1 text-base font-bold text-gray-600">
+            {" "}
+            We’re reviewing your account to make sure everything is set up
+            correctly. Once approved, you’ll be able to start referring drivers,
+            tracking your referrals, and earning rewards. We’ll notify you by
+            email as soon as your account is active.
+          </p>
         </div>
       </div>
     </div>
