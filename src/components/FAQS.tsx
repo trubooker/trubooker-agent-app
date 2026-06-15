@@ -15,12 +15,12 @@ const FAQS = () => {
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-1">
           <AccordionTrigger className="font-medium text-sm text-left">
-            How do I refer a driver?
+            How do I refer a passenger?
           </AccordionTrigger>
           <AccordionContent className="text-xs lg:text-sm text-gray-500">
-            You can refer a driver by sharing your unique referral link from
+            You can refer a passenger by sharing your unique referral link from
             your dashboard. Simply navigate to the &apos;Referrals&apos;
-            section, copy your link, and send it to potential drivers.
+            section, copy your link, and send it to potential passengers.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2">
@@ -46,12 +46,12 @@ const FAQS = () => {
         </AccordionItem>
         <AccordionItem value="item-4">
           <AccordionTrigger className="font-medium text-sm text-left">
-            How do I get paid from driver referrals?
+            How do I get paid from passenger referrals?
           </AccordionTrigger>
           <AccordionContent className="text-xs lg:text-sm text-gray-500">
-            You earn a commission for every driver you refer once they start
-            completing trips. Payments are processed after the driver completes
-            trips, and TruBooker deducts its percentage for payment processing.
+            You earn a commission for every passenger you refer once they book
+            a trip. Payments are processed after the passenger completes
+            a trip, and TruBooker deducts its percentage for payment processing.
             You can track your earnings in the &apos;Earnings&apos; section of
             your dashboard. Once eligible, you can apply for withdrawal.
           </AccordionContent>

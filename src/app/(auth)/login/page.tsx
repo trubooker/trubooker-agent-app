@@ -16,12 +16,10 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useResendOtpMutation } from "@/redux/services/Slices/auth/otpApiSlice";
 
 export default function Login() {
   const LoginFormSchema = z.object({
@@ -31,65 +29,138 @@ export default function Login() {
       .min(1, { message: "Email is required" }),
     password: z
       .string()
-      .min(6, { message: "Password must be 6 chracters or more" }),
+      .min(6, { message: "Password must be 6 characters or more" }),
   });
 
   const form = useForm<z.infer<typeof LoginFormSchema>>({
     resolver: zodResolver(LoginFormSchema),
-    defaultValues: {},
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
+  
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  const [Resend] = useResendOtpMutation();
 
   const onSubmit = async (values: z.infer<typeof LoginFormSchema>) => {
+    console.log("=== FRONTEND LOGIN SUBMISSION ===");
+    console.log("Email:", values.email);
+    console.log("Password length:", values.password.length);
+    
     setLoading(true);
+    setEmailError("");
+    setPasswordError("");
+    
     try {
-      setEmailError("");
-      setPasswordError("");
-      const response = await axios.post(`/api/login`, values);
-
-      if (response.status === 200) {
-        form.setValue("email", "");
-        form.setValue("password", "");
-        if (response.data?.data?.email_verified_at === null) {
-          await Resend(null)
-            .unwrap()
-            .then((res) => console.log(res));
-          router.push(`/otp?email=${values?.email}`);
-          toast.success("Verify your email to continue");
+      console.log("Sending request to /api/login");
+      
+      const response = await axios.post(`/api/login`, {
+        email: values.email,
+        password: values.password
+      });
+      
+      console.log("Response status:", response.status);
+      console.log("Response data:", response.data);
+      
+      if (response.status === 200 && response.data?.success === true) {
+        console.log("Login successful!");
+        
+        // Reset form
+        form.reset();
+        
+        const userData = response.data?.data?.user;
+        const token = response.data?.data?.token;
+        
+        console.log("User data:", userData);
+        console.log("Token received:", !!token);
+        
+        // Store token in localStorage if needed
+        if (token) {
+          localStorage.setItem('token', token);
+        }
+        
+        toast.success("Successfully Logged In!");
+        
+        // Redirect based on role or just to dashboard
+        router.push("/dashboard");
+      } else {
+        console.log("Login failed:", response.data?.message);
+        toast.error(response.data?.message || "Login failed");
+      }
+      
+    } catch (error: any) {
+      console.error("=== FRONTEND LOGIN ERROR ===");
+      console.error("Error object:", error);
+      console.error("Error response:", error.response);
+      console.error("Error response data:", error.response?.data);
+      console.error("Error response status:", error.response?.status);
+      
+      setLoading(false);
+      
+      // Handle validation errors (422)
+      if (error.response?.status === 422) {
+        const errors = error.response?.data?.message || error.response?.data?.errors;
+        console.log("Validation errors:", errors);
+        
+        if (errors && typeof errors === 'object') {
+          if (errors.email) {
+            const emailMsg = Array.isArray(errors.email) ? errors.email[0] : errors.email;
+            setEmailError(emailMsg);
+            toast.error(emailMsg);
+          }
+          if (errors.password) {
+            const passwordMsg = Array.isArray(errors.password) ? errors.password[0] : errors.password;
+            setPasswordError(passwordMsg);
+            toast.error(passwordMsg);
+          }
         } else {
-          toast.success("Successfully Logged In");
-          router.push("/dashboard");
+          toast.error(errors || "Validation failed");
         }
       }
-    } catch (error: any) {
-      setEmailError("");
-      setPasswordError("");
+      // Handle unauthorized (401)
+      else if (error.response?.status === 401) {
+        const errorMsg = error.response?.data?.message || "Invalid email or password";
+        toast.error(errorMsg);
+        
+        // Check if verification is required
+        if (error.response?.data?.requires_verification) {
+          router.push(`/otp?email=${values.email}`);
+        }
+      }
+      // Handle bad request (400)
+      else if (error.response?.status === 400) {
+        const errorMsg = error.response?.data?.message || "Bad request";
+        toast.error(errorMsg);
+      }
+      // Handle server error (500)
+      else if (error.response?.status === 500) {
+        toast.error("Server error. Please try again later.");
+      }
+      // Handle network error
+      else if (error.code === 'ERR_NETWORK') {
+        toast.error("Network error. Please check your connection.");
+      }
+      // Handle other errors
+      else {
+        toast.error(error.response?.data?.message || "An unexpected error occurred");
+      }
+    } finally {
       setLoading(false);
-      if (error?.status === 400) {
-        setEmailError(error.response?.data?.data?.message?.email[0]);
-        setPasswordError(error.response?.data?.message?.message[0]);
-        toast.error(error.response?.data?.message?.message[0]);
-      }
-      if (error.status === 401) {
-        toast.error(error?.response?.data?.message);
-      }
-      if (error?.status === 500) {
-        toast.error("Internal Server Error");
-      }
     }
   };
+  
   return (
     <div className="h-screen flex flex-col justify-center">
       <div className="lg:mx-auto pt-10 pb-24 px-5 w-full lg:w-4/12">
-        <h2 className=" w-full text-center font-bold text-3xl my-10">
+        <h2 className="w-full text-center font-bold text-3xl my-10">
           Let&apos;s sign you in!
         </h2>
         <Form {...form}>
@@ -143,7 +214,6 @@ export default function Login() {
                       {passwordError && (
                         <FormMessage>{passwordError}</FormMessage>
                       )}
-                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -165,17 +235,6 @@ export default function Login() {
                 >
                   {loading ? "Loading..." : "Log in"}
                 </Button>
-                {/* <Link
-                  href=""
-                  className="shadow-md py-3 w-full justify-center hover:bg-blue-50 rounded-lg flex items-center px-4"
-                >
-                  <div className="flex gap-x-2">
-                    <FcGoogle className="w-6 h-6" />
-                    <p className="w-full text-center font-medium">
-                      Continue with Google
-                    </p>
-                  </div>
-                </Link> */}
               </div>
             </div>
           </form>

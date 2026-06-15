@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 
 const ReferralSteps = () => {
   const { userData } = useLoggedInUser();
-  const referralLink = `https://connectors.trubooker.com/connector/${userData?.referral}`;
+  const referralLink = `${userData?.referral}`;
 
   const handleCopyLink = () => {
     navigator.clipboard
@@ -31,7 +31,7 @@ const ReferralSteps = () => {
             <div className="absolute top-10 left-1/2 transform -translate-x-1/2 h-10 w-[2px] bg-gray-200"></div>
           </div>
           <div className="flex-1 flex items-center gap-x-3 my-auto">
-            <span>Share your link</span>
+            <span>Share your code</span>
             <FaRegCopy
               className="w-4 h-4 text-indigo-600 cursor-pointer"
               onClick={handleCopyLink}
@@ -45,7 +45,7 @@ const ReferralSteps = () => {
             2
             <div className="absolute top-10 left-1/2 transform -translate-x-1/2 h-10 w-[2px] bg-gray-200"></div>
           </div>
-          <span className=" my-auto">Drivers sign up using your link</span>
+          <span className=" my-auto">Passengers sign up using your code</span>
         </div>
 
         {/* Step 3 */}
@@ -54,7 +54,7 @@ const ReferralSteps = () => {
             3
             <div className="absolute top-10 left-1/2 transform -translate-x-1/2 h-8 w-[2px] bg-gray-200"></div>
           </div>
-          <span className=" my-auto">Driver completes a trip</span>
+          <span className=" my-auto">Passenger completes a trip</span>
         </div>
       </div>
 
@@ -68,7 +68,7 @@ const ReferralSteps = () => {
         </p>
         <p className="mt-2 text-sm">
           Small percentage of the earnings is credited to you for each trip the
-          driver completes, until you earn 3000 Naira from that driver.
+          passenger completes, until you earn 3000 Naira from that passenger.
         </p>
       </div>
     </div>

@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 export function SidebarOptInForm() {
   const { userData: data } = useLoggedInUser();
   const router = useRouter();
-  const referralLink = `https://connectors.trubooker.com/connector/${data?.referral}`;
+  const referralLink = `${data?.referral}`;
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(referralLink)
@@ -22,7 +22,7 @@ export function SidebarOptInForm() {
     <div className="w-full p-4">
       <div className="mb-5">
         <p className="mb-2 text-base text-gray-500 text-left ps-2">
-          Referral Link
+          Referral Code
         </p>
         <div className="border border-gray-400 py-3 px-4 rounded-lg w-full justify-between items-center flex">
           <p className="text-left text-gray-400 text-sm">

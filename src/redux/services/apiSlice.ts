@@ -10,7 +10,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: `${process.env.NEXT_PUBLIC_API_URL}`,
   prepareHeaders: async (headers) => {
     const token = await fetchToken();
-    if (token) {
+    if (token && token?.data?.token) {
       headers.set("Authorization", `Bearer ${token?.data?.token}`);
       headers.set("Content-Type", `application/json`);
       headers.set("Accept", `application/json`);
@@ -27,7 +27,16 @@ const CustomBaseQuery: BaseQueryFn<
   const result = await baseQuery(args, api, extraOptions);
 
   if (result?.error?.status == 401) {
-    // window.location.href = "/";
+    // Clear tokens on 401
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("agent_token");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("agent_token");
+      
+      // Optional: Redirect to login page
+      // window.location.href = "/login";
+    }
   }
 
   return result;
@@ -36,7 +45,17 @@ const CustomBaseQuery: BaseQueryFn<
 export const api = createApi({
   reducerPath: "api",
   baseQuery: CustomBaseQuery,
-  tagTypes: ["User", "Teacher", "Withdraw"],
+  tagTypes: [
+    "User", 
+    "Teacher", 
+    "Withdraw",
+    "Referrals",           // Added for agent referrals
+    "ReferralDashboard",   // Added for agent dashboard stats
+    "Announcements",       // Added for announcements
+    "Trips",               // Added for trips
+    "Bookings",            // Added for bookings
+    "Profile"              // Added for profile updates
+  ],
   keepUnusedDataFor: 30,
   endpoints: () => ({}),
 });

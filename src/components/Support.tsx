@@ -40,7 +40,7 @@ const Support = () => {
             <div className=" w-[90%] flex flex-col gap-y-2">
               <span>Referrals</span>
               <span className="text-xs text-gray-400">
-                How to refer drivers and manage referrals.
+                How to refer passengers and manage referrals.
               </span>
             </div>
           </div>
