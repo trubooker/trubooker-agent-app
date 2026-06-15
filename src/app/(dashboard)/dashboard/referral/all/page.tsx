@@ -10,12 +10,12 @@ import { useGetReferralsQuery } from "@/redux/services/Slices/Dashboard/dashboar
 import toast from "react-hot-toast";
 import { useLoggedInUser } from "@/hooks/useLoggedUser";
 
-const AllReferredDrivers = () => {
+const AllReferredPassengers = () => {
   const { data } = useGetReferralsQuery(null);
   const referall = data?.data;
   const [copied, setCopied] = useState(false);
   const { userData } = useLoggedInUser();
-  const referralLink = `https://connectors.trubooker.com/connector/${userData?.referral}`;
+  const referralLink = `${userData?.referral}`;
   const handleCopyLink = () => {
     navigator.clipboard
       .writeText(referralLink)
@@ -27,7 +27,7 @@ const AllReferredDrivers = () => {
   };
   return (
     <div>
-      <Goback name={"Referred Drivers"} />
+      <Goback name={"Referred Passengers"} />
       <div className="w-10/5 lg:w-full mx-auto grid grid-cols-1 xl:grid-cols-6 pt-5 pb-10 lg:py-10 gap-12">
         <div className="overflow-hidden xl:col-span-4">
           {referall?.map((data: any, index: number) => (
@@ -37,8 +37,8 @@ const AllReferredDrivers = () => {
                 <div className="flex justify-between text-sm lg:text-base items-center w-full">
                   <div>
                     <div className="flex flex-col gap-y-2">
-                      <small className="text-gray-500">Driver: </small>
-                      <span>{data?.driver}</span>
+                      <small className="text-gray-500">Passenger: </small>
+                      <span>{data?.passenger}</span>
                     </div>
                   </div>
 
@@ -77,7 +77,7 @@ const AllReferredDrivers = () => {
             <div className=" border-2 lg:border-none bg-gray-50  shadow-2xl lg:shadow-md py-5 px-4 rounded-lg w-full justify-between items-center flex">
               <p className="text-left text-gray-400 text-sm flex flex-col gap-y-3">
                 <span className="font-bold text-lg text-[--primary]">
-                  Referral Link:
+                  Referral Code:
                 </span>
                 <span>{truncateText(referralLink, 30)}</span>
               </p>
@@ -96,4 +96,4 @@ const AllReferredDrivers = () => {
   );
 };
 
-export default AllReferredDrivers;
+export default AllReferredPassengers;

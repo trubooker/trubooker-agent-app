@@ -4,7 +4,7 @@ import React from "react";
 import EarningsCard from "@/components/EarningsCard";
 import DashboardCard from "@/components/ReferCard";
 import Notification from "@/components/notifications";
-import ReferredDrivers from "@/components/ReferredDrivers";
+import ReferredPassengers from "@/components/ReferredPassengers";
 import { useGetReferralsQuery } from "@/redux/services/Slices/Dashboard/dashboardApiSlice";
 import Link from "next/link";
 
@@ -38,7 +38,7 @@ const Dashboard = () => {
               )}
             </div>
             <div className="w-full hidden mt-14 xl:block">
-              <ReferredDrivers />
+              <ReferredPassengers />
             </div>
           </div>
           <div className="xl:w-[30%] w-full">
@@ -47,7 +47,7 @@ const Dashboard = () => {
         </>
       </div>
       <div className="xl:hidden mt-5">
-        <ReferredDrivers />
+        <ReferredPassengers />
       </div>
     </div>
   );

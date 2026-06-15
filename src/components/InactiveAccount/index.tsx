@@ -23,7 +23,7 @@ const InactiveAccount = () => {
           <p className="mt-1 text-base font-bold text-gray-600">
             {" "}
             We’re reviewing your account to make sure everything is set up
-            correctly. Once approved, you’ll be able to start referring drivers,
+            correctly. Once approved, you’ll be able to start referring passengers,
             tracking your referrals, and earning rewards. We’ll notify you by
             email as soon as your account is active.
           </p>

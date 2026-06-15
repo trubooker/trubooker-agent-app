@@ -19,8 +19,6 @@ import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-// import { Bounce, toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaCamera } from "react-icons/fa";
@@ -35,7 +33,6 @@ import { useUpdateProfileMutation } from "@/redux/services/Slices/userApiSlice";
 import ImageUploader from "@/components/ImageUploader";
 import { FaSpinner } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
-import CreateTransactionPin from "@/components/CreateTransactionPin";
 
 const FormSchema = z.object({
   first_name: z.any().optional(),
@@ -51,6 +48,13 @@ interface ImagePreview {
   url: string;
 }
 
+// Helper function to safely parse date
+const safeParseDate = (dateString: string | null | undefined): Date | null => {
+  if (!dateString) return null;
+  const date = new Date(dateString);
+  return isNaN(date.getTime()) ? null : date;
+};
+
 const Profile = () => {
   const { userData, userLoading, userRefetching } = useLoggedInUser();
   const [previewSrc, setPreviewSrc] = useState("");
@@ -60,31 +64,6 @@ const Profile = () => {
   const [images, setImages] = useState<ImagePreview[]>([]);
   const [dobError, setDobError] = useState("");
   const [imageChange, setImageChange] = useState(false);
-
-  // const handleFileChange = async (e: any) => {
-  //   const file = e.target.files?.[0];
-
-  //   if (file) {
-  //     const validImageTypes = ["image/jpeg", "image/jpg", "image/png"];
-
-  //     // Check if the file type is valid
-  //     if (validImageTypes.includes(file.type)) {
-  //       const reader = new FileReader();
-
-  //       reader.onloadend = () => {
-  //         setPreviewSrc(reader.result as string);
-  //       };
-
-  //       reader.readAsDataURL(file);
-  //       setSelectedFile(file);
-  //     } else {
-  //       toast.error("Please upload a valid image file (JPEG, JPG, or PNG)");
-  //       setPreviewSrc("");
-  //     }
-  //   } else {
-  //     setPreviewSrc("");
-  //   }
-  // };
 
   const [update] = useUpdateProfileMutation();
 
@@ -105,8 +84,9 @@ const Profile = () => {
         country: userData?.country,
       });
 
-      const DOB = new Date(userData?.dob);
-      setSelectedDate(DOB);
+      // Safely parse the date
+      const safeDate = safeParseDate(userData?.dob);
+      setSelectedDate(safeDate);
     }
   }, [userData, form]);
 
@@ -123,10 +103,9 @@ const Profile = () => {
     try {
       if (images) {
         const formdata = new FormData();
-        images &&
-          images.forEach((image) => {
-            formdata.append("profile_image", image.file);
-          });
+        images.forEach((image) => {
+          formdata.append("profile_image", image.file);
+        });
 
         const token = await fetchToken();
         const headers = {
@@ -237,9 +216,7 @@ const Profile = () => {
             {imageChange ? (
               <>
                 {images?.map((image, index: number) => (
-                  <>
-                    <AvatarImage src={image.url} />
-                  </>
+                  <AvatarImage key={index} src={image.url} />
                 ))}
               </>
             ) : (
@@ -251,7 +228,7 @@ const Profile = () => {
                   setImages={setImages}
                   onImageChange={handleImageChange}
                   classname={
-                    "bg-white p-5 border border-gray-600 rounded-full flex justify-center items-center  cursor-pointer absolute right-[34%] bottom-[32%]"
+                    "bg-white p-5 border border-gray-600 rounded-full flex justify-center items-center cursor-pointer absolute right-[34%] bottom-[32%]"
                   }
                   trigger={<FaCamera className="text-3xl lg:text-2xl" />}
                   multiple={false}
@@ -268,7 +245,12 @@ const Profile = () => {
           <p className="mt-5 font-bold text-xl">
             {userData?.first_name} {userData?.last_name}
           </p>
-          <small>Joined {new Date(userData?.created_at).getFullYear()}</small>
+          <small>
+            Joined{" "}
+            {userData?.created_at
+              ? new Date(userData.created_at).getFullYear()
+              : "N/A"}
+          </small>
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -343,7 +325,18 @@ const Profile = () => {
                   <div className="border border-gray-200 p-2 mt-2 rounded-lg flex flex-col">
                     <DatePicker
                       selected={selectedDate}
-                      onChange={(date: Date | null) => setSelectedDate(date)}
+                      onChange={(date: Date | null) => {
+                        // Validate the date before setting
+                        if (date && !isNaN(date.getTime())) {
+                          setSelectedDate(date);
+                          setDobError("");
+                        } else if (date === null) {
+                          setSelectedDate(null);
+                          setDobError("");
+                        } else {
+                          setDobError("Invalid date selected");
+                        }
+                      }}
                       dateFormat="yyyy-MM-dd"
                       placeholderText="YYYY-MM-DD"
                       id="dateInput"
@@ -534,7 +527,6 @@ const Profile = () => {
           </form>
         </Form>
         <PasswordUpdate />
-        {/* <CreateTransactionPin /> */}
       </div>
     </div>
   );
