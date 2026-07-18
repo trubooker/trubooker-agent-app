@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.trubooker.drivers",
+      "sha256_cert_fingerprints": [
+       "9D:5C:E9:8F:BC:74:AD:B5:13:09:D1:9A:91:93:C6:55:88:71:CE:47:C2:05:FB:E1:1C:B5:58:73:D2:E8:D5:2B",
+"B5:33:FF:D0:D2:71:EB:87:76:9F:E7:00:1D:38:6A:34:04:54:63:15:B0:4D:AE:31:04:45:BB:7E:34:5B:0E:17"
+      ]
+    }
+  }
+]
