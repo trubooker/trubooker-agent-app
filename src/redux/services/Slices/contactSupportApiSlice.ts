@@ -5,7 +5,7 @@ const supportApi = supportApiConfig.injectEndpoints({
   endpoints: (builder) => ({
     sendSupportMessage: builder.mutation({
       query: (body) => ({
-        url: `/contact-support/create`,
+        url: `/contact-support/submit-request`,
         method: "POST",
         body,
       }),

@@ -11,6 +11,8 @@ import Link from "next/link";
 const Dashboard = () => {
   const { data } = useGetReferralsQuery(null);
   const referall = data?.data;
+
+  console.log("DATA", data)
   return (
     <div className="flex flex-col h-fit w-full">
       <div className="flex flex-col xl:flex-row w-full gap-8">

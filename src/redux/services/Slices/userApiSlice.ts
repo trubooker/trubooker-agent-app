@@ -4,15 +4,23 @@ import { api } from "../apiSlice";
 const userApiConfig = api.enhanceEndpoints({ addTagTypes: ["User"] });
 const userApi = userApiConfig.injectEndpoints({
   endpoints: (builder) => ({
+    // getCurrentUser: builder.query({
+    //   query: () => `/user`,
+    //   providesTags: ["User"],
+    //   keepUnusedDataFor: 5,
+    // }),
+
     getCurrentUser: builder.query({
-      query: () => `/user`,
-      providesTags: ["User"],
-      keepUnusedDataFor: 5,
-    }),
+  query: () => `/agent/me`,   // ← match your new backend
+  transformResponse: (res: any) => ({
+    data: res?.result ?? res?.data ?? res,   // keeps userData = data?.data working
+  }),
+  providesTags: ["User"],
+}),
 
     updateProfile: builder.mutation({
       query: (body) => ({
-        url: `/user/update`,
+        url: `/agent/update`,
         method: "POST",
         body,
       }),
@@ -27,7 +35,7 @@ const userApi = userApiConfig.injectEndpoints({
         pin: number;
         pin_confirmation: number;
       }) => ({
-        url: `/transaction-pin/create`,
+        url: `/agent//transaction-pin/create`,
         method: "POST",
         body: { pin, pin_confirmation },
       }),
@@ -36,7 +44,7 @@ const userApi = userApiConfig.injectEndpoints({
 
     updatePassword: builder.mutation({
       query: ({ current_password, password, password_confirmation }: any) => ({
-        url: `/password-update`,
+        url: `/agent/password-update`,
         method: "POST",
         body: { current_password, password, password_confirmation },
       }),

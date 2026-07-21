@@ -21,142 +21,120 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-export default function Login() {
-  const LoginFormSchema = z.object({
-    email: z
-      .string()
-      .email({ message: "Email is invalid" })
-      .min(1, { message: "Email is required" }),
-    password: z
-      .string()
-      .min(6, { message: "Password must be 6 characters or more" }),
-  });
+const LoginFormSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .email({ message: "Email is invalid" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be 6 characters or more" }),
+});
 
-  const form = useForm<z.infer<typeof LoginFormSchema>>({
+type LoginFormValues = z.infer<typeof LoginFormSchema>;
+
+export default function Login() {
+  const form = useForm<LoginFormValues>({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
-  
+
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
 
-  const onSubmit = async (values: z.infer<typeof LoginFormSchema>) => {
-    console.log("=== FRONTEND LOGIN SUBMISSION ===");
-    console.log("Email:", values.email);
-    console.log("Password length:", values.password.length);
-    
+  const onSubmit = async (values: LoginFormValues) => {
     setLoading(true);
     setEmailError("");
     setPasswordError("");
-    
+
     try {
-      console.log("Sending request to /api/login");
-      
       const response = await axios.post(`/api/login`, {
         email: values.email,
-        password: values.password
+        password: values.password,
       });
-      
-      console.log("Response status:", response.status);
-      console.log("Response data:", response.data);
-      
+
       if (response.status === 200 && response.data?.success === true) {
-        console.log("Login successful!");
-        
-        // Reset form
+        const user = response.data?.data?.user;
+
         form.reset();
-        
-        const userData = response.data?.data?.user;
-        const token = response.data?.data?.token;
-        
-        console.log("User data:", userData);
-        console.log("Token received:", !!token);
-        
-        // Store token in localStorage if needed
-        if (token) {
-          localStorage.setItem('token', token);
+        toast.success("Successfully logged in!");
+
+        // Redirect based on role (adjust routes to your app)
+        switch (user?.role) {
+          case "driver":
+            router.push("/dashboard");
+            break;
+          case "agent":
+          default:
+            router.push("/dashboard");
+            break;
         }
-        
-        toast.success("Successfully Logged In!");
-        
-        // Redirect based on role or just to dashboard
-        router.push("/dashboard");
       } else {
-        console.log("Login failed:", response.data?.message);
         toast.error(response.data?.message || "Login failed");
       }
-      
     } catch (error: any) {
-      console.error("=== FRONTEND LOGIN ERROR ===");
-      console.error("Error object:", error);
-      console.error("Error response:", error.response);
-      console.error("Error response data:", error.response?.data);
-      console.error("Error response status:", error.response?.status);
-      
-      setLoading(false);
-      
-      // Handle validation errors (422)
-      if (error.response?.status === 422) {
-        const errors = error.response?.data?.message || error.response?.data?.errors;
-        console.log("Validation errors:", errors);
-        
-        if (errors && typeof errors === 'object') {
+      const status = error.response?.status;
+      const data = error.response?.data;
+
+      // Validation errors (422) — field-level messages
+      if (status === 422) {
+        const errors = data?.message || data?.errors;
+
+        if (errors && typeof errors === "object") {
           if (errors.email) {
-            const emailMsg = Array.isArray(errors.email) ? errors.email[0] : errors.email;
-            setEmailError(emailMsg);
-            toast.error(emailMsg);
+            const msg = Array.isArray(errors.email)
+              ? errors.email[0]
+              : errors.email;
+            setEmailError(msg);
           }
           if (errors.password) {
-            const passwordMsg = Array.isArray(errors.password) ? errors.password[0] : errors.password;
-            setPasswordError(passwordMsg);
-            toast.error(passwordMsg);
+            const msg = Array.isArray(errors.password)
+              ? errors.password[0]
+              : errors.password;
+            setPasswordError(msg);
+          }
+          if (!errors.email && !errors.password) {
+            toast.error("Validation failed");
           }
         } else {
-          toast.error(errors || "Validation failed");
+          toast.error(typeof errors === "string" ? errors : "Validation failed");
         }
       }
-      // Handle unauthorized (401)
-      else if (error.response?.status === 401) {
-        const errorMsg = error.response?.data?.message || "Invalid email or password";
-        toast.error(errorMsg);
-        
-        // Check if verification is required
-        if (error.response?.data?.requires_verification) {
-          router.push(`/otp?email=${values.email}`);
+      // Unauthorized (401)
+      else if (status === 401) {
+        toast.error(data?.message || "Invalid email or password");
+
+        if (data?.requiresVerification || data?.requires_verification) {
+          router.push(`/otp?email=${encodeURIComponent(values.email)}`);
         }
       }
-      // Handle bad request (400)
-      else if (error.response?.status === 400) {
-        const errorMsg = error.response?.data?.message || "Bad request";
-        toast.error(errorMsg);
+      // Bad request (400)
+      else if (status === 400) {
+        toast.error(data?.message || "Bad request");
       }
-      // Handle server error (500)
-      else if (error.response?.status === 500) {
+      // Server error (500)
+      else if (status === 500) {
         toast.error("Server error. Please try again later.");
       }
-      // Handle network error
-      else if (error.code === 'ERR_NETWORK') {
+      // Network error
+      else if (error.code === "ERR_NETWORK") {
         toast.error("Network error. Please check your connection.");
       }
-      // Handle other errors
+      // Anything else
       else {
-        toast.error(error.response?.data?.message || "An unexpected error occurred");
+        toast.error(data?.message || "An unexpected error occurred");
       }
     } finally {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="h-screen flex flex-col justify-center">
       <div className="lg:mx-auto pt-10 pb-24 px-5 w-full lg:w-4/12">
@@ -164,7 +142,7 @@ export default function Login() {
           Let&apos;s sign you in!
         </h2>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="">
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4">
               <div className="grid gap-2">
                 <FormField
@@ -181,6 +159,7 @@ export default function Login() {
                           {...field}
                         />
                       </FormControl>
+                      <FormMessage />
                       {emailError && <FormMessage>{emailError}</FormMessage>}
                     </FormItem>
                   )}
@@ -199,18 +178,19 @@ export default function Login() {
                           <Input
                             id="password"
                             type={showPassword ? "text" : "password"}
-                            placeholder="Enter Password"
+                            placeholder="Enter password"
                             {...field}
                           />
                           <button
                             type="button"
-                            onClick={togglePasswordVisibility}
+                            onClick={() => setShowPassword((s) => !s)}
                             className="text-xs font-semibold underline absolute right-4 top-5"
                           >
                             {showPassword ? "Hide" : "Show"}
                           </button>
                         </div>
                       </FormControl>
+                      <FormMessage />
                       {passwordError && (
                         <FormMessage>{passwordError}</FormMessage>
                       )}
@@ -218,15 +198,17 @@ export default function Login() {
                   )}
                 />
               </div>
+
               <Link
                 href="/forgotpassword"
                 prefetch={true}
                 className="w-full text-end"
               >
                 <span className="text-sm text-[--primary]">
-                  Forget password?
+                  Forgot password?
                 </span>
               </Link>
+
               <div className="flex flex-col gap-y-4 mt-10">
                 <Button
                   type="submit"

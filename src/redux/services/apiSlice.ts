@@ -10,6 +10,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: `${process.env.NEXT_PUBLIC_API_URL}`,
   prepareHeaders: async (headers) => {
     const token = await fetchToken();
+    console.log("api slice", token)
     if (token && token?.data?.token) {
       headers.set("Authorization", `Bearer ${token?.data?.token}`);
       headers.set("Content-Type", `application/json`);

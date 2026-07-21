@@ -11,7 +11,7 @@ const notificationApi = notificationApiConfig.injectEndpoints({
   endpoints: (builder) => ({
     fetchNotifications: builder.query({
       query: ({ type }: Enum) => ({
-        url: `/notifications/fetch?type=${type}`,
+        url: `/notifications/all?type=${type}`,
         method: "GET",
       }),
       providesTags: ["Notification"],
@@ -19,7 +19,7 @@ const notificationApi = notificationApiConfig.injectEndpoints({
 
     markAllAsRead: builder.mutation({
       query: () => ({
-        url: `/notifications/mark-all-as-read`,
+        url: `/notifications/markall`,
         method: "POST",
       }),
       invalidatesTags: ["Notification"],
@@ -35,7 +35,7 @@ const notificationApi = notificationApiConfig.injectEndpoints({
 
     deleteAllNotifications: builder.mutation({
       query: () => ({
-        url: `/notifications/clear`,
+        url: `/notifications/delete-notify`,
         method: "DELETE",
       }),
       invalidatesTags: ["Notification"],
