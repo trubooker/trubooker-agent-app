@@ -10,7 +10,7 @@ import Link from "next/link";
 
 const Dashboard = () => {
   const { data } = useGetReferralsQuery(null);
-  const referall = data?.data;
+  const referall = data?.result;
 
   console.log("DATA", data)
   return (

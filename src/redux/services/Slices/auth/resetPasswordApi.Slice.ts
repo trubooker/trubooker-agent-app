@@ -10,7 +10,7 @@ export const userResetPasswordApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     ResetPassword: builder.mutation<resetPasswordProp, resetPasswordProp>({
       query: (body) => ({
-        url: "/reset-password",
+        url: "/auth/reset-password",
         method: "POST",
         body,
       }),

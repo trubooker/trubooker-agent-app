@@ -9,7 +9,7 @@ export const userForgotPasswordApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     ForgotPassword: builder.mutation<forgotPasswordProp, forgotPasswordProp>({
       query: (credentials) => ({
-        url: "/forgot-password",
+        url: "/auth/forgot-password",
         method: "POST",
         body: { ...credentials },
       }),

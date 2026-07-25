@@ -35,8 +35,8 @@ import { FaSpinner } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
 
 const FormSchema = z.object({
-  first_name: z.any().optional(),
-  last_name: z.any().optional(),
+  firstName: z.any().optional(),
+  lastName: z.any().optional(),
   city: z.any().optional(),
   address: z.any().optional(),
   country: z.any().optional(),
@@ -77,8 +77,8 @@ const Profile = () => {
   useEffect(() => {
     if (userData) {
       form.reset({
-        first_name: userData?.first_name,
-        last_name: userData?.last_name,
+        firstName: userData?.firstName,
+        lastName: userData?.lastName,
         city: userData?.city,
         address: userData?.address,
         country: userData?.country,
@@ -104,7 +104,7 @@ const Profile = () => {
       if (images) {
         const formdata = new FormData();
         images.forEach((image) => {
-          formdata.append("profile_image", image.file);
+          formdata.append("profileImage", image.file);
         });
 
         const token = await fetchToken();
@@ -113,7 +113,7 @@ const Profile = () => {
           Accept: "application/json",
         };
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/upload-profile-picture`,
+          `${process.env.NEXT_PUBLIC_API_URL}/agent/update`,
           {
             method: "POST",
             headers,
@@ -150,8 +150,8 @@ const Profile = () => {
         ? selectedDate.toISOString().split("T")[0]
         : null;
       const formdata = {
-        first_name: data.first_name || null,
-        last_name: data.last_name || null,
+        firstName: data.firstName || null,
+        lastName: data.lastName || null,
         city: data.city || null,
         address: data.address || null,
         country: data.country || null,
@@ -220,7 +220,7 @@ const Profile = () => {
                 ))}
               </>
             ) : (
-              <AvatarImage src={userData?.profile_image} />
+              <AvatarImage src={userData?.profileImage} />
             )}
             <div className="font-bold lg:text-2xl">
               {images.length === 0 && !imageChange ? (
@@ -243,12 +243,12 @@ const Profile = () => {
           </Avatar>
 
           <p className="mt-5 font-bold text-xl">
-            {userData?.first_name} {userData?.last_name}
+            {userData?.firstName} {userData?.lastName}
           </p>
           <small>
             Joined{" "}
-            {userData?.created_at
-              ? new Date(userData.created_at).getFullYear()
+            {userData?.createdAt
+              ? new Date(userData.createdAt).getFullYear()
               : "N/A"}
           </small>
         </div>
@@ -259,12 +259,12 @@ const Profile = () => {
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
-                    name="first_name"
+                    name="firstName"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>First Name</FormLabel>
                         <FormControl>
-                          <Input id="first_name" type="text" {...field} />
+                          <Input id="firstName" type="text" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -274,12 +274,12 @@ const Profile = () => {
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
-                    name="last_name"
+                    name="lastName"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Last Name</FormLabel>
                         <FormControl>
-                          <Input id="last_name" type="text" {...field} />
+                          <Input id="lastName" type="text" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
