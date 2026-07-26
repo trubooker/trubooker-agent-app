@@ -9,8 +9,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   };
 
   const resData = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}
-/otp/resend`,
+    `${process.env.NEXT_PUBLIC_API_URL}/otp/resend`,
     {
       method: "POST",
       headers,

@@ -10,7 +10,9 @@ import toast from "react-hot-toast";
 
 const ReferredPassengers = () => {
   const { userData: data } = useLoggedInUser();
-  const referralLink = `${data?.referral}`;
+  const referralLink = `${data?.referralCode}`;
+
+  console.log(data)
   const [copied, setCopied] = useState(false);
   const handleCopyLink = () => {
     navigator.clipboard

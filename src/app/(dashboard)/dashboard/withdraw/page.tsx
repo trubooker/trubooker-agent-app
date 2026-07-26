@@ -28,6 +28,33 @@ import toast from "react-hot-toast";
 import BouncingBall from "@/components/BounceXanimation";
 // import { TransactionPin } from "@/components/DualModal/ReusableDualModal";
 
+/**
+ * ─── Backend envelope helpers ────────────────────────────────────────────────
+ * The NestJS backend wraps every response as:
+ *   success -> { success: true,  message, result }
+ *   error   -> { success: false, message, errors: [{ field, errors: string[] }] }
+ * Validation failures come back as HTTP 400 (not 422) with `errors` as an ARRAY.
+ */
+type FieldError = { field: string; errors: string[] };
+
+// Flatten the backend's `errors` array into { field: string[] } for easy lookup.
+const getFieldErrors = (err: any): Record<string, string[]> => {
+  const arr: FieldError[] | undefined = err?.data?.errors;
+  if (!Array.isArray(arr)) return {};
+  return arr.reduce((acc: Record<string, string[]>, e: any) => {
+    if (e?.field) acc[e.field] = Array.isArray(e.errors) ? e.errors : [];
+    return acc;
+  }, {});
+};
+
+const renderErrors = (messages: string[]): React.ReactNode => (
+  <ul className="list-disc list-inside">
+    {messages.map((m, i) => (
+      <li key={i}>{m}</li>
+    ))}
+  </ul>
+);
+
 const WithdrawFunds = () => {
   const FormSchema = z.object({
     account_number: z
@@ -49,9 +76,10 @@ const WithdrawFunds = () => {
     bank_name: "",
     bank_code: "",
   });
-  const [accountError, setAccountError] = useState("");
-  const [bankError, setBankError] = useState("");
-  const [amountError, setAmountError] = useState("");
+  // These hold either "" or rendered JSX, so type them as ReactNode.
+  const [accountError, setAccountError] = useState<React.ReactNode>("");
+  const [bankError, setBankError] = useState<React.ReactNode>("");
+  const [amountError, setAmountError] = useState<React.ReactNode>("");
   const [bankSearch, setBankSearch] = useState(""); // User's search input
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDropdownInputs, setShowDropdownInputs] = useState(false);
@@ -74,7 +102,8 @@ const WithdrawFunds = () => {
   const [withdraw, { isLoading: withdrawLoading }] = useWithdrawFundsMutation();
   const [resolve, { isLoading: resolveLoading }] =
     useResolveAccountNumberMutation();
-  const banks = data?.data;
+  // Backend puts the payload under `result`, not `data`.
+  const banks = (data as any)?.result;
   const filteredBanks = banks?.filter((bank: any) =>
     bank.name.toLowerCase().includes(bankSearch.toLowerCase())
   );
@@ -153,46 +182,44 @@ const WithdrawFunds = () => {
   const handleResolve = async () => {
     const accountNumber = form.getValues("account_number");
     const bankCode = selectedBank.bank_code;
-    const data = {
+
+    // Clear previous inline errors before a new attempt.
+    setAccountError("");
+    setBankError("");
+
+    const payload = {
       account_number: accountNumber,
       bank_code: bankCode,
     };
 
     try {
-      const res = await resolve(data).unwrap();
-      if (res.status == true) {
-        setAccountError("");
-        setBankError("");
-        const resolvedName = res?.data?.account_name || "";
+      const res: any = await resolve(payload).unwrap();
+
+      // Backend flag is `success`; payload is under `result`.
+      if (res?.success) {
+        const resolvedName = res?.result?.account_name || "";
         form.setValue("bank_holder_name", resolvedName);
-        toast.success(res?.message);
+        toast.success(res?.result?.message || "Account resolved successfully");
         setShowDropdownInputs(true);
-      } else if (res.data.status == false) {
-        setAccountError("");
-        setBankError("");
-        setAccountError(res?.data?.message);
+      } else {
+        toast.error(res?.message || "Could not resolve account number");
       }
     } catch (err: any) {
       console.error("Error resolving account number:", err);
-      if (err.status === 422) {
-        setAccountError(
-          err?.data?.errors?.account_number?.map((err: any, index: number) => (
-            <div key={index}>
-              <ul className="list-disc list-inside">
-                <li>{err}</li>
-              </ul>
-            </div>
-          ))
-        );
-        setBankError(
-          err?.data?.errors?.bank_code?.map((err: any, index: number) => (
-            <div key={index}>
-              <ul className="list-disc list-inside">
-                <li>{err}</li>
-              </ul>
-            </div>
-          ))
-        );
+
+      // Validation errors arrive as HTTP 400 with an `errors` array.
+      const fields = getFieldErrors(err);
+
+      if (fields.account_number?.length) {
+        setAccountError(renderErrors(fields.account_number));
+      }
+      if (fields.bank_code?.length) {
+        setBankError(renderErrors(fields.bank_code));
+      }
+
+      // No field-level errors -> surface the generic backend message.
+      if (!fields.account_number?.length && !fields.bank_code?.length) {
+        toast.error(err?.data?.message || "Could not resolve account number");
       }
     }
   };
@@ -234,28 +261,37 @@ const WithdrawFunds = () => {
     withdraw(formData)
       .unwrap()
       .then((res: any) => {
-        toast.success(res?.message);
+        // Prefer the service message (under result), fall back to envelope message.
+        toast.success(
+          res?.result?.message || res?.message || "Withdrawal request submitted"
+        );
         console.log(res);
         clearStates();
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.log(err);
+
         if (err?.status === 503) {
           toast.error("Service Unavailable");
           clearStates();
+          return;
         }
-        if (err.status === 422) {
-          setAmountError(
-            err?.data?.errors?.amount?.map((err: any, index: number) => (
-              <div key={index}>
-                <ul className="list-disc list-inside">
-                  <li>{err}</li>
-                </ul>
-              </div>
-            ))
-          );
+
+        // Field-level validation errors (HTTP 400, `errors` array).
+        const fields = getFieldErrors(err);
+
+        if (Object.keys(fields).length) {
+          if (fields.amount?.length) {
+            setAmountError(renderErrors(fields.amount));
+          }
+          // Surface any non-amount field problems as a toast.
+          const others = Object.entries(fields)
+            .filter(([field]) => field !== "amount")
+            .flatMap(([, msgs]) => msgs);
+          if (others.length) toast.error(others[0]);
         } else {
-          toast.error(err?.data?.error?.message?.message);
+          // Business errors (e.g. "Insufficient balance") -> plain message.
+          toast.error(err?.data?.message || "Withdrawal failed");
         }
       });
   };
@@ -433,7 +469,7 @@ const WithdrawFunds = () => {
                   {!showDropdownInputs && (
                     <div className="flex flex-col gap-y-4 mt-5">
                       <Button
-                        type="submit"
+                        type="button"
                         className="w-full h-12 rounded-xl text-white bg-[--primary] hover:bg-[--primary-hover]"
                         disabled={resolveLoading}
                         onClick={handleResolve}
@@ -490,7 +526,7 @@ const WithdrawFunds = () => {
                                 <FormLabel>Amount</FormLabel>
                                 <FormControl>
                                   <Input
-                                    id="narration"
+                                    id="amount"
                                     type="number"
                                     {...field}
                                   />
@@ -538,34 +574,6 @@ const WithdrawFunds = () => {
                 >
                   {withdrawLoading ? "Loading..." : "Confirm Withdrawal"}
                 </Button>
-                // <>
-                //   {!transactionPinExist ? (
-                //     <div className="my-6">
-                //       <TransactionPin
-                //         onSelectValues={handleTransactionPin}
-                //         exists={transactionPinExist}
-                //       />
-                //     </div>
-                //   ) : (
-                //     <>
-                //       <div className="flex gap-x-3 my-6 w-full">
-                //         <TransactionPin
-                //           onSelectValues={handleTransactionPin}
-                //           exists={transactionPinExist}
-                //         />
-                //         <Button
-                //           type="submit"
-                //           className={`w-full h-12 rounded-xl text-white bg-[--primary] mt-5 hover:bg-[--primary-hover]`}
-                //           disabled={withdrawLoading || !transactionPinExist}
-                //         >
-                //           {withdrawLoading
-                //             ? "Loading..."
-                //             : "Confirm Withdrawal"}
-                //         </Button>
-                //       </div>
-                //     </>
-                //   )}
-                // </>
               )}
             </form>
           </Form>

@@ -13,6 +13,8 @@ const EarningsCard = () => {
     setIsVisible(!isVisible);
   };
 
+  //console.log('userdata', userData)
+
   const router = useRouter();
   return (
     <div className="w-full bg-indigo-600 flex flex-col text-white p-10 rounded-lg h-64 shadow-md hover:-full">
@@ -29,9 +31,9 @@ const EarningsCard = () => {
         </button>
         <span className=" font-bold">
           {isVisible
-            ? userData?.current_balance === null
+            ? userData?.agent?.currentBalance === null
               ? "₦ 0.00"
-              : `₦ ${userData?.current_balance}`
+              : `₦ ${userData?.agent?.currentBalance}`
             : "* * * *"}
         </span>
       </div>

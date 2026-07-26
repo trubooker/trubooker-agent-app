@@ -114,6 +114,7 @@ export default function RegisterComponent() {
 
     try {
       const response = await axios.post(`/api/register`, payload);
+      console.log('response',response)
 
       if (response.status === 200 || response.status === 201) {
         form.reset();
