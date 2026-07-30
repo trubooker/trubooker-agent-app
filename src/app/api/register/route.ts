@@ -21,7 +21,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   const data = await resData.json();
 
-  const token = data?.data?.token;
+  const token = data?.result?.token;
+
+  console.log('register data', data)
 
   const serialized = serialize(`token`, token, {
     httpOnly: true,

@@ -116,7 +116,7 @@ export default function RegisterComponent() {
       const response = await axios.post(`/api/register`, payload);
       console.log('response',response)
 
-      if (response.status === 200 || response.status === 201) {
+      if (response.status === 201 || response.status === 201) {
         form.reset();
         router.push(`/otp?email=${encodeURIComponent(values.email)}`);
       }
