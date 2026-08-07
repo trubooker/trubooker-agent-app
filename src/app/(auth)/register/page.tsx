@@ -45,7 +45,6 @@ const RegisterFormSchema = z
       .string()
       .min(6, { message: "Password must be 6 characters or more" }),
     passwordConfirmation: z.string(),
-    role: z.string().min(1, { message: "Role is required" }),
     referralCode: z.string().optional(),
     city: z.string().min(1, { message: "City is required" }),
     address: z.string().min(1, { message: "Address is required" }),
@@ -73,7 +72,6 @@ export default function RegisterComponent() {
       phone: "",
       password: "",
       passwordConfirmation: "",
-      role: "",
       referralCode: "",
       city: "",
       address: "",
@@ -104,7 +102,7 @@ export default function RegisterComponent() {
       email: values.email,
       phone: values.phone,
       password: values.password,
-      role: values.role,
+      role: "agent",
       referralCode: values.referralCode ?? "",
       city: values.city,
       address: values.address,
@@ -116,7 +114,7 @@ export default function RegisterComponent() {
       const response = await axios.post(`/api/register`, payload);
       console.log('response',response)
 
-      if (response.status === 201 || response.status === 201) {
+      if (response.status === 200) {
         form.reset();
         router.push(`/otp?email=${encodeURIComponent(values.email)}`);
       }
@@ -271,46 +269,20 @@ export default function RegisterComponent() {
                 />
               </div>
 
-              {/* Role / Referral code */}
-              <div className="grid grid-rows-1 lg:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Role</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select role" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="driver">Driver</SelectItem>
-                          <SelectItem value="agent">Agent</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="referralCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Referral Code (optional)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter referral code" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+              {/* Referral code */}
+              <FormField
+                control={form.control}
+                name="referralCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Referral Code (optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter referral code" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               {/* Address */}
               <FormField

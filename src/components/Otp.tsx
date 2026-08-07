@@ -39,7 +39,7 @@ import {
 } from "@/redux/services/Slices/auth/otpApiSlice";
 
 const FormSchema = z.object({
-  code: z.string().min(6, {
+  otp: z.string().min(6, {
     message: "Enter OTP code sent to your email. Check spam as well",
   }),
 });
@@ -83,7 +83,7 @@ const OTPForm = () => {
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     try {
-      await Otp({ ...values })
+      await Otp({ otp: values.otp, email })
         .unwrap()
         .then((res) => {
           router.push("/dashboard");
@@ -125,7 +125,7 @@ const OTPForm = () => {
             >
               <FormField
                 control={form.control}
-                name="code"
+                name="otp"
                 render={({ field }) => (
                   <FormItem className="text-center">
                     <FormControl>
