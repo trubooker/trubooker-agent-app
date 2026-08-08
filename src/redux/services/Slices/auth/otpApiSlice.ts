@@ -1,7 +1,8 @@
 import { api } from "../../apiSlice";
 
 interface OtpProp {
-  code: string;
+  otp: string;
+  email: string;
 }
 
 interface resetOtpProp {
@@ -12,7 +13,7 @@ export const userOtpApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     Otp: builder.mutation<OtpProp, OtpProp>({
       query: (body) => ({
-        url: "/auth/otp/verify-otp",
+        url: "/auth/verify-otp",
         method: "POST",
         body,
       }),
@@ -35,3 +36,4 @@ export const userOtpApiSlice = api.injectEndpoints({
 
 export const { useOtpMutation, useResendOtpMutation, useResetOtpMutation } =
   userOtpApiSlice;
+

@@ -18,9 +18,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   // console.log(data);
 
-  if (data?.status == "success") {
+  if (data?.success === true) {
     const response = {
-      message: data?.message,
+      message: data?.result,
     };
     return new Response(JSON.stringify(response), {
       status: 200,

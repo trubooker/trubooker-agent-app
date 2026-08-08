@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { serialize } from "cookie";
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const body = await req.json();
@@ -17,36 +16,28 @@ export async function POST(req: NextRequest, res: NextResponse) {
     }
   );
 
-  console.log(resData)
-
   const data = await resData.json();
 
-  const token = data?.result?.token;
+  console.log('register data', data);
 
-  console.log('register data', data)
-
-  const serialized = serialize(`token`, token, {
-    httpOnly: true,
-    secure: process.env.NEXT_PUBLIC_NODE_ENV !== `development`,
-    maxAge: 60 * 60 * 24 * 1, // 1 day
-    sameSite: `strict`,
-    path: `/`,
-  });
-
-  if (data?.status == "success") {
+  // Registration does NOT return a session token — the account is
+  // "pending" until OTP verification, so we must NOT set an auth
+  // cookie here. Doing so previously set a cookie with value
+  // "undefined", which is exactly what let unverified users appear
+  // logged in.
+  if (data?.success === true) {
     const response = {
-      data: data?.data,
+      data: data?.result,
     };
     return new Response(JSON.stringify(response), {
       status: 200,
-      headers: { "Set-cookie": serialized },
     });
   } else {
     const response = {
-      message: data?.errors,
+      message: data?.message 
     };
     return new Response(JSON.stringify(response), {
-      status: 400,
+      status: resData.status && resData.status >= 400 ? resData.status : 400,
     });
   }
 }

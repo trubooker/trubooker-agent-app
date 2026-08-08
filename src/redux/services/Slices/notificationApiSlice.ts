@@ -10,8 +10,8 @@ const notificationApiConfig = api.enhanceEndpoints({
 const notificationApi = notificationApiConfig.injectEndpoints({
   endpoints: (builder) => ({
     fetchNotifications: builder.query({
-      query: ({ type }: Enum) => ({
-        url: `/notifications/all?type=${type}`,
+      query: () => ({
+        url: `/notifications/all`,
         method: "GET",
       }),
       providesTags: ["Notification"],
