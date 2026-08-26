@@ -11,11 +11,9 @@ const userApi = userApiConfig.injectEndpoints({
     // }),
 
     getCurrentUser: builder.query({
-  query: () => `/agent/me`,   // ← match your new backend
-  transformResponse: (res: any) => ({
-    data: res?.result ?? res?.data ?? res,   // keeps userData = data?.data working
-  }),
-  providesTags: ["User"],
+      query: () => `/agent/me`,   
+      providesTags: ["User"],
+      keepUnusedDataFor: 5,
 }),
 
     updateProfile: builder.mutation({
@@ -35,7 +33,7 @@ const userApi = userApiConfig.injectEndpoints({
         pin: number;
         pin_confirmation: number;
       }) => ({
-        url: `/agent//transaction-pin/create`,
+        url: `/agent/transaction-pin/create`,
         method: "POST",
         body: { pin, pin_confirmation },
       }),

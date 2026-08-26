@@ -30,7 +30,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   };
   const router = useRouter();
   const { userData, userLoading, userFetching } = useLoggedInUser();
-  console.log("userData", userData);
+  console.log("userData-niyu", userData);
   return (
     <>
       {userFetching || userLoading ? (

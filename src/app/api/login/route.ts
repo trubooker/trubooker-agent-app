@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
         }),
       }
     );
+    console.log("resData", resData)
 
     const responseText = await resData.text();
 
@@ -51,11 +52,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    console.log("data", data)
+
     // Backend nests the payload under `result`
     const result = data?.result;
     const token = result?.accessToken;
     const refreshToken = result?.refreshToken;
     const user = result?.user;
+    console.log(user)
 
     // Handle successful login (backend returns 201 with success: true)
     if (resData.ok && data?.success === true && token) {
