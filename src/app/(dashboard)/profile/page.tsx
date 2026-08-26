@@ -108,6 +108,7 @@ const Profile = () => {
         });
 
         const token = await fetchToken();
+        console.log("token", token)
         const headers = {
           Authorization: `Bearer ${token?.data?.token}`,
           Accept: "application/json",
@@ -122,8 +123,8 @@ const Profile = () => {
         );
 
         const resdata = await res.json();
-        console.log(resdata);
-        if (resdata?.status == "success") {
+        console.log("resdata", resdata);
+        if (resdata?.statusCode === 201) {
           toast.success(`Profile Image Updated!! ✅`);
           setImages([]);
           setImageChange(false);
