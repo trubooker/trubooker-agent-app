@@ -19,7 +19,7 @@ const SwipeableNotification: React.FC<{
   content: {
     title: string;
     body: string;
-    created_at: string;
+    createdAt: string;
   };
 }> = ({
   index,
@@ -81,7 +81,7 @@ const SwipeableNotification: React.FC<{
                   <div className="italic text-gray-400">No Data</div>
                 )
               }
-              created_at={content?.created_at}
+              createdAt={content?.createdAt}
             />
           }
         />
@@ -118,7 +118,7 @@ const SwipeableNotification: React.FC<{
                   {content?.title}
                 </p>
                 <small className="my-5 text-[11px] text-gray-500">
-                  {new Date(content?.created_at).toLocaleString("en-GB", {
+                  {new Date(content?.createdAt).toLocaleString("en-GB", {
                     day: "2-digit",
                     month: "short",
                     year: "numeric",
