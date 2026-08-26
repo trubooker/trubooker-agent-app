@@ -27,8 +27,9 @@ const Notifications = () => {
   const { data, isLoading, isFetching, refetch } = useFetchNotificationsQuery({
     type: viewType,
   });
-  const notification = data?.data;
+  const notification = data?.result;
 
+  console.log("notify-data", data)
   const [markAllAsRead, { isLoading: markAllLoading }] =
     useMarkAllAsReadMutation();
   const [deleteAll, { isLoading: deleteAllLoading }] =

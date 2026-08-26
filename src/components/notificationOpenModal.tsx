@@ -2,18 +2,18 @@ import React, { FC, ReactNode } from "react";
 
 interface NotificationOpenModalProps {
   body: string | ReactNode;
-  created_at: string;
+  createdAt: string;
 }
 
 const NotificationOpenModal: FC<NotificationOpenModalProps> = ({
   body,
-  created_at,
+  createdAt,
 }) => {
   return (
     <>
       <p className="mt-2 text-sm text-gray-500">{body}</p>
       <p className="mt-4 text-xs text-gray-400">
-        {new Date(created_at).toLocaleString("en-GB", {
+        {new Date(createdAt).toLocaleString("en-GB", {
           day: "2-digit",
           month: "short",
           year: "numeric",

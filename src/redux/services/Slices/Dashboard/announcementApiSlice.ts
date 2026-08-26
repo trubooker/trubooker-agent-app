@@ -7,7 +7,7 @@ const announcement = announcementConfig.injectEndpoints({
   endpoints: (builder) => ({
     getAnnouncements: builder.query({
       query: () => ({
-        url: `/fetch-announcement`,
+        url: `/agent/anoucements`,
         method: "GET",
       }),
       providesTags: ["Announcement"],
